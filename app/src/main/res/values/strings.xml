@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Mediator</string>
+
+    <string name="title_dialog_source">Source</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_add_source">Add source</string>
+
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_delete">Delete</string>
+</resources>
