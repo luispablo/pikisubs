@@ -24,13 +24,21 @@ import java.util.List;
 
 public class FragmentVideos extends Fragment implements AbsListView.OnItemClickListener {
 
+    static final String FILTER = "filter";
+
     private OnFragmentInteractionListener mListener;
     private AbsListView listView;
     private ListAdapter adapter;
     private List<VideoEntry> videoEntries;
+    private TaskGetVideos.Filter filter;
 
-    public static FragmentVideos newInstance() {
+    public static FragmentVideos newInstance(TaskGetVideos.Filter filter) {
         FragmentVideos fragment = new FragmentVideos();
+
+        Bundle args = new Bundle();
+        args.putSerializable(FILTER, filter);
+        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -42,6 +50,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         super.onCreate(savedInstanceState);
         adapter = new ArrayAdapter<Object>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, Collections.emptyList());
+        filter = (TaskGetVideos.Filter) getArguments().getSerializable(FILTER);
         buildAdapter();
     }
 
@@ -105,7 +114,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
 
     private void buildAdapter() {
         VideosDownloaded taskFinishedListener = new VideosDownloaded();
-        TaskGetVideos task = new TaskGetVideos(getActivity(), TaskGetVideos.Filter.WITHOUT_SUBS, taskFinishedListener);
+        TaskGetVideos task = new TaskGetVideos(getActivity(), filter, taskFinishedListener);
         task.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
     }
 

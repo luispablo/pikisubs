@@ -45,7 +45,9 @@ public class FragmentNavigationDrawer extends Fragment {
     // A pointer to the current callbacks instance (the Activity).
     private NavigationDrawerCallbacks mCallbacks;
 
-    public static final String[] drawerItems = new String[]{"Videos without subs", "Sources"};
+    public static final String[] drawerItems = new String[]{
+            "Videos without subs", "Videos with subs", "Sources"
+    };
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
