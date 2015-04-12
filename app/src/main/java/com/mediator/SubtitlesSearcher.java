@@ -1,0 +1,25 @@
+package com.mediator;
+
+import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by luispablo on 10/04/15.
+ */
+public class SubtitlesSearcher {
+
+    SubtitlesSource[] sources = {new Subdivx()};
+
+    public List<Subtitle> search(String text) {
+        Logger.d("searching: "+ text);
+        List<Subtitle> subtitles = new ArrayList<>();
+
+        for (SubtitlesSource source : sources) {
+            subtitles.addAll(source.search(text));
+        }
+
+        return subtitles;
+    }
+}

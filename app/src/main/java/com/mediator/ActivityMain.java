@@ -12,16 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.orhanobut.logger.Logger;
 
-public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-                    SourceFragment.OnFragmentInteractionListener {
+public class ActivityMain extends ActionBarActivity
+        implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
+                    FragmentSource.OnFragmentInteractionListener,
+                    FragmentVideos.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    NavigationDrawerFragment navDrawerFragment;
+    FragmentNavigationDrawer navDrawerFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity
 
         mTitle = getTitle();
 
-        navDrawerFragment = (NavigationDrawerFragment)
+        navDrawerFragment = (FragmentNavigationDrawer)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         // Set up the drawer.
         navDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
@@ -44,11 +44,13 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         Fragment fragment = null;
-        Logger.d("position: "+ position);
 
         switch (position) {
             case 0:
-                fragment = SourceFragment.newInstance("toto", "tata");
+                fragment = FragmentVideos.newInstance();
+                break;
+            case 1:
+                fragment = FragmentSource.newInstance();
                 break;
         }
 
@@ -62,7 +64,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onSectionAttached(int number) {
-        mTitle = NavigationDrawerFragment.drawerItems[number - 1];
+        mTitle = FragmentNavigationDrawer.drawerItems[number - 1];
     }
 
     public void restoreActionBar() {
@@ -103,7 +105,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onFragmentInteraction(String id) {
-        Logger.d("id "+ id);
+
     }
 
     /**
@@ -141,7 +143,7 @@ public class MainActivity extends ActionBarActivity
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
+            ((ActivityMain) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }

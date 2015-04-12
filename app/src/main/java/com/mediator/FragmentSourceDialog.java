@@ -14,14 +14,14 @@ import android.widget.EditText;
 /**
  * Created by luispablo on 07/04/15.
  */
-public class SourceDialogFragment extends DialogFragment {
+public class FragmentSourceDialog extends DialogFragment {
 
     EditText editPath;
     String originalPath;
     boolean existingPath;
-    OnDoneListener doneListener;
+    FragmentDoneListener<Void> doneListener;
 
-    public void setDoneListener(OnDoneListener listener) {
+    public void setDoneListener(FragmentDoneListener<Void> listener) {
         this.doneListener = listener;
     }
 
@@ -48,10 +48,10 @@ public class SourceDialogFragment extends DialogFragment {
                         if (newSourcePath != null && !newSourcePath.isEmpty()) {
                             if (existingPath) {
                                 MediatorPrefs.updateSource(getActivity(), originalPath, newSourcePath);
-                                doneListener.done();
+                                doneListener.onDone(null);
                             } else {
                                 MediatorPrefs.addSource(getActivity(), newSourcePath);
-                                doneListener.done();
+                                doneListener.onDone(null);
                             }
                         }
                     }
@@ -61,7 +61,7 @@ public class SourceDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if (existingPath) {
                             MediatorPrefs.removeSource(getActivity(), originalPath);
-                            doneListener.done();
+                            doneListener.onDone(null);
                         }
                     }
                 })
@@ -73,9 +73,5 @@ public class SourceDialogFragment extends DialogFragment {
                 });
 
         return builder.create();
-    }
-
-    public interface OnDoneListener {
-        void done();
     }
 }

@@ -1,9 +1,7 @@
 package com.mediator;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,60 +15,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-
-import com.mediator.dummy.DummyContent;
-import com.orhanobut.logger.Logger;
-
-public class SourceFragment extends Fragment implements AbsListView.OnItemClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class FragmentSource extends Fragment implements AbsListView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * The fragment's ListView/GridView.
-     */
     private AbsListView mListView;
-
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
     private ListAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
-    public static SourceFragment newInstance(String param1, String param2) {
-        SourceFragment fragment = new SourceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+    public static FragmentSource newInstance() {
+        FragmentSource fragment = new FragmentSource();
         return fragment;
     }
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public SourceFragment() {
+    public FragmentSource() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
         fillAdapter();
     }
 
@@ -84,7 +46,7 @@ public class SourceFragment extends Fragment implements AbsListView.OnItemClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_source:
-                SourceDialogFragment sourceDialog = new SourceDialogFragment();
+                FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
                 sourceDialog.setDoneListener(new SourceDialogDoneListener());
                 sourceDialog.show(getFragmentManager(), "luispa");
 
@@ -134,7 +96,7 @@ public class SourceFragment extends Fragment implements AbsListView.OnItemClickL
             Bundle bundle = new Bundle();
             bundle.putString(MediatorPrefs.Key.SOURCES.name(), mAdapter.getItem(position).toString());
 
-            SourceDialogFragment sourceDialog = new SourceDialogFragment();
+            FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
             sourceDialog.setArguments(bundle);
             sourceDialog.setDoneListener(new SourceDialogDoneListener());
             sourceDialog.show(getFragmentManager(), null);
@@ -180,10 +142,10 @@ public class SourceFragment extends Fragment implements AbsListView.OnItemClickL
         public void onFragmentInteraction(String id);
     }
 
-    class SourceDialogDoneListener implements SourceDialogFragment.OnDoneListener {
+    class SourceDialogDoneListener implements FragmentDoneListener<Void> {
 
         @Override
-        public void done() {
+        public void onDone(Void nullValue) {
             fillAdapter();
             mListView.setAdapter(mAdapter);
         }

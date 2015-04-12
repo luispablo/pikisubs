@@ -27,7 +27,7 @@ import android.widget.Toast;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class FragmentNavigationDrawer extends Fragment {
 
     /**
      * Remember the position of the selected item.
@@ -43,7 +43,7 @@ public class NavigationDrawerFragment extends Fragment {
     // A pointer to the current callbacks instance (the Activity).
     private NavigationDrawerCallbacks mCallbacks;
 
-    public static final String[] drawerItems = new String[]{"Sources"};
+    public static final String[] drawerItems = new String[]{"Videos without subs", "Sources"};
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -58,7 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    public NavigationDrawerFragment() {
+    public FragmentNavigationDrawer() {
     }
 
     @Override
