@@ -19,7 +19,10 @@ import com.mediator.helpers.Oju;
 import com.mediator.R;
 import com.mediator.tasks.TaskGetVideos;
 import com.mediator.model.VideoEntry;
+import com.mediator.tasks.TaskGuessitVideos;
+import com.mediator.tasks.TaskProgressedListener;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         adapter = new ArrayAdapter<Object>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, Collections.emptyList());
         filter = (TaskGetVideos.Filter) getArguments().getSerializable(FILTER);
+        videoEntries = new ArrayList<>();
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle(R.string.title_progress_videos);
@@ -123,27 +127,69 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
     private void buildAdapter() {
         progressDialog.show();
 
-        VideosDownloaded taskFinishedListener = new VideosDownloaded();
-        TaskGetVideos task = new TaskGetVideos(getActivity(), filter, taskFinishedListener);
+        VideosDownloadListener videosDownloadListener = new VideosDownloadListener();
+        TaskGetVideos task = new TaskGetVideos(getActivity(), filter, videosDownloadListener,
+                                                                        videosDownloadListener);
         task.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
     }
 
-    class VideosDownloaded implements TaskGetVideos.OnTaskFinished {
+    private void refreshList() {
+        List<String> filenames = Oju.reduce(videoEntries, new Oju.Reducer<VideoEntry, String>() {
+            @Override
+            public String reduce(VideoEntry videoEntry) {
+                return videoEntry.titleToShow();
+            }
+        });
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
+                android.R.id.text1, filenames);
+        listView.setAdapter(adapter);
+    }
+
+    private void replaceVideoEntry(final VideoEntry videoEntry) {
+        videoEntries = Oju.replace(videoEntries, videoEntry, new Oju.UnaryChecker<VideoEntry>() {
+            @Override
+            public boolean check(VideoEntry item) {
+                return item.getFilename().equals(videoEntry.getFilename());
+            }
+        });
+        refreshList();
+    }
+
+    class VideosDownloadListener implements TaskGetVideos.OnTaskFinished,
+                                                TaskProgressedListener<List<VideoEntry>> {
 
         @Override
         public void videosDownloaded(List<VideoEntry> videoEntries) {
-            FragmentVideos.this.videoEntries = videoEntries;
-            List<String> filenames = Oju.reduce(videoEntries, new Oju.Reducer<VideoEntry, String>() {
+            progressDialog.dismiss();
+
+            GuessitListener listener = new GuessitListener();
+            TaskGuessitVideos task = new TaskGuessitVideos(getActivity(), listener);
+            task.execute(videoEntries);
+        }
+
+        @Override
+        public void onProgressed(final List<VideoEntry> pathVideoEntries) {
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
-                public String reduce(VideoEntry videoEntry) {
-                    return videoEntry.getFilename();
+                public void run() {
+                    videoEntries.addAll(pathVideoEntries);
+                    refreshList();
                 }
             });
-            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-                                                android.R.id.text1, filenames);
-            listView.setAdapter(adapter);
 
-            progressDialog.dismiss();
+        }
+    }
+
+    class GuessitListener implements TaskProgressedListener<VideoEntry> {
+
+        @Override
+        public void onProgressed(final VideoEntry videoEntry) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    replaceVideoEntry(videoEntry);
+                }
+            });
         }
     }
 

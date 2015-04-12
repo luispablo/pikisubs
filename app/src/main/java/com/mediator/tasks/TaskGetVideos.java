@@ -26,12 +26,15 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
 
     private Context context;
     private OnTaskFinished taskFinished;
+    private TaskProgressedListener<List<VideoEntry>> progressedListener;
     private Filter filter;
 
-    public TaskGetVideos(Context context, Filter filter, OnTaskFinished taskFinished) {
+    public TaskGetVideos(Context context, Filter filter, OnTaskFinished taskFinished,
+                                                            TaskProgressedListener progressedListener) {
         this.context = context;
         this.taskFinished = taskFinished;
         this.filter = filter;
+        this.progressedListener = progressedListener;
     }
 
     @Override
@@ -54,19 +57,22 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
             HelperVideo videoHelper = new HelperVideo();
 
             for (String path : params) {
-                videoEntries.addAll(videoHelper.videoEntriesFrom(path, sftp));
+                List<VideoEntry> pathVideoEntries = videoHelper.videoEntriesFrom(path, sftp);
+
+                if (filter.equals(Filter.WITH_SUBS)) {
+                    pathVideoEntries = Oju.filter(pathVideoEntries, new WithSubsChecker());
+                } else if (filter.equals(Filter.WITHOUT_SUBS)) {
+                    pathVideoEntries = Oju.filter(pathVideoEntries, new WithoutSubsChecker());
+                }
+
+                videoEntries.addAll(pathVideoEntries);
+                progressedListener.onProgressed(pathVideoEntries);
             }
 
             sftp.disconnect();
             session.disconnect();
         } catch (JSchException | SftpException e) {
             Logger.e(e);
-        }
-
-        if (filter.equals(Filter.WITH_SUBS)) {
-            videoEntries = Oju.filter(videoEntries, new WithSubsChecker());
-        } else if (filter.equals(Filter.WITHOUT_SUBS)) {
-            videoEntries = Oju.filter(videoEntries, new WithoutSubsChecker());
         }
 
         return videoEntries;

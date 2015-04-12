@@ -9,6 +9,7 @@ public class VideoEntry implements Serializable {
     private String path;
     private String filename;
     private boolean hasSubs;
+    private GuessitObject guessitObject;
 
     public VideoEntry() {
 
@@ -18,6 +19,22 @@ public class VideoEntry implements Serializable {
         this.path = path;
         this.filename = filename;
         this.hasSubs = hasSubs;
+    }
+
+    public String titleToShow() {
+        if (getGuessitObject() != null) {
+            return getGuessitObject().suggestedSearchText();
+        } else {
+            return getFilename();
+        }
+    }
+
+    public GuessitObject getGuessitObject() {
+        return guessitObject;
+    }
+
+    public void setGuessitObject(GuessitObject guessitObject) {
+        this.guessitObject = guessitObject;
     }
 
     public boolean hasSubs() {

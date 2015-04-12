@@ -11,6 +11,21 @@ import java.util.Vector;
  */
 public class Oju {
 
+    public static <T> List<T> replace(List<T> list, T newItem, UnaryChecker<T> checker) {
+        List<T> newList = new ArrayList<>();
+
+        for (T t : list) newList.add(checker.check(t) ? newItem : t);
+
+        return newList;
+    }
+
+    public static <T> T findBy(List<T> list, UnaryChecker<T> checker) {
+        for (T t : list) {
+            if (checker.check(t)) return t;
+        }
+        return null;
+    }
+
     public static String right(String string, int length) {
         return string.substring(string.length() - length, string.length());
     }
