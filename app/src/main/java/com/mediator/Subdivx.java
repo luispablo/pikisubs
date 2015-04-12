@@ -17,15 +17,17 @@ import retrofit.converter.SimpleXMLConverter;
 public class Subdivx implements SubtitlesSource {
 
     @Override
-    public List<Subtitle> search(String text) {
+    public List<Subtitle> search(GuessitObject giObject) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://www.subdivx.com/")
                 .setConverter(new SimpleXMLConverter())
                 .build();
 
         RetrofitServiceSubdivx service = restAdapter.create(RetrofitServiceSubdivx.class);
+        String searchText = giObject.suggestedSearchText();
+        Logger.d("Searching subs for ["+ searchText +"]");
 
-        return service.search(text).channel.items;
+        return service.search(searchText).channel.items;
     }
 
     public static String findRealLink(Subtitle subtitle) {

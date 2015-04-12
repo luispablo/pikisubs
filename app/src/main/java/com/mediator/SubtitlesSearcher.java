@@ -12,12 +12,12 @@ public class SubtitlesSearcher {
 
     SubtitlesSource[] sources = {new Subdivx()};
 
-    public List<Subtitle> search(String text) {
-        Logger.d("searching: "+ text);
+    public List<Subtitle> search(GuessitObject giObject) {
+        Logger.d("searching: "+ giObject);
         List<Subtitle> subtitles = new ArrayList<>();
 
         for (SubtitlesSource source : sources) {
-            subtitles.addAll(source.search(text));
+            subtitles.addAll(source.search(giObject));
         }
 
         return subtitles;

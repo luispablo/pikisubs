@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface SubtitlesSource {
 
-    public List<Subtitle> search(String text);
+    public List<Subtitle> search(GuessitObject giObject);
 
 }

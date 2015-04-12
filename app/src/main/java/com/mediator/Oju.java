@@ -11,6 +11,14 @@ import java.util.Vector;
  */
 public class Oju {
 
+    public static String right(String string, int length) {
+        return string.substring(string.length() - length, string.length());
+    }
+
+    public static String left(String string, int length) {
+        return string.substring(0, length);
+    }
+
     public static String leftFromLast(String string, String part) {
         return string.substring(0, string.lastIndexOf(part));
     }

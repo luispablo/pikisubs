@@ -59,7 +59,7 @@ public class ActivitySubtitles extends ActionBarActivity {
                         android.R.id.text1, titles);
                 listSubtitles.setAdapter(adapter);
             }
-        }.execute(videoEntry.getFilename());
+        }.execute(videoEntry);
     }
 
     @Override
