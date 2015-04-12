@@ -1,6 +1,7 @@
 package com.mediator.ui;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
     private ListAdapter adapter;
     private List<VideoEntry> videoEntries;
     private TaskGetVideos.Filter filter;
+    private ProgressDialog progressDialog;
 
     public static FragmentVideos newInstance(TaskGetVideos.Filter filter) {
         FragmentVideos fragment = new FragmentVideos();
@@ -51,6 +53,12 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         adapter = new ArrayAdapter<Object>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, Collections.emptyList());
         filter = (TaskGetVideos.Filter) getArguments().getSerializable(FILTER);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle(R.string.title_progress_videos);
+        progressDialog.setMessage(getString(R.string.message_wait_please));
+        progressDialog.setIndeterminate(true);
+
         buildAdapter();
     }
 
@@ -113,6 +121,8 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
     }
 
     private void buildAdapter() {
+        progressDialog.show();
+
         VideosDownloaded taskFinishedListener = new VideosDownloaded();
         TaskGetVideos task = new TaskGetVideos(getActivity(), filter, taskFinishedListener);
         task.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
@@ -132,6 +142,8 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
             adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
                                                 android.R.id.text1, filenames);
             listView.setAdapter(adapter);
+
+            progressDialog.dismiss();
         }
     }
 

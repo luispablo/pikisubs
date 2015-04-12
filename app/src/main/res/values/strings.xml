@@ -24,4 +24,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_dialog_many_subs">Please select subtitle from archive</string>
     <string name="message_cannot_download">Problem processing file %s</string>
+    <string name="title_progress_videos">Loading videos</string>
+    <string name="message_wait_please">Wait please...</string>
+    <string name="title_progress_subtitles">Searching subtitles</string>
+    <string name="title_progress_subtitle_download">Downloading subtitle</string>
 </resources>

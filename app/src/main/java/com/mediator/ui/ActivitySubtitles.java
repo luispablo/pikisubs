@@ -1,5 +1,6 @@
 package com.mediator.ui;
 
+import android.app.ProgressDialog;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class ActivitySubtitles extends ActionBarActivity {
     List<Subtitle> subtitles;
     ArrayAdapter<String> adapter;
     VideoEntry videoEntry;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +48,20 @@ public class ActivitySubtitles extends ActionBarActivity {
         videoEntry = (VideoEntry) getIntent().getSerializableExtra("videoEntry");
         txtFilename.setText(videoEntry.getFilename());
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.message_wait_please));
+        progressDialog.setIndeterminate(true);
+
         setTitle(R.string.title_activity_subtitles);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        progressDialog.setTitle(R.string.title_progress_subtitles);
+        progressDialog.show();
+
         new TaskGetSubtitles(this) {
             @Override
             protected void onPostExecute(List<Subtitle> subtitles) {
@@ -65,6 +75,8 @@ public class ActivitySubtitles extends ActionBarActivity {
                 adapter = new ArrayAdapter<String>(ActivitySubtitles.this, android.R.layout.simple_list_item_1,
                         android.R.id.text1, titles);
                 listSubtitles.setAdapter(adapter);
+
+                progressDialog.dismiss();
             }
         }.execute(videoEntry);
     }
@@ -91,6 +103,9 @@ public class ActivitySubtitles extends ActionBarActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            progressDialog.setTitle(R.string.title_progress_subtitle_download);
+            progressDialog.show();
+
             Subtitle subtitle = subtitles.get(position);
 
             OnSubtitlesDecompressed next = new OnSubtitlesDecompressed();
@@ -104,6 +119,8 @@ public class ActivitySubtitles extends ActionBarActivity {
 
         @Override
         public void onCancelled(String s) {
+            progressDialog.dismiss();
+
             String message = String.format(getString(R.string.message_cannot_download), s);
             Toast.makeText(ActivitySubtitles.this, message, Toast.LENGTH_LONG).show();
         }
@@ -114,6 +131,8 @@ public class ActivitySubtitles extends ActionBarActivity {
         @Override
         public void doSomething(List<File> files) {
             if (files.isEmpty()) {
+                progressDialog.dismiss();
+
                 Toast.makeText(ActivitySubtitles.this, R.string.message_no_files, Toast.LENGTH_LONG).show();
             } else {
                 OnSubtitlesUploaded next = new OnSubtitlesUploaded();
@@ -149,6 +168,8 @@ public class ActivitySubtitles extends ActionBarActivity {
 
         @Override
         public void uploaded(File file) {
+            progressDialog.dismiss();
+
             Toast.makeText(ActivitySubtitles.this, R.string.message_subs_uploaded, Toast.LENGTH_LONG).show();
             file.delete();
         }
