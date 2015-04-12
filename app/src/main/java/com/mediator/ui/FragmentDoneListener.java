@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.ui;
 
 /**
  * Created by luispablo on 12/04/15.

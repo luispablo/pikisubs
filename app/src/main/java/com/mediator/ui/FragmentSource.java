@@ -1,9 +1,12 @@
-package com.mediator;
+package com.mediator.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -12,43 +15,63 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import java.util.Collections;
-import java.util.List;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.R;
 
-public class FragmentVideos extends Fragment implements AbsListView.OnItemClickListener {
+public class FragmentSource extends Fragment implements AbsListView.OnItemClickListener {
 
     private OnFragmentInteractionListener mListener;
-    private AbsListView listView;
-    private ListAdapter adapter;
-    private List<VideoEntry> videoEntries;
 
-    public static FragmentVideos newInstance() {
-        FragmentVideos fragment = new FragmentVideos();
+    private AbsListView mListView;
+    private ListAdapter mAdapter;
+
+    public static FragmentSource newInstance() {
+        FragmentSource fragment = new FragmentSource();
         return fragment;
     }
 
-    public FragmentVideos() {
+    public FragmentSource() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ArrayAdapter<Object>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, Collections.emptyList());
-        buildAdapter();
+        fillAdapter();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.source_fragment_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_source:
+                FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
+                sourceDialog.setDoneListener(new SourceDialogDoneListener());
+                sourceDialog.show(getFragmentManager(), "luispa");
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video, container, false);
+        View view = inflater.inflate(R.layout.fragment_source, container, false);
 
         // Set the adapter
-        listView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) listView).setAdapter(adapter);
+        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
-        listView.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(this);
+
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -72,14 +95,18 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("videoEntry", videoEntries.get(position));
-        HelperAndroid.start(getActivity(), ActivitySubtitles.class, bundle);
-
         if (null != mListener) {
+            Bundle bundle = new Bundle();
+            bundle.putString(MediatorPrefs.Key.SOURCES.name(), mAdapter.getItem(position).toString());
+
+            FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
+            sourceDialog.setArguments(bundle);
+            sourceDialog.setDoneListener(new SourceDialogDoneListener());
+            sourceDialog.show(getFragmentManager(), null);
+
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
@@ -89,34 +116,18 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
      * to supply the text it should use.
      */
     public void setEmptyText(CharSequence emptyText) {
-        View emptyView = listView.getEmptyView();
+        View emptyView = mListView.getEmptyView();
 
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
         }
     }
 
-    private void buildAdapter() {
-        VideosDownloaded taskFinishedListener = new VideosDownloaded();
-        TaskGetVideos task = new TaskGetVideos(getActivity(), TaskGetVideos.Filter.WITHOUT_SUBS, taskFinishedListener);
-        task.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
-    }
+    private void fillAdapter() {
+        String[] sources = MediatorPrefs.sources(getActivity()).toArray(new String[]{});
 
-    class VideosDownloaded implements TaskGetVideos.OnTaskFinished {
-
-        @Override
-        public void videosDownloaded(List<VideoEntry> videoEntries) {
-            FragmentVideos.this.videoEntries = videoEntries;
-            List<String> filenames = Oju.reduce(videoEntries, new Oju.Reducer<VideoEntry, String>() {
-                @Override
-                public String reduce(VideoEntry videoEntry) {
-                    return videoEntry.getFilename();
-                }
-            });
-            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-                                                android.R.id.text1, filenames);
-            listView.setAdapter(adapter);
-        }
+        mAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, sources);
     }
 
     /**
@@ -130,6 +141,16 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+    }
+
+    class SourceDialogDoneListener implements FragmentDoneListener<Void> {
+
+        @Override
+        public void onDone(Void nullValue) {
+            fillAdapter();
+            mListView.setAdapter(mAdapter);
+        }
     }
 }

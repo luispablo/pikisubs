@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.ui;
 
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -12,7 +12,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
+import com.mediator.helpers.Oju;
+import com.mediator.R;
+import com.mediator.model.Subtitle;
+import com.mediator.tasks.TaskCancelledListener;
+import com.mediator.tasks.TaskDownloadSubtitle;
+import com.mediator.tasks.TaskGetSubtitles;
+import com.mediator.tasks.TaskUploadSubtitles;
+import com.mediator.model.VideoEntry;
 
 import java.io.File;
 import java.util.List;
@@ -52,7 +59,7 @@ public class ActivitySubtitles extends ActionBarActivity {
                 List<String> titles = Oju.reduce(subtitles, new Oju.Reducer<Subtitle, String>() {
                     @Override
                     public String reduce(Subtitle subtitle) {
-                        return subtitle.getTitle().toUpperCase() +"\n--------\n\n"+ subtitle.getDescription() +"\n\n";
+                        return subtitle.getTitle().toUpperCase() + "\n--------\n\n" + subtitle.getDescription() + "\n\n";
                     }
                 });
                 adapter = new ArrayAdapter<String>(ActivitySubtitles.this, android.R.layout.simple_list_item_1,

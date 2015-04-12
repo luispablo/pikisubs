@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.helpers;
 
 import java.util.ArrayList;
 import java.util.HashSet;

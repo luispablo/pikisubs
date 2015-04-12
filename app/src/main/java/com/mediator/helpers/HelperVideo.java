@@ -1,8 +1,9 @@
-package com.mediator;
+package com.mediator.helpers;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.mediator.model.VideoEntry;
 
 import java.io.File;
 import java.util.ArrayList;

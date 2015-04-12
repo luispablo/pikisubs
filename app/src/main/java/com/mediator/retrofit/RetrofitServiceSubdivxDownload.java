@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.retrofit;
 
 import retrofit.client.Response;
 import retrofit.http.GET;

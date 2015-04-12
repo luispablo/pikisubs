@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -7,11 +7,14 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.mediator.helpers.HelperSSH;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.helpers.Oju;
+import com.mediator.model.VideoEntry;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

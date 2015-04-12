@@ -1,21 +1,24 @@
-package com.mediator;
+package com.mediator.tasks;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.mediator.Subdivx;
+import com.mediator.helpers.HelperAndroid;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.model.Subtitle;
+import com.mediator.retrofit.RetrofitServiceSubdivxDownload;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.innosystec.unrar.Archive;
 import de.innosystec.unrar.exception.RarException;
-import de.innosystec.unrar.rarfile.FileHeader;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;

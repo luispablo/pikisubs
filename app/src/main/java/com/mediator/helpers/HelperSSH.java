@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.helpers;
 
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -7,15 +7,8 @@ import com.jcraft.jsch.Session;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Vector;
 
 /**
  * Created by luispablo on 10/04/15.

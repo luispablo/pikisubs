@@ -1,5 +1,7 @@
 package com.mediator;
 
+import com.mediator.model.GuessitObject;
+import com.mediator.model.Subtitle;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;

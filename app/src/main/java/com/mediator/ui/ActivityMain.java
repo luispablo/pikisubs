@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.mediator.R;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,

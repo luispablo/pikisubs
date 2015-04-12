@@ -1,7 +1,14 @@
-package com.mediator;
+package com.mediator.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+
+import com.mediator.SubtitlesSearcher;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.model.GuessitObject;
+import com.mediator.model.Subtitle;
+import com.mediator.model.VideoEntry;
+import com.mediator.retrofit.RetrofitServiceGuessit;
 
 import java.util.List;
 

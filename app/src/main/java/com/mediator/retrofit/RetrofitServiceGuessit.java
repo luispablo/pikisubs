@@ -1,4 +1,6 @@
-package com.mediator;
+package com.mediator.retrofit;
+
+import com.mediator.model.GuessitObject;
 
 import retrofit.http.GET;
 import retrofit.http.Query;

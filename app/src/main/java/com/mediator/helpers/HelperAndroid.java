@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.helpers;
 
 import android.app.Activity;
 import android.content.Intent;

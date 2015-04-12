@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ public class MediatorPrefs {
 
     static Map<Key, String> defaultStringValues;
 
-    enum Key {
+    public enum Key {
         GUESSIT_URL,
         SOURCES,
         SUBDIVX_DOWNLOAD_URL,

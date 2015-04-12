@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.model;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -12,5 +12,13 @@ import java.util.List;
 public class Channel {
 
     @ElementList(inline = true, required = false, empty = false)
-    List<Subtitle> items;
+    private List<Subtitle> items;
+
+    public List<Subtitle> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Subtitle> items) {
+        this.items = items;
+    }
 }

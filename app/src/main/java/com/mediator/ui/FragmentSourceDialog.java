@@ -1,15 +1,17 @@
-package com.mediator;
+package com.mediator.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.R;
 
 /**
  * Created by luispablo on 07/04/15.

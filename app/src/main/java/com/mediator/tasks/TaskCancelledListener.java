@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.tasks;
 
 /**
  * Created by luispablo on 12/04/15.

@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.model;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

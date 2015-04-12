@@ -1,5 +1,8 @@
 package com.mediator;
 
+import com.mediator.model.GuessitObject;
+import com.mediator.model.Subtitle;
+import com.mediator.retrofit.RetrofitServiceSubdivx;
 import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
@@ -27,7 +30,7 @@ public class Subdivx implements SubtitlesSource {
         String searchText = giObject.suggestedSearchText();
         Logger.d("Searching subs for ["+ searchText +"]");
 
-        return service.search(searchText).channel.items;
+        return service.search(searchText).getChannel().getItems();
     }
 
     public static String findRealLink(Subtitle subtitle) {

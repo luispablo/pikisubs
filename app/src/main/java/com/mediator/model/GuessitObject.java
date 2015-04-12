@@ -1,4 +1,6 @@
-package com.mediator;
+package com.mediator.model;
+
+import com.mediator.helpers.Oju;
 
 /**
  * Created by luispablo on 11/04/15.
@@ -21,7 +23,7 @@ public class GuessitObject {
         if (isMovie()) {
             searchText = getTitle();
         } else if (isEpisode()) {
-            searchText = getSeries() +" S"+ Oju.right("0"+ String.valueOf(season), 2)
+            searchText = getSeries() +" S"+ Oju.right("0" + String.valueOf(season), 2)
                                         +"E"+ Oju.right("0"+ episodeNumber.trim(), 2);
         } else {
             searchText = "##UNKNOWN TYPE";

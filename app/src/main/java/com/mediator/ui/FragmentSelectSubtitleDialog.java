@@ -1,10 +1,13 @@
-package com.mediator;
+package com.mediator.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+
+import com.mediator.helpers.Oju;
+import com.mediator.R;
 
 import java.io.File;
 import java.util.List;
