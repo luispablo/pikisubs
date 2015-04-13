@@ -32,7 +32,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
 
     private OnFragmentInteractionListener mListener;
     private AbsListView listView;
-    private ListAdapter adapter;
+    private AdapterVideoEntries adapter;
     private List<VideoEntry> videoEntries;
     private TaskGetVideos.Filter filter;
     private ProgressDialog progressDialog;
@@ -53,8 +53,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ArrayAdapter<Object>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, Collections.emptyList());
+        adapter = new AdapterVideoEntries(getActivity(), new ArrayList<VideoEntry>());
         filter = (TaskGetVideos.Filter) getArguments().getSerializable(FILTER);
         videoEntries = new ArrayList<>();
 
@@ -134,14 +133,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
     }
 
     private void refreshList() {
-        List<String> filenames = Oju.reduce(videoEntries, new Oju.Reducer<VideoEntry, String>() {
-            @Override
-            public String reduce(VideoEntry videoEntry) {
-                return videoEntry.titleToShow();
-            }
-        });
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-                android.R.id.text1, filenames);
+        adapter = new AdapterVideoEntries(getActivity(), videoEntries);
         listView.setAdapter(adapter);
     }
 
