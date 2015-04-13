@@ -2,10 +2,12 @@ package com.mediator.model;
 
 import com.mediator.helpers.Oju;
 
+import java.io.Serializable;
+
 /**
  * Created by luispablo on 11/04/15.
  */
-public class GuessitObject {
+public class GuessitObject implements Serializable {
 
     public enum Type { episode, movie }
 
