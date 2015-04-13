@@ -1,26 +1,25 @@
 package com.mediator.ui;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mediator.helpers.Oju;
 import com.mediator.R;
+import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
+import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskCancelledListener;
 import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
 import com.mediator.tasks.TaskUploadSubtitles;
-import com.mediator.model.VideoEntry;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +31,7 @@ public class ActivitySubtitles extends ActionBarActivity {
     TextView txtFilename;
     ListView listSubtitles;
     List<Subtitle> subtitles;
-    ArrayAdapter<String> adapter;
+    AdapterSubtitles adapter;
     VideoEntry videoEntry;
     ProgressDialog progressDialog;
 
@@ -75,8 +74,7 @@ public class ActivitySubtitles extends ActionBarActivity {
                         return subtitle.getTitle().toUpperCase() + "\n--------\n\n" + subtitle.getDescription() + "\n\n";
                     }
                 });
-                adapter = new ArrayAdapter<String>(ActivitySubtitles.this, android.R.layout.simple_list_item_1,
-                        android.R.id.text1, titles);
+                adapter = new AdapterSubtitles(ActivitySubtitles.this, subtitles);
                 listSubtitles.setAdapter(adapter);
 
                 progressDialog.dismiss();
