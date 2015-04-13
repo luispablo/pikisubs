@@ -1,6 +1,9 @@
 package com.mediator.helpers;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +13,37 @@ import java.util.Vector;
  * Created by luispablo on 10/04/15.
  */
 public class Oju {
+
+    public static int matches(Set<String> set1, Set<String> set2) {
+        int matches = 0;
+
+        for (String string1 : set1) {
+            for (String string2 : set2) {
+                if (string1.equals(string2)) matches++;
+            }
+        }
+
+        return matches;
+    }
+
+    public static Set<String> lowerCaseTerms(String string) {
+        String replaced = string.toLowerCase().replaceAll(" ", ".");
+        List<String> termsList = Oju.filter(Arrays.asList(replaced.split("\\.")), new Oju.UnaryChecker<String>() {
+            @Override
+            public boolean check(String item) {
+                return !item.trim().isEmpty();
+            }
+        });
+        return Oju.set(termsList);
+    }
+
+    public static String join(List<String> items, String character) {
+        String joined = "";
+
+        for (String item : items) joined += (joined.isEmpty() ? "" : character) + item;
+
+        return joined;
+    }
 
     public static <T> List<T> replace(List<T> list, T newItem, UnaryChecker<T> checker) {
         List<T> newList = new ArrayList<>();

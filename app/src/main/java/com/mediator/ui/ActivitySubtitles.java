@@ -20,9 +20,14 @@ import com.mediator.tasks.TaskCancelledListener;
 import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
 import com.mediator.tasks.TaskUploadSubtitles;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 
 public class ActivitySubtitles extends ActionBarActivity {
@@ -67,6 +72,7 @@ public class ActivitySubtitles extends ActionBarActivity {
         new TaskGetSubtitles(this) {
             @Override
             protected void onPostExecute(List<Subtitle> subtitles) {
+                Collections.sort(subtitles, new SubtitleComparator(videoEntry));
                 ActivitySubtitles.this.subtitles = subtitles;
                 List<String> titles = Oju.reduce(subtitles, new Oju.Reducer<Subtitle, String>() {
                     @Override
@@ -173,6 +179,31 @@ public class ActivitySubtitles extends ActionBarActivity {
 
             Toast.makeText(ActivitySubtitles.this, R.string.message_subs_uploaded, Toast.LENGTH_LONG).show();
             file.delete();
+        }
+    }
+
+    class SubtitleComparator implements Comparator<Subtitle> {
+
+        private Set<String> terms;
+
+        public SubtitleComparator(VideoEntry videoEntry) {
+            terms = Oju.lowerCaseTerms(videoEntry.getFilename());
+        }
+
+        @Override
+        public int compare(Subtitle sub1, Subtitle sub2) {
+            Set<String> termsSub1 = Oju.lowerCaseTerms(sub1.getDescription());
+            Set<String> termsSub2 = Oju.lowerCaseTerms(sub2.getDescription());
+            int matches1 = Oju.matches(terms, termsSub1);
+            int matches2 = Oju.matches(terms, termsSub2);
+
+            if (matches1 > matches2) {
+                return -1;
+            } else if (matches2 > matches1) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 }
