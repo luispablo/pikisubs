@@ -28,6 +28,7 @@ import java.util.List;
 
 public class ActivitySubtitles extends ActionBarActivity {
 
+    TextView txtSearchText;
     TextView txtFilename;
     ListView listSubtitles;
     List<Subtitle> subtitles;
@@ -41,11 +42,13 @@ public class ActivitySubtitles extends ActionBarActivity {
         setContentView(R.layout.activity_subtitles);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        txtSearchText = (TextView) findViewById(R.id.txtSearchText);
         txtFilename = (TextView) findViewById(R.id.txtFilename);
         listSubtitles = (ListView) findViewById(R.id.listSubtitles);
         listSubtitles.setOnItemClickListener(new SubtitleClickListener());
 
         videoEntry = (VideoEntry) getIntent().getSerializableExtra("videoEntry");
+        txtSearchText.setText(videoEntry.titleToShow());
         txtFilename.setText(videoEntry.getFilename());
 
         progressDialog = new ProgressDialog(this);

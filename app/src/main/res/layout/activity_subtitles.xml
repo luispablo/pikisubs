@@ -6,13 +6,43 @@
     android:padding="12dp"
     android:orientation="vertical" >
 
-    <TextView   android:id="@+id/txtFilename"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:paddingBottom="12dp"
-                android:textSize="18dp"
-                android:textStyle="bold" />
+    <RelativeLayout android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingBottom="12dp">
+
+        <TextView   android:id="@+id/labelSearchText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_search_text"
+                    android:textSize="14sp"
+                    android:paddingRight="5dp" />
+
+        <TextView   android:id="@+id/txtSearchText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_text"
+                    android:layout_toRightOf="@id/labelSearchText" />
+
+        <TextView   android:id="@+id/labelFilename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_filename"
+                    android:textSize="14sp"
+                    android:layout_below="@id/labelSearchText" />
+
+        <TextView   android:id="@+id/txtFilename"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_text"
+                    android:layout_toRightOf="@id/labelFilename"
+                    android:layout_alignLeft="@id/txtSearchText"
+                    android:layout_alignTop="@id/labelFilename" />
+    </RelativeLayout>
 
     <ListView   android:id="@+id/listSubtitles"
                 android:layout_width="fill_parent"
