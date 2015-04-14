@@ -2,10 +2,12 @@ package com.mediator.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by luispablo on 14/04/15.
  */
-public class TMDbMovieSearchResult {
+public class TMDbMovieSearchResult implements Serializable {
     private boolean adult;
     @SerializedName("backdrop_path")
     private String backdropPath;

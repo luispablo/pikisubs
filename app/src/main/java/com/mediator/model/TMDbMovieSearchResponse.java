@@ -2,14 +2,13 @@ package com.mediator.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.simpleframework.xml.Root;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by luispablo on 14/04/15.
  */
-public class TMDbMovieSearchResponse {
+public class TMDbMovieSearchResponse implements Serializable {
     private int page;
     @SerializedName("total_pages")
     private int totalPages;
