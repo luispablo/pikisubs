@@ -6,10 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mediator.R;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.model.TMDbMovieSearchResult;
 import com.mediator.model.VideoEntry;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,8 +24,10 @@ public class AdapterVideoEntries extends BaseAdapter {
 
     private List<VideoEntry> videoEntries;
     private LayoutInflater inflater;
+    private Context context;
 
     public AdapterVideoEntries(Context context, List<VideoEntry> videoEntries) {
+        this.context = context;
         this.videoEntries = videoEntries;
         inflater = LayoutInflater.from(context);
     }
@@ -53,7 +59,27 @@ public class AdapterVideoEntries extends BaseAdapter {
             ((TextView) convertView.findViewById(R.id.txtTitleToShow)).setText(videoEntry.titleToShow());
         }
         ((TextView) convertView.findViewById(R.id.txtFilename)).setText(videoEntry.getFilename());
+        ImageView imagePoster = (ImageView) convertView.findViewById(R.id.imagePoster);
+
+        if (videoEntry.getTmdbResult() != null) {
+            Picasso.with(context)
+                    .load(buildTMDbPosterURL(videoEntry.getTmdbResult()))
+                    .placeholder(R.drawable.poster_placeholder)
+                    .error(R.drawable.poster_placeholder)
+                    .fit()
+                    .centerInside()
+                    .into(imagePoster);
+        }
 
         return convertView;
+    }
+
+    private String buildTMDbPosterURL(TMDbMovieSearchResult tmdbResult) {
+        String baseUrl = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_URL);
+        String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
+        String imagePath = tmdbResult.getPosterPath();
+        String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
+
+        return baseUrl + size + imagePath +"?api_key="+ apiKey;
     }
 }

@@ -17,10 +17,12 @@ import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.R;
+import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetVideos;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskProgressedListener;
+import com.mediator.tasks.TaskSearchTMDb;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,7 +157,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
             progressDialog.dismiss();
 
             GuessitListener listener = new GuessitListener();
-            TaskGuessitVideos task = new TaskGuessitVideos(getActivity(), listener);
+            TaskGuessitVideos task = new TaskGuessitVideos(getActivity(), listener, listener);
             task.execute(videoEntries);
         }
 
@@ -172,7 +174,27 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         }
     }
 
-    class GuessitListener implements TaskProgressedListener<VideoEntry> {
+    class GuessitListener implements TaskProgressedListener<VideoEntry>, TaskDoneListener<List<VideoEntry>> {
+
+        @Override
+        public void onProgressed(final VideoEntry videoEntry) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    replaceVideoEntry(videoEntry);
+                }
+            });
+        }
+
+        @Override
+        public void onDone(List<VideoEntry> videoEntries) {
+            TMDbSearchListener listener = new TMDbSearchListener();
+            TaskSearchTMDb task = new TaskSearchTMDb(getActivity(), listener);
+            task.execute(videoEntries);
+        }
+    }
+
+    class TMDbSearchListener implements TaskProgressedListener<VideoEntry> {
 
         @Override
         public void onProgressed(final VideoEntry videoEntry) {

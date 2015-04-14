@@ -18,10 +18,13 @@ public class TaskGuessitVideos extends AsyncTask<List<VideoEntry>, VideoEntry, L
 
     private Context context;
     private TaskProgressedListener<VideoEntry> progressedListener;
+    private TaskDoneListener<List<VideoEntry>> doneListener;
 
-    public TaskGuessitVideos(Context context, TaskProgressedListener<VideoEntry> progressedListener) {
+    public TaskGuessitVideos(Context context, TaskProgressedListener<VideoEntry> progressedListener
+                                            , TaskDoneListener<List<VideoEntry>> doneListener) {
         this.context = context;
         this.progressedListener = progressedListener;
+        this.doneListener = doneListener;
     }
 
     @Override
@@ -40,5 +43,10 @@ public class TaskGuessitVideos extends AsyncTask<List<VideoEntry>, VideoEntry, L
         }
 
         return videoEntries;
+    }
+
+    @Override
+    protected void onPostExecute(List<VideoEntry> videoEntries) {
+        doneListener.onDone(videoEntries);
     }
 }

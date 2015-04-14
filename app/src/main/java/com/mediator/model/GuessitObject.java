@@ -34,6 +34,18 @@ public class GuessitObject implements Serializable {
         return searchText;
     }
 
+    public String posterSearchText() {
+        String posterSearchText = "";
+
+        if (isMovie()) {
+            posterSearchText = getTitle();
+        } else if (isEpisode()) {
+            posterSearchText = getSeries();
+        }
+
+        return posterSearchText;
+    }
+
     public boolean isMovie() {
         return Type.movie.equals(getType());
     }

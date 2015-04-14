@@ -10,6 +10,7 @@ public class VideoEntry implements Serializable {
     private String filename;
     private boolean hasSubs;
     private GuessitObject guessitObject;
+    private TMDbMovieSearchResult tmdbResult;
 
     public VideoEntry() {
 
@@ -27,6 +28,14 @@ public class VideoEntry implements Serializable {
         } else {
             return getFilename();
         }
+    }
+
+    public TMDbMovieSearchResult getTmdbResult() {
+        return tmdbResult;
+    }
+
+    public void setTmdbResult(TMDbMovieSearchResult tmdbResult) {
+        this.tmdbResult = tmdbResult;
     }
 
     public GuessitObject getGuessitObject() {

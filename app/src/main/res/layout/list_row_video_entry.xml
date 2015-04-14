@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+    <ImageView  android:id="@+id/imagePoster"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="10dp" >
+                android:paddingRight="10dp"
+                android:adjustViewBounds="true" />
 
     <TextView   android:id="@+id/txtTitleToShow"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:paddingBottom="10dp" />
+                android:paddingTop="15dp"
+                style="@android:style/TextAppearance.DeviceDefault.Large"
+                android:layout_toRightOf="@id/imagePoster" />
 
     <TextView   android:id="@+id/txtFilename"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@android:style/TextAppearance.DeviceDefault.Small" />
+                android:layout_below="@id/txtTitleToShow"
+                android:layout_toRightOf="@id/imagePoster"
+                android:paddingBottom="10dp"
+                android:layout_alignParentBottom="true"
+                style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:text="@string/dummy_text" />
 
-</LinearLayout>
+</RelativeLayout>
