@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.mediator.R;
 import com.mediator.tasks.TaskGetVideos;
+import com.orhanobut.logger.Logger;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
@@ -34,8 +35,6 @@ public class ActivityMain extends ActionBarActivity
 
         navDrawerFragment = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         navDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        title = getString(R.string.app_name);
     }
 
     @Override
