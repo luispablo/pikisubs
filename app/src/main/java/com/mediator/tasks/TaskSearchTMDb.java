@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.mediator.helpers.MediatorPrefs;
+import com.mediator.model.Cache;
+import com.mediator.model.CacheFallback;
 import com.mediator.model.TMDbMovieSearchResponse;
 import com.mediator.model.VideoEntry;
 import com.mediator.retrofit.RetrofitServiceTMDbSearch;
@@ -35,13 +37,21 @@ public class TaskSearchTMDb extends AsyncTask<List<VideoEntry>, VideoEntry, List
                     .setEndpoint(MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_URL))
                     .build();
 
-            RetrofitServiceTMDbSearch tmdbSearch = restAdapter.create(RetrofitServiceTMDbSearch.class);
+            final RetrofitServiceTMDbSearch tmdbSearch = restAdapter.create(RetrofitServiceTMDbSearch.class);
+            final String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
 
-            String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
+            CacheFallback<TMDbMovieSearchResponse> fallback = new CacheFallback<TMDbMovieSearchResponse>() {
+                @Override
+                public TMDbMovieSearchResponse onNotFoundOnCache(String posterSearchText) {
+                    return tmdbSearch.movie(posterSearchText, apiKey);
+                }
+            };
+
+            Cache cache = new Cache(context);
 
             for (VideoEntry videoEntry : videoEntries) {
                 String posterSearchText = videoEntry.getGuessitObject().posterSearchText();
-                TMDbMovieSearchResponse response = tmdbSearch.movie(posterSearchText, apiKey);
+                TMDbMovieSearchResponse response = cache.tmdbSearch(posterSearchText, fallback);
 
                 if (!response.getResults().isEmpty()) {
                     videoEntry.setTmdbResult(response.getResults().get(0));
