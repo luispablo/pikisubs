@@ -4,8 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.mediator.helpers.MediatorPrefs;
+import com.mediator.model.Cache;
+import com.mediator.model.CacheFallback;
+import com.mediator.model.GuessitObject;
 import com.mediator.model.VideoEntry;
 import com.mediator.retrofit.RetrofitServiceGuessit;
+import com.orhanobut.logger.Logger;
+import com.snappydb.SnappydbException;
 
 import java.util.List;
 
@@ -35,10 +40,23 @@ public class TaskGuessitVideos extends AsyncTask<List<VideoEntry>, VideoEntry, L
                 .setEndpoint(MediatorPrefs.getString(context, MediatorPrefs.Key.GUESSIT_URL))
                 .build();
 
-        RetrofitServiceGuessit guessit = restAdapter.create(RetrofitServiceGuessit.class);
+        final RetrofitServiceGuessit guessit = restAdapter.create(RetrofitServiceGuessit.class);
+
+        CacheFallback<GuessitObject> fallback = new CacheFallback<GuessitObject>() {
+            @Override
+            public GuessitObject onNotFoundOnCache(String filename) {
+                return guessit.guess(filename);
+            }
+        };
+
+        Cache cache = new Cache(context);
 
         for (VideoEntry entry : videoEntries) {
-            entry.setGuessitObject(guessit.guess(entry.getFilename()));
+            try {
+                entry.setGuessitObject(cache.guessit(entry.getFilename(), fallback));
+            } catch (SnappydbException e) {
+                Logger.e(e);
+            }
             progressedListener.onProgressed(entry);
         }
 
