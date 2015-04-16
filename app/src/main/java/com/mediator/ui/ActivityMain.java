@@ -53,6 +53,9 @@ public class ActivityMain extends ActionBarActivity
             case 2:
                 fragment = FragmentSource.newInstance();
                 break;
+            case 3:
+                // settings!
+                break;
         }
 
         if (fragment != null) {
@@ -86,12 +89,6 @@ public class ActivityMain extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
