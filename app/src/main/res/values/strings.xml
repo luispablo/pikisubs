@@ -38,4 +38,7 @@
     <string name="title_progress_subtitle_download">Downloading subtitle</string>
     <string name="label_filename">Filename</string>
     <string name="label_search_text">Search text</string>
+    <string name="preference_videos_server_host">Videos server hostname or IP</string>
+    <string name="preference_videos_server_username">Videos server username</string>
+    <string name="preference_videos_server_password">Videos server password</string>
 </resources>

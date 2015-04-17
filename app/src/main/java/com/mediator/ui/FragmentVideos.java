@@ -1,31 +1,29 @@
 package com.mediator.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
-import com.mediator.R;
+import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetVideos;
-import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskProgressedListener;
 import com.mediator.tasks.TaskSearchTMDb;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class FragmentVideos extends Fragment implements AbsListView.OnItemClickListener {

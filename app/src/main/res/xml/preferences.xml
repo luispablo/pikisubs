@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference android:key="VIDEOS_SERVER_HOST"
+                        android:title="@string/preference_videos_server_host" />
+
+    <EditTextPreference android:key="VIDEOS_SERVER_USERNAME"
+                        android:title="@string/preference_videos_server_username"/>
+    
+    <EditTextPreference android:key="VIDEOS_SERVER_PASSWORD"
+                        android:title="@string/preference_videos_server_password"/>
+
+</PreferenceScreen>

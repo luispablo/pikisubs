@@ -1,22 +1,17 @@
 package com.mediator.ui;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.tasks.TaskGetVideos;
-import com.orhanobut.logger.Logger;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
@@ -55,13 +50,13 @@ public class ActivityMain extends ActionBarActivity
                 fragment = FragmentSource.newInstance();
                 break;
             case 3:
-                // settings!
+                fragment = FragmentSettings.newInstance();
                 break;
         }
 
         if (fragment != null) {
             // update the main content by replacing fragments
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();
