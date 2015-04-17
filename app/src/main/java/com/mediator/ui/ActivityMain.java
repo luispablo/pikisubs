@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mediator.R;
+import com.mediator.helpers.HelperAndroid;
 import com.mediator.tasks.TaskGetVideos;
 import com.orhanobut.logger.Logger;
 
@@ -71,7 +72,7 @@ public class ActivityMain extends ActionBarActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(title);
+        actionBar.setTitle(HelperAndroid.getStringByName(this, title));
     }
 
     @Override

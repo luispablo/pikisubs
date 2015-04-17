@@ -23,6 +23,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mediator.R;
+import com.mediator.helpers.HelperAndroid;
+import com.mediator.helpers.Oju;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -46,7 +51,7 @@ public class FragmentNavigationDrawer extends Fragment {
     private NavigationDrawerCallbacks mCallbacks;
 
     public static final String[] drawerItems = new String[]{
-            "Videos without subs", "Videos with subs", "Sources"
+            "menu_videos_no_subs", "menu_videos_subs", "menu_sources", "menu_settings"
     };
 
     /**
@@ -101,10 +106,18 @@ public class FragmentNavigationDrawer extends Fragment {
                 selectItem(position);
             }
         });
+
+        List<String> drawerLabels = Oju.map(Arrays.asList(drawerItems), new Oju.UnaryOperator<String, String>() {
+            @Override
+            public String operate(String s) {
+                return HelperAndroid.getStringByName(getActivity(), s);
+            }
+        });
+
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,drawerItems));
+                android.R.id.text1,drawerLabels));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }

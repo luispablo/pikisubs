@@ -22,9 +22,9 @@ public class FragmentSelectSubtitleDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<String> filenames = Oju.reduce(files, new Oju.Reducer<File, String>() {
+        List<String> filenames = Oju.map(files, new Oju.UnaryOperator<File, String>() {
             @Override
-            public String reduce(File file) {
+            public String operate(File file) {
                 return file.getName();
             }
         });

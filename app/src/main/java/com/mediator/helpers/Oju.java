@@ -1,7 +1,5 @@
 package com.mediator.helpers;
 
-import com.orhanobut.logger.Logger;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -114,20 +112,20 @@ public class Oju {
         });
     }
 
-    public static <T, M> List<M> reduce(List<T> list, Reducer<T, M> reducer) {
-        List<M> reduced = new ArrayList<>();
+    public static <T, M> List<M> map(List<T> list, UnaryOperator<T, M> operator) {
+        List<M> mapped = new ArrayList<>();
 
-        for (T t : list) reduced.add(reducer.reduce(t));
+        for (T t : list) mapped.add(operator.operate(t));
 
-        return reduced;
+        return mapped;
     }
 
-    public static <T, M> Set<M> reduce(Set<T> set, Reducer<T, M> reducer) {
-        Set<M> reduced = new HashSet<>();
+    public static <T, M> Set<M> map(Set<T> set, UnaryOperator<T, M> operator) {
+        Set<M> mapped = new HashSet<>();
 
-        for (T t : set) reduced.add(reducer.reduce(t));
+        for (T t : set) mapped.add(operator.operate(t));
 
-        return reduced;
+        return mapped;
     }
 
     public static <T> Set<T> set(List<T> list) {
@@ -151,8 +149,8 @@ public class Oju {
         return list;
     }
 
-    public interface Reducer<T, M> {
-        M reduce(T t);
+    public interface UnaryOperator<T, M> {
+        M operate(T t);
     }
     public interface BinaryChecker<T, M> {
         boolean check(T item, M possibility);

@@ -20,10 +20,8 @@ import com.mediator.tasks.TaskCancelledListener;
 import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
 import com.mediator.tasks.TaskUploadSubtitles;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -74,9 +72,9 @@ public class ActivitySubtitles extends ActionBarActivity {
             protected void onPostExecute(List<Subtitle> subtitles) {
                 Collections.sort(subtitles, new SubtitleComparator(videoEntry));
                 ActivitySubtitles.this.subtitles = subtitles;
-                List<String> titles = Oju.reduce(subtitles, new Oju.Reducer<Subtitle, String>() {
+                List<String> titles = Oju.map(subtitles, new Oju.UnaryOperator<Subtitle, String>() {
                     @Override
-                    public String reduce(Subtitle subtitle) {
+                    public String operate(Subtitle subtitle) {
                         return subtitle.getTitle().toUpperCase() + "\n--------\n\n" + subtitle.getDescription() + "\n\n";
                     }
                 });

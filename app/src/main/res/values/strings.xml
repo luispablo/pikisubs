@@ -13,6 +13,12 @@
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
+
+    <string name="menu_videos_no_subs">Videos without subs</string>
+    <string name="menu_videos_subs">Videos with subs</string>
+    <string name="menu_sources">Sources</string>
+    <string name="menu_settings">Settings</string>
+
     <string name="title_activity_subtitles">Subtitles</string>
 
     <string name="hello_world">Hello world!</string>
