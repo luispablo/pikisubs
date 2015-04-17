@@ -33,6 +33,11 @@ public class Subdivx implements SubtitlesSource {
         return service.search(searchText).getChannel().getItems();
     }
 
+    @Override
+    public String getName() {
+        return "subdivx";
+    }
+
     public static String findRealLink(Subtitle subtitle) {
         try {
             Document doc = Jsoup.connect(subtitle.getLink()).get();

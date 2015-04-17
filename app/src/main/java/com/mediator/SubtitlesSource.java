@@ -12,4 +12,5 @@ public interface SubtitlesSource {
 
     public List<Subtitle> search(GuessitObject giObject);
 
+    public String getName();
 }

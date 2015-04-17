@@ -13,12 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mediator.R;
+import com.mediator.SubtitlesSource;
 import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskCancelledListener;
 import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
+import com.mediator.tasks.TaskProgressedListener;
 import com.mediator.tasks.TaskUploadSubtitles;
 
 import java.io.File;
@@ -67,7 +69,20 @@ public class ActivitySubtitles extends ActionBarActivity {
         progressDialog.setTitle(R.string.title_progress_subtitles);
         progressDialog.show();
 
-        new TaskGetSubtitles(this) {
+        TaskProgressedListener<SubtitlesSource> listener = new TaskProgressedListener<SubtitlesSource>() {
+            @Override
+            public void onProgressed(final SubtitlesSource subtitlesSource) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String messageSearchingIn = getString(R.string.message_searching_in);
+                        progressDialog.setMessage(String.format(messageSearchingIn, subtitlesSource.getName()));
+                    }
+                });
+            }
+        };
+
+        new TaskGetSubtitles(this, listener) {
             @Override
             protected void onPostExecute(List<Subtitle> subtitles) {
                 Collections.sort(subtitles, new SubtitleComparator(videoEntry));
