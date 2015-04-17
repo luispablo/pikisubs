@@ -4,9 +4,11 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.mediator.model.VideoEntry;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -28,24 +30,29 @@ public class HelperVideo {
             if (attrs.isDir() && !".".equals(entry.getFilename()) && !"..".equals(entry.getFilename())) {
                 videoEntries.addAll(videoEntriesFrom(path + File.separator + entry.getFilename(), sftp));
             } else if (Oju.anyEndsWith(entry.getFilename(), VIDEO_EXTENSIONS)) {
-                videoEntries.add(new VideoEntry(path, entry.getFilename(), hasSubs(path, sftp)));
+                videoEntries.add(new VideoEntry(path, entry.getFilename(), hasSubs(entry.getFilename(), path, sftp)));
             }
         }
 
         return videoEntries;
     }
 
-    public boolean hasSubs(String path, ChannelSftp sftp) throws SftpException {
+    public boolean hasSubs(final String fileName, String path, ChannelSftp sftp) throws SftpException {
         List<ChannelSftp.LsEntry> entries = Oju.list(sftp.ls(path));
-        boolean hasSubs = false;
+        String videoName = Oju.leftFromLast(fileName, ".");
 
         for (ChannelSftp.LsEntry entry : entries) {
-            if (Oju.anyEndsWith(entry.getFilename(), SUBS_EXTENSIONS)) {
-                hasSubs = true;
+            if (isSubtitle(entry.getFilename())) {
+                String subName = Oju.leftFromLast(entry.getFilename(), ".");
+                if (videoName.equals(subName)) return true;
             }
         }
 
-        return hasSubs;
+        return false;
+    }
+
+    public static boolean isSubtitle(String filename) {
+        return Oju.anyEndsWith(filename, SUBS_EXTENSIONS);
     }
 
     public static String videoFilename(List<ChannelSftp.LsEntry> entries) {
@@ -58,18 +65,5 @@ public class HelperVideo {
         }
 
         return filename;
-    }
-
-    public static boolean hasFilesWithExtension(Set<ChannelSftp.LsEntry> entries, String[] extensions) {
-        boolean has = false;
-
-        for (ChannelSftp.LsEntry entry : entries) {
-            if (!entry.getAttrs().isDir()
-                    && Oju.anyContains(entry.getFilename().toLowerCase(), extensions)) {
-                has = true;
-            }
-        }
-
-        return has;
     }
 }

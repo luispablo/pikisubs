@@ -84,6 +84,12 @@ public class Oju {
         return string.substring(string.lastIndexOf(part) + 1, string.length());
     }
 
+    public static <T> boolean anyEquals(T item, List<T> list) {
+        boolean equals = false;
+        for (T t : list) if (t.equals(item)) equals = true;
+        return false;
+    }
+
     public static <T, M> boolean any(T item, M[] possibilities, BinaryChecker<T, M> checker) {
         boolean any = false;
 
