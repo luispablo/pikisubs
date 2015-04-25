@@ -1,5 +1,7 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.content.Context;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.TMDbMovieSearchResult;
 import com.mediator.model.VideoEntry;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -54,12 +58,16 @@ public class AdapterVideoEntries extends BaseAdapter {
         }
 
         VideoEntry videoEntry = videoEntries.get(position);
+        d("videoEntry: "+ videoEntry.titleToShow());
 
         if (videoEntry.getGuessitObject() != null) {
             ((TextView) convertView.findViewById(R.id.txtTitleToShow)).setText(videoEntry.titleToShow());
         }
         ((TextView) convertView.findViewById(R.id.txtFilename)).setText(videoEntry.getFilename());
         ImageView imagePoster = (ImageView) convertView.findViewById(R.id.imagePoster);
+
+        int hasSubsText = videoEntry.hasSubs() ? R.string.empty_string : R.string.needs_subs;
+        ((TextView) convertView.findViewById(R.id.txtSubsIndicator)).setText(hasSubsText);
 
         if (videoEntry.getTmdbResult() != null) {
             Picasso.with(context)
@@ -79,6 +87,7 @@ public class AdapterVideoEntries extends BaseAdapter {
         String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
         String imagePath = tmdbResult.getPosterPath();
         String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
+        d("image URL: "+ baseUrl + size + imagePath +"?api_key="+ apiKey);
 
         return baseUrl + size + imagePath +"?api_key="+ apiKey;
     }

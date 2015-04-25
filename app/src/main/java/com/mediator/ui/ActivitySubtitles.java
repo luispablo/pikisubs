@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.SubtitlesSource;
+import com.mediator.sources.SubtitlesSource;
 import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
 import com.mediator.model.VideoEntry;

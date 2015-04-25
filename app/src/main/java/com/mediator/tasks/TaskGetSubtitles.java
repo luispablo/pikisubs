@@ -3,8 +3,8 @@ package com.mediator.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.mediator.Subdivx;
-import com.mediator.SubtitlesSource;
+import com.mediator.sources.Subdivx;
+import com.mediator.sources.SubtitlesSource;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.GuessitObject;
 import com.mediator.model.Subtitle;

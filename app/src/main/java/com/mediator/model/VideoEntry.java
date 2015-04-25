@@ -5,7 +5,10 @@ import java.io.Serializable;
 /**
  * Created by luispablo on 11/04/15.
  */
-public class VideoEntry implements Serializable {
+public class VideoEntry implements SnappyKey {
+
+    public static final String SNAPPY_KEY_PREFIX = "videoEntry";
+
     private String path;
     private String filename;
     private boolean hasSubs;
@@ -68,5 +71,10 @@ public class VideoEntry implements Serializable {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Override
+    public String snappyKey() {
+        return SNAPPY_KEY_PREFIX +":"+ titleToShow();
     }
 }

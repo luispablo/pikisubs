@@ -22,10 +22,21 @@ public class TaskSearchTMDb extends AsyncTask<List<VideoEntry>, VideoEntry, List
 
     private Context context;
     private TaskProgressedListener<VideoEntry> progressedListener;
+    private TaskDoneListener<List<VideoEntry>> doneListener;
+
+    public TaskSearchTMDb(Context context, TaskDoneListener<List<VideoEntry>> doneListener) {
+        this.context = context;
+        this.doneListener = doneListener;
+    }
 
     public TaskSearchTMDb(Context context, TaskProgressedListener<VideoEntry> progressedListener) {
         this.context = context;
         this.progressedListener = progressedListener;
+    }
+
+    @Override
+    protected void onPostExecute(List<VideoEntry> videoEntries) {
+        if (doneListener != null) doneListener.onDone(videoEntries);
     }
 
     @Override
@@ -57,7 +68,7 @@ public class TaskSearchTMDb extends AsyncTask<List<VideoEntry>, VideoEntry, List
                     videoEntry.setTmdbResult(response.getResults().get(0));
                 }
 
-                progressedListener.onProgressed(videoEntry);
+                if (progressedListener != null) progressedListener.onProgressed(videoEntry);
             }
         } catch (Exception e) {
             Logger.e(e);

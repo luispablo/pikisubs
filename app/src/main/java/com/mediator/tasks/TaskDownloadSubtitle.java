@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.mediator.Subdivx;
+import com.mediator.sources.Subdivx;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.Subtitle;

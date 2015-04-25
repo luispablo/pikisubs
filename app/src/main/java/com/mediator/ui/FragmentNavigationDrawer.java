@@ -51,7 +51,7 @@ public class FragmentNavigationDrawer extends Fragment {
     private NavigationDrawerCallbacks mCallbacks;
 
     public static final String[] drawerItems = new String[]{
-            "menu_videos_no_subs", "menu_videos_subs", "menu_sources", "menu_settings"
+            "menu_local_videos", "menu_videos_no_subs", "menu_videos_subs", "menu_sources", "menu_settings"
     };
 
     /**

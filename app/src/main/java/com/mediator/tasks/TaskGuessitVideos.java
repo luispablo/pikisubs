@@ -12,6 +12,7 @@ import com.mediator.retrofit.RetrofitServiceGuessit;
 import com.orhanobut.logger.Logger;
 import com.snappydb.SnappydbException;
 
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit.RestAdapter;
@@ -19,23 +20,21 @@ import retrofit.RestAdapter;
 /**
  * Created by luispablo on 12/04/15.
  */
-public class TaskGuessitVideos extends AsyncTask<List<VideoEntry>, VideoEntry, List<VideoEntry>> {
+public class TaskGuessitVideos extends AsyncTask<VideoEntry, VideoEntry, List<VideoEntry>> {
 
     private Context context;
     private TaskProgressedListener<VideoEntry> progressedListener;
-    private TaskDoneListener<List<VideoEntry>> doneListener;
+    private TaskDoneListener doneListener;
 
     public TaskGuessitVideos(Context context, TaskProgressedListener<VideoEntry> progressedListener
-                                            , TaskDoneListener<List<VideoEntry>> doneListener) {
+                                            , TaskDoneListener doneListener) {
         this.context = context;
         this.progressedListener = progressedListener;
         this.doneListener = doneListener;
     }
 
     @Override
-    protected List<VideoEntry> doInBackground(List<VideoEntry>... params) {
-        List<VideoEntry> videoEntries = params[0];
-
+    protected List<VideoEntry> doInBackground(VideoEntry... videoEntries) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(MediatorPrefs.getString(context, MediatorPrefs.Key.GUESSIT_URL))
                 .build();
@@ -57,10 +56,10 @@ public class TaskGuessitVideos extends AsyncTask<List<VideoEntry>, VideoEntry, L
             } catch (SnappydbException e) {
                 Logger.e(e);
             }
-            progressedListener.onProgressed(entry);
+            if (progressedListener != null) progressedListener.onProgressed(entry);
         }
 
-        return videoEntries;
+        return Arrays.asList(videoEntries);
     }
 
     @Override

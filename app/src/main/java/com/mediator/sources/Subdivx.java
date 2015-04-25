@@ -1,4 +1,4 @@
-package com.mediator;
+package com.mediator.sources;
 
 import com.mediator.model.GuessitObject;
 import com.mediator.model.Subtitle;

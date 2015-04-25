@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.tasks.TaskGetVideos;
+import com.mediator.tasks.TaskUpdateLocalDB;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
@@ -41,15 +42,18 @@ public class ActivityMain extends ActionBarActivity
 
         switch (position) {
             case 0:
-                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITHOUT_SUBS);
+                fragment = FragmentLocalVideos.newInstance();
                 break;
             case 1:
-                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITH_SUBS);
+                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITHOUT_SUBS);
                 break;
             case 2:
-                fragment = FragmentSource.newInstance();
+                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITH_SUBS);
                 break;
             case 3:
+                fragment = FragmentSource.newInstance();
+                break;
+            case 4:
                 fragment = FragmentSettings.newInstance();
                 break;
         }

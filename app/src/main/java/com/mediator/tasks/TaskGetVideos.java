@@ -13,6 +13,7 @@ import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.orhanobut.logger.Logger;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +29,30 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
     private OnTaskFinished taskFinished;
     private TaskProgressedListener<List<VideoEntry>> progressedListener;
     private Filter filter;
+    private Bus bus;
 
     public TaskGetVideos(Context context, Filter filter, OnTaskFinished taskFinished,
-                                                            TaskProgressedListener progressedListener) {
+                         TaskProgressedListener progressedListener) {
+        this(context, filter, taskFinished, null, progressedListener);
+    }
+
+    public TaskGetVideos(Context context, Filter filter, OnTaskFinished taskFinished,
+                         Bus bus, TaskProgressedListener progressedListener) {
         this.context = context;
         this.taskFinished = taskFinished;
         this.filter = filter;
         this.progressedListener = progressedListener;
+        this.bus = bus;
     }
 
     @Override
     protected void onPostExecute(List<VideoEntry> videoEntries) {
-        taskFinished.videosDownloaded(videoEntries);
+        if (taskFinished != null) {
+            taskFinished.videosDownloaded(videoEntries);
+        }
+        if (bus != null) {
+            bus.post(videoEntries);
+        }
     }
 
     @Override
@@ -66,7 +79,10 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
                 }
 
                 videoEntries.addAll(pathVideoEntries);
-                progressedListener.onProgressed(pathVideoEntries);
+
+                if (progressedListener != null) {
+                    progressedListener.onProgressed(pathVideoEntries);
+                }
             }
 
             sftp.disconnect();

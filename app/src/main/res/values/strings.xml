@@ -14,6 +14,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
 
+    <string name="menu_local_videos">Videos</string>
     <string name="menu_videos_no_subs">Videos without subs</string>
     <string name="menu_videos_subs">Videos with subs</string>
     <string name="menu_sources">Sources</string>
@@ -42,4 +43,11 @@
     <string name="preference_videos_server_host">Videos server hostname or IP</string>
     <string name="preference_videos_server_username">Videos server username</string>
     <string name="preference_videos_server_password">Videos server password</string>
+    <string name="needs_subs">Needs subs!</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="message_getting_videos">Getting videos from sources</string>
+    <string name="message_guessing_videos">Getting videos metadata</string>
+    <string name="message_updating_local_db">Updating local DB</string>
+    <string name="message_getting_posters">Getting posters</string>
+    <string name="empty_string" />
 </resources>

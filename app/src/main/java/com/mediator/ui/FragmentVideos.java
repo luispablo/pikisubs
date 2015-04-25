@@ -156,7 +156,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
 
             GuessitListener listener = new GuessitListener();
             TaskGuessitVideos task = new TaskGuessitVideos(getActivity(), listener, listener);
-            task.execute(videoEntries);
+            task.execute(videoEntries.toArray(new VideoEntry[]{}));
         }
 
         @Override
