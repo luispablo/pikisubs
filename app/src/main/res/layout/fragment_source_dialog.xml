@@ -3,19 +3,46 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:text="@string/video_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spinnerVideoTypes"
+        android:contentDescription="@string/video_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="@string/server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spinnerServers"
+        android:contentDescription="@string/server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="@string/path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <EditText
-        android:id="@+id/editHost"
+        android:id="@+id/editPath"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/editUsername"
+    <TextView
+        android:text="@string/http_path"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/editPassword"
-        android:layout_width="wrap_content"
+        android:id="@+id/editHTTPPath"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

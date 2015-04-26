@@ -60,4 +60,11 @@
     <string name="server_hostname_or_ip">Hostname or IP</string>
     <string name="server_username">Server username</string>
     <string name="server_password">Server password</string>
+    <string name="server_http_url">HTTP URL</string>
+    <string name="server">Server</string>
+    <string name="path">Path</string>
+    <string name="video_type">Video type</string>
+    <string name="http_path">HTTP Path</string>
+    <string name="movie">Movie</string>
+    <string name="tv_show">TV Show</string>
 </resources>

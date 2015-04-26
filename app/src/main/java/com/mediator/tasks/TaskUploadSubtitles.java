@@ -7,10 +7,13 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -34,10 +37,10 @@ public class TaskUploadSubtitles extends AsyncTask<File, Void, File> {
 
     @Override
     protected File doInBackground(File... params) {
-        HelperSSH sshHelper = new HelperSSH();
-        sshHelper.setHost(MediatorPrefs.getString(context, MediatorPrefs.Key.VIDEOS_SERVER_HOST));
-        sshHelper.setUsername(MediatorPrefs.getString(context, MediatorPrefs.Key.VIDEOS_SERVER_USERNAME));
-        sshHelper.setPassword(MediatorPrefs.getString(context, MediatorPrefs.Key.VIDEOS_SERVER_PASSWORD));
+        HelperDAO helperDAO = new HelperDAO(context);
+        VideoSource videoSource = helperDAO.getSource(videoEntry);
+        VideoServer videoServer = helperDAO.getServer(videoSource);
+        HelperSSH sshHelper = new HelperSSH(videoServer);
 
         File subtitleFile = params[0];
         String subtitleExtension = Oju.rigthFromLast(subtitleFile.getName(), ".");

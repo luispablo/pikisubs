@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.mediator.model.VideoServer;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -15,18 +16,16 @@ import java.util.Properties;
  */
 public class HelperSSH {
 
-    private String host;
-    private String username;
-    private String password;
+    private VideoServer videoServer;
 
-    public HelperSSH() {
-
+    public HelperSSH(VideoServer videoServer) {
+        this.videoServer = videoServer;
     }
 
     public Session connectSession() throws JSchException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession(username, host);
-        session.setPassword(password);
+        Session session = jsch.getSession(videoServer.getUsername(), videoServer.getHost());
+        session.setPassword(videoServer.getPassword());
 
         Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -54,29 +53,5 @@ public class HelperSSH {
         } catch (Exception e) {
             Logger.e(e);
         }
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

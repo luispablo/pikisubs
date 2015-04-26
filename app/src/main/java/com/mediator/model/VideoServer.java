@@ -9,15 +9,25 @@ public class VideoServer implements SnappyKey {
     private String host;
     private String username;
     private String password;
+    private String httpUrl;
 
     public VideoServer() {
 
     }
 
-    public VideoServer(String host, String username, String password) {
+    public VideoServer(String host, String username, String password, String httpPath) {
         this.host = host;
         this.username = username;
         this.password = password;
+        this.httpUrl = httpPath;
+    }
+
+    public String getHttpUrl() {
+        return httpUrl;
+    }
+
+    public void setHttpUrl(String httpUrl) {
+        this.httpUrl = httpUrl;
     }
 
     public String getHost() {

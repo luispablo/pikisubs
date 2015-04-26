@@ -32,6 +32,8 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
     EditText editUsername;
     @InjectView(R.id.editPassword)
     EditText editPassword;
+    @InjectView(R.id.editHttpUrl)
+    EditText editHttpUrl;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -81,12 +83,14 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
         videoServer.setHost(editHost.getText().toString());
         videoServer.setUsername(editUsername.getText().toString());
         videoServer.setPassword(editPassword.getText().toString());
+        videoServer.setHttpUrl(editHttpUrl.getText().toString());
     }
 
     private void fillInputs() {
         editHost.setText(videoServer.getHost());
         editUsername.setText(videoServer.getUsername());
         editPassword.setText(videoServer.getPassword());
+        editHttpUrl.setText(videoServer.getHttpUrl());
     }
 
     private void delete() {

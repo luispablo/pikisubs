@@ -31,12 +31,20 @@ public class HelperSnappyDB {
         db.close();
     }
 
+    public DB getDB() {
+        return this.db;
+    }
+
+    public <T extends SnappyKey> T get(String key, Class<T> clazz) throws SnappydbException {
+        return db.getObject(key, clazz);
+    }
+
     public <T> List<T> all(Class<T> clazz) throws SnappydbException {
         d("all()");
         List<T> list = new ArrayList<>();
 
         for (String key : db.findKeys(clazz.getName())) {
-            d("getting key ["+ key +"]");
+            d("getting key [" + key + "]");
             list.add((T) db.getObject(key, clazz));
         }
 
@@ -56,12 +64,14 @@ public class HelperSnappyDB {
     }
 
     public <T extends SnappyKey> T update(T object) throws SnappydbException {
+        d("Updating a ["+ object.getClass().getName() +"] with key ["+ object.getSnappyKey() +"]");
         db.put(object.getSnappyKey(), object);
 
         return object;
     }
 
     public <T extends SnappyKey> T insert(T object) throws SnappydbException {
+        d("Inserting a ["+ object.getClass().getName() +"]");
         object.setSnappyKey(createKeyFor(object.getClass().getName()));
         db.put(object.getSnappyKey(), object);
 
@@ -73,6 +83,7 @@ public class HelperSnappyDB {
         long index = db.exists(key) ? db.getLong(key) + 1 : 1l;
         db.putLong(key, index);
 
+        d("Generating new key ["+ keyPrefix +":"+ String.valueOf(index) +"]");
         return keyPrefix +":"+ String.valueOf(index);
     }
 }

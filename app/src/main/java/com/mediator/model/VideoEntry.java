@@ -7,6 +7,17 @@ import java.io.Serializable;
  */
 public class VideoEntry implements SnappyKey {
 
+    public enum VideoType {
+        MOVIE, TV_SHOW;
+
+        public static int indexOf(VideoType videoType) {
+            for (int i = 0; i < values().length; i++) {
+                if (videoType.equals(values()[i])) return i;
+            }
+            return -1;
+        }
+    }
+
     private String snappyKey;
     private String path;
     private String filename;

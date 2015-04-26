@@ -156,9 +156,11 @@ public class FragmentLocalVideos extends Fragment {
         };
 
         HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+        List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
+        helperSnappyDB.close();
 
         TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(getActivity(), getAllVideosListener);
-        taskGetAllVideos.execute(helperSnappyDB.all(VideoSource.class).toArray(new VideoSource[]{}));
+        taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
     }
 
     @Override
