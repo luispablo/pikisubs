@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
@@ -50,9 +49,20 @@ public class FragmentNavigationDrawer extends Fragment {
     // A pointer to the current callbacks instance (the Activity).
     private NavigationDrawerCallbacks mCallbacks;
 
-    public static final String[] drawerItems = new String[]{
-            "menu_local_videos", "menu_videos_no_subs", "menu_videos_subs", "menu_sources", "menu_settings"
-    };
+    public enum DrawerItem {
+        LOCAL_VIDEOS("menu_local_videos"),
+        VIDEOS_NO_SUBS("menu_videos_no_subs"),
+        VIDEOS_WITH_SUBS("menu_videos_subs"),
+        SOURCES("menu_sources"),
+        SERVERS("menu_servers"),
+        SETTINGS("menu_settings");
+
+        String labelKey;
+
+        DrawerItem(String labelKey) {
+            this.labelKey = labelKey;
+        }
+    }
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -107,10 +117,10 @@ public class FragmentNavigationDrawer extends Fragment {
             }
         });
 
-        List<String> drawerLabels = Oju.map(Arrays.asList(drawerItems), new Oju.UnaryOperator<String, String>() {
+        List<String> drawerLabels = Oju.map(Arrays.asList(DrawerItem.values()), new Oju.UnaryOperator<DrawerItem, String>() {
             @Override
-            public String operate(String s) {
-                return HelperAndroid.getStringByName(getActivity(), s);
+            public String operate(DrawerItem s) {
+                return HelperAndroid.getStringByName(getActivity(), s.labelKey);
             }
         });
 

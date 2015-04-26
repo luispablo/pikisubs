@@ -19,6 +19,7 @@
     <string name="menu_videos_subs">Videos with subs</string>
     <string name="menu_sources">Sources</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_servers">Servers</string>
 
     <string name="title_activity_subtitles">Subtitles</string>
 
@@ -54,4 +55,9 @@
 
     <string name="video_action_play">Play</string>
     <string name="video_action_download_subs">Download subtitles</string>
+    <string name="title_dialog_video_server">Video server</string>
+    <string name="action_add">Add</string>
+    <string name="server_hostname_or_ip">Hostname or IP</string>
+    <string name="server_username">Server username</string>
+    <string name="server_password">Server password</string>
 </resources>

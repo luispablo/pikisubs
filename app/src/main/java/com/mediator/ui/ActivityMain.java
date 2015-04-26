@@ -1,5 +1,7 @@
 package com.mediator.ui;
 
+import static com.mediator.ui.FragmentNavigationDrawer.DrawerItem;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -12,7 +14,6 @@ import android.view.MenuItem;
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.tasks.TaskGetVideos;
-import com.mediator.tasks.TaskUpdateLocalDB;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
@@ -22,7 +23,7 @@ public class ActivityMain extends ActionBarActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     FragmentNavigationDrawer navDrawerFragment;
-    String title;
+    FragmentNavigationDrawer.DrawerItem currentDrawerItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +38,26 @@ public class ActivityMain extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         Fragment fragment = null;
 
-        title = FragmentNavigationDrawer.drawerItems[position];
+        currentDrawerItem = DrawerItem.values()[position];
 
-        switch (position) {
-            case 0:
+        switch (currentDrawerItem) {
+            case LOCAL_VIDEOS:
                 fragment = FragmentLocalVideos.newInstance();
                 break;
-            case 1:
+            case VIDEOS_NO_SUBS:
                 fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITHOUT_SUBS);
                 break;
-            case 2:
+            case VIDEOS_WITH_SUBS:
                 fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITH_SUBS);
                 break;
-            case 3:
+            case SOURCES:
                 fragment = FragmentSource.newInstance();
                 break;
-            case 4:
+            case SETTINGS:
                 fragment = FragmentSettings.newInstance();
+                break;
+            case SERVERS:
+                fragment = FragmentVideoServers.newInstance();
                 break;
         }
 
@@ -70,7 +74,7 @@ public class ActivityMain extends ActionBarActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(HelperAndroid.getStringByName(this, title));
+        actionBar.setTitle(HelperAndroid.getStringByName(this, currentDrawerItem.labelKey));
     }
 
     @Override
