@@ -28,6 +28,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 import static com.mediator.helpers.TinyLogger.d;
 
@@ -41,11 +42,10 @@ public class FragmentLocalVideos extends Fragment {
     @InjectView(R.id.listVideos)
     ListView listVideos;
     ProgressDialog progressDialog;
+    List<VideoEntry> videoEntries;
 
     public static FragmentLocalVideos newInstance() {
         FragmentLocalVideos fragment = new FragmentLocalVideos();
-
-        fragment.bus = new Bus();
 
         return fragment;
     }
@@ -67,6 +67,7 @@ public class FragmentLocalVideos extends Fragment {
         progressDialog.setTitle(R.string.title_progress_videos);
         progressDialog.setMessage(getString(R.string.message_wait_please));
 
+        bus = new Bus();
         bus.register(this);
 
         setHasOptionsMenu(true);
@@ -84,9 +85,17 @@ public class FragmentLocalVideos extends Fragment {
         taskGetLocalVideos.execute();
     }
 
+    @OnItemClick(R.id.listVideos)
+    public void onClickVideo(int position) {
+        FragmentVideoActionsDialog actionsDialog = new FragmentVideoActionsDialog();
+        actionsDialog.setVideoEntry(videoEntries.get(position));
+        actionsDialog.show(getFragmentManager(), null);
+    }
+
     @Subscribe
     public void onGotVideos(ArrayList<VideoEntry> videoEntries) {
         progressDialog.dismiss();
+        this.videoEntries = videoEntries;
 
         AdapterVideoEntries adapterVideoEntries = new AdapterVideoEntries(getActivity(), videoEntries);
         listVideos.setAdapter(adapterVideoEntries);

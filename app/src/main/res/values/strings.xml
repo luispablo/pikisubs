@@ -50,4 +50,7 @@
     <string name="message_updating_local_db">Updating local DB</string>
     <string name="message_getting_posters">Getting posters</string>
     <string name="empty_string" />
+    <string name="title_dialog_video_actions">Video actions</string>
+
+    <string name="video_action_play">Play</string>
 </resources>
