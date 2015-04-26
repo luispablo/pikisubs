@@ -3,11 +3,11 @@ package com.mediator.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperAndroid;
@@ -25,7 +25,8 @@ public class FragmentVideoActionsDialog extends DialogFragment {
     private VideoEntry videoEntry;
 
     public enum Action {
-        PLAY(new ActionPlayVideo());
+        PLAY(new ActionPlayVideo()),
+        DOWNLOAD_SUBS(new ActionDownloadSubs());
 
         IAction videoAction;
 
@@ -37,7 +38,13 @@ public class FragmentVideoActionsDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<String> labels = Oju.map(Arrays.asList(Action.values()), new Oju.UnaryOperator<Action, String>() {
+        List<Action> availableActions = Oju.filter(Arrays.asList(Action.values()), new Oju.UnaryChecker<Action>() {
+            @Override
+            public boolean check(Action action) {
+                return action.videoAction.isAvailableFor(videoEntry);
+            }
+        });
+        List<String> labels = Oju.map(availableActions, new Oju.UnaryOperator<Action, String>() {
             @Override
             public String operate(Action action) {
                 return HelperAndroid.getStringByName(getActivity(), "video_action_"+ action.name().toLowerCase());

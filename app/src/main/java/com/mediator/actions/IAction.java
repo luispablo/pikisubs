@@ -9,5 +9,7 @@ import com.mediator.model.VideoEntry;
  */
 public interface IAction {
 
+    boolean isAvailableFor(VideoEntry videoEntry);
+
     void execute(Context context, VideoEntry videoEntry);
 }

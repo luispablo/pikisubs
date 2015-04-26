@@ -53,4 +53,5 @@
     <string name="title_dialog_video_actions">Video actions</string>
 
     <string name="video_action_play">Play</string>
+    <string name="video_action_download_subs">Download subtitles</string>
 </resources>

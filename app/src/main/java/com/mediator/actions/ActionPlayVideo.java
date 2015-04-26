@@ -11,6 +11,11 @@ import com.mediator.model.VideoEntry;
 public class ActionPlayVideo implements IAction {
 
     @Override
+    public boolean isAvailableFor(VideoEntry videoEntry) {
+        return true;
+    }
+
+    @Override
     public void execute(Context context, VideoEntry videoEntry) {
 
     }
