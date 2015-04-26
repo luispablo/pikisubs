@@ -7,8 +7,7 @@ import android.os.AsyncTask;
 
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.model.VideoEntry;
-import com.orhanobut.logger.Logger;
-import com.snappydb.DB;
+import com.mediator.model.VideoSource;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
@@ -17,35 +16,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by luispablo on 24/04/15.
+ * Created by luispablo on 26/04/15.
  */
-public class TaskGetLocalVideos extends AsyncTask<Void, Void, List<VideoEntry>> {
+public class TaskGetAllSources extends AsyncTask<Void, Void, List<VideoSource>> {
 
-    private Bus bus;
     private Context context;
+    private Bus bus;
 
-    public TaskGetLocalVideos(Context context, Bus bus) {
+    public TaskGetAllSources(Context context, Bus bus) {
         this.context = context;
         this.bus = bus;
     }
 
     @Override
-    protected void onPostExecute(List<VideoEntry> videoEntries) {
-        bus.post(videoEntries);
+    protected void onPostExecute(List<VideoSource> videoSources) {
+        bus.post(videoSources);
     }
 
     @Override
-    protected List<VideoEntry> doInBackground(Void... params) {
-        d("doInBackground()");
-        List<VideoEntry> videoEntries = new ArrayList<>();
-
+    protected List<VideoSource> doInBackground(Void... params) {
         try {
             HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
-            videoEntries.addAll(helperSnappyDB.all(VideoEntry.class));
+            return helperSnappyDB.all(VideoSource.class);
         } catch (SnappydbException e) {
             e(e);
         }
 
-        return videoEntries;
+        return new ArrayList<>();
     }
 }

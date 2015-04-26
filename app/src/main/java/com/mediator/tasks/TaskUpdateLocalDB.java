@@ -5,6 +5,7 @@ import static com.mediator.helpers.TinyLogger.*;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.orhanobut.logger.Logger;
@@ -36,37 +37,37 @@ public class TaskUpdateLocalDB extends AsyncTask<VideoEntry, Void, List<VideoEnt
 
     @Override
     protected List<VideoEntry> doInBackground(final VideoEntry... videoEntries) {
-        d("updateLocalDB doInBackground()");
-
         try {
-            DB db = DBFactory.open(context);
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
 
-            // put all, insert or update
-            for (VideoEntry videoEntry : videoEntries) {
-                if (!db.exists(videoEntry.snappyKey())) {
-                    db.put(videoEntry.snappyKey(), videoEntry);
-                }
+            EqualsFilenameVideoEntry checker = new EqualsFilenameVideoEntry();
+
+            List<VideoEntry> existingVideosEntries = helperSnappyDB.all(VideoEntry.class);
+            List<VideoEntry> newVideoEntries = Oju.allNotIn(Arrays.asList(videoEntries), existingVideosEntries.toArray(new VideoEntry[]{}), checker);
+
+            for (VideoEntry videoEntry : newVideoEntries) {
+                helperSnappyDB.insert(videoEntry);
             }
 
-            // remove the ones gone
-            String[] videoEntriesKeys = db.findKeys(VideoEntry.SNAPPY_KEY_PREFIX);
+            List<VideoEntry> goneVideoEntries = Oju.allNotIn(existingVideosEntries, videoEntries, checker);
 
-            for (String videoEntriesKey : videoEntriesKeys) {
-                if (!Oju.any(videoEntriesKey, videoEntries, new Oju.BinaryChecker<String, VideoEntry>() {
-                    @Override
-                    public boolean check(String item, VideoEntry possibility) {
-                        return item.equals(possibility.snappyKey());
-                    }
-                })) {
-                    db.del(videoEntriesKey);
-                }
+            for (VideoEntry videoEntry : goneVideoEntries) {
+                helperSnappyDB.delete(videoEntry);
             }
 
-            db.close();
+            helperSnappyDB.close();
         } catch (SnappydbException e) {
             Logger.e(e);
         }
 
         return Arrays.asList(videoEntries);
+    }
+
+    class EqualsFilenameVideoEntry implements Oju.BinaryChecker<VideoEntry, VideoEntry> {
+
+        @Override
+        public boolean check(VideoEntry item, VideoEntry possibility) {
+            return item.getFilename().equals(possibility.getFilename());
+        }
     }
 }

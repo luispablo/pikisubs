@@ -90,6 +90,16 @@ public class Oju {
         return false;
     }
 
+    public static <T> List<T> allNotIn(List<T> originalList, T[] checkList, BinaryChecker<T, T> checker) {
+        List<T> notInSecondList = new ArrayList<>();
+
+        for (T t : originalList) {
+            if (!Oju.any(t, checkList, checker)) notInSecondList.add(t);
+        }
+
+        return notInSecondList;
+    }
+
     public static <T, M> boolean any(T item, M[] possibilities, BinaryChecker<T, M> checker) {
         boolean any = false;
 

@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 public class VideoEntry implements SnappyKey {
 
-    public static final String SNAPPY_KEY_PREFIX = "videoEntry";
-
+    private String snappyKey;
     private String path;
     private String filename;
     private boolean hasSubs;
+    private String videoSourceKey;
     private GuessitObject guessitObject;
     private TMDbMovieSearchResult tmdbResult;
 
@@ -19,10 +19,11 @@ public class VideoEntry implements SnappyKey {
 
     }
 
-    public VideoEntry(String path, String filename, boolean hasSubs) {
+    public VideoEntry(String path, String filename, boolean hasSubs, String videoSourceKey) {
         this.path = path;
         this.filename = filename;
         this.hasSubs = hasSubs;
+        this.videoSourceKey = videoSourceKey;
     }
 
     public String titleToShow() {
@@ -47,6 +48,14 @@ public class VideoEntry implements SnappyKey {
 
     public void setGuessitObject(GuessitObject guessitObject) {
         this.guessitObject = guessitObject;
+    }
+
+    public String getVideoSourceKey() {
+        return videoSourceKey;
+    }
+
+    public void setVideoSourceKey(String videoSourceKey) {
+        this.videoSourceKey = videoSourceKey;
     }
 
     public boolean hasSubs() {
@@ -74,7 +83,12 @@ public class VideoEntry implements SnappyKey {
     }
 
     @Override
-    public String snappyKey() {
-        return SNAPPY_KEY_PREFIX +":"+ titleToShow();
+    public void setSnappyKey(String key) {
+        this.snappyKey = key;
+    }
+
+    @Override
+    public String getSnappyKey() {
+        return this.snappyKey;
     }
 }

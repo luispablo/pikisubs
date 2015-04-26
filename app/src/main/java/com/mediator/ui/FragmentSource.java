@@ -1,6 +1,7 @@
 package com.mediator.ui;
 
-import android.app.Activity;
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,21 +10,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import com.mediator.helpers.MediatorPrefs;
 import com.mediator.R;
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.helpers.Oju;
+import com.mediator.model.VideoSource;
+import com.mediator.tasks.TaskGetAllSources;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
-public class FragmentSource extends Fragment implements AbsListView.OnItemClickListener {
+import java.util.ArrayList;
+import java.util.List;
 
-    private OnFragmentInteractionListener mListener;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemClick;
 
-    private AbsListView mListView;
-    private ListAdapter mAdapter;
+public class FragmentSource extends Fragment {
+
+    @InjectView(android.R.id.list)
+    ListView listViewSources;
+    ArrayAdapter<String> adapter;
+    List<VideoSource> videoSources;
+    Bus bus;
 
     public static FragmentSource newInstance() {
         FragmentSource fragment = new FragmentSource();
@@ -36,7 +47,6 @@ public class FragmentSource extends Fragment implements AbsListView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fillAdapter();
     }
 
     @Override
@@ -49,9 +59,13 @@ public class FragmentSource extends Fragment implements AbsListView.OnItemClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_source:
-                FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
-                sourceDialog.setDoneListener(new SourceDialogDoneListener());
-                sourceDialog.show(getFragmentManager(), "luispa");
+                FragmentSourceDialog sourceDialog = new FragmentSourceDialog() {
+                    @Override
+                    public void onDone() {
+                        loadList();
+                    }
+                };
+                sourceDialog.show(getFragmentManager(), null);
 
                 return true;
             default:
@@ -64,12 +78,10 @@ public class FragmentSource extends Fragment implements AbsListView.OnItemClickL
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_source, container, false);
 
-        // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        ButterKnife.inject(this, view);
 
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        bus = new Bus();
+        bus.register(this);
 
         setHasOptionsMenu(true);
 
@@ -77,80 +89,42 @@ public class FragmentSource extends Fragment implements AbsListView.OnItemClickL
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onResume() {
+        super.onResume();
+        loadList();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    @OnItemClick(android.R.id.list)
+    public void onItemClick(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(VideoSource.class.getName(), videoSources.get(position));
+
+        FragmentSourceDialog sourceDialog = new FragmentSourceDialog() {
+            @Override
+            public void onDone() {
+                loadList();
+            }
+        };
+        sourceDialog.setArguments(bundle);
+        sourceDialog.show(getFragmentManager(), null);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
-            Bundle bundle = new Bundle();
-            bundle.putString(MediatorPrefs.Key.SOURCES.name(), mAdapter.getItem(position).toString());
-
-            FragmentSourceDialog sourceDialog = new FragmentSourceDialog();
-            sourceDialog.setArguments(bundle);
-            sourceDialog.setDoneListener(new SourceDialogDoneListener());
-            sourceDialog.show(getFragmentManager(), null);
-
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
+    private void loadList() {
+        TaskGetAllSources taskGetAllSources = new TaskGetAllSources(getActivity(), bus);
+        taskGetAllSources.execute();
     }
 
-    /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
-        }
-    }
-
-    private void fillAdapter() {
-        String[] sources = MediatorPrefs.sources(getActivity()).toArray(new String[]{});
-
-        mAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, sources);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
-    }
-
-    class SourceDialogDoneListener implements FragmentDoneListener<Void> {
-
-        @Override
-        public void onDone(Void nullValue) {
-            fillAdapter();
-            mListView.setAdapter(mAdapter);
-        }
+    @Subscribe
+    public void onGotAllSources(ArrayList<VideoSource> videoSources) {
+        d("onGotAllSources()");
+        this.videoSources = videoSources;
+        List<String> sourcesPaths = Oju.map(videoSources, new Oju.UnaryOperator<VideoSource, String>() {
+            @Override
+            public String operate(VideoSource videoSource) {
+                return videoSource.getSshPath();
+            }
+        });
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, sourcesPaths);
+        listViewSources.setAdapter(adapter);
     }
 }

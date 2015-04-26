@@ -1,5 +1,7 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -14,14 +16,17 @@ import android.widget.TextView;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetVideos;
 import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskProgressedListener;
 import com.mediator.tasks.TaskSearchTMDb;
+import com.snappydb.SnappydbException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +67,11 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         progressDialog.setMessage(getString(R.string.message_wait_please));
         progressDialog.setIndeterminate(true);
 
-        buildAdapter();
+        try {
+            buildAdapter();
+        } catch (SnappydbException e) {
+            e(e);
+        }
     }
 
     @Override
@@ -123,13 +132,16 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         }
     }
 
-    private void buildAdapter() {
+    private void buildAdapter() throws SnappydbException {
         progressDialog.show();
 
         VideosDownloadListener videosDownloadListener = new VideosDownloadListener();
+
+        HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+
         TaskGetVideos task = new TaskGetVideos(getActivity(), filter, videosDownloadListener,
                                                                         videosDownloadListener);
-        task.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
+        task.execute(helperSnappyDB.all(VideoSource.class).toArray(new VideoSource[]{}));
     }
 
     private void refreshList() {

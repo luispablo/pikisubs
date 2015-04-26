@@ -10,22 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import com.mediator.helpers.MediatorPrefs;
 import com.mediator.R;
+import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.model.VideoSource;
+import com.snappydb.SnappydbException;
+
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 07/04/15.
  */
-public class FragmentSourceDialog extends DialogFragment {
+public abstract class FragmentSourceDialog extends DialogFragment {
 
     EditText editPath;
-    String originalPath;
-    boolean existingPath;
-    FragmentDoneListener<Void> doneListener;
-
-    public void setDoneListener(FragmentDoneListener<Void> listener) {
-        this.doneListener = listener;
-    }
+    VideoSource videoSource;
 
     @NonNull
     @Override
@@ -36,8 +34,8 @@ public class FragmentSourceDialog extends DialogFragment {
         editPath = (EditText) view.findViewById(R.id.editPath);
 
         if (getArguments() != null) {
-            editPath.setText(originalPath = getArguments().getString(MediatorPrefs.Key.SOURCES.name()));
-            existingPath = true;
+            videoSource = (VideoSource) getArguments().get(VideoSource.class.getName());
+            editPath.setText(videoSource.getSshPath());
         }
 
         builder.setView(view)
@@ -45,26 +43,8 @@ public class FragmentSourceDialog extends DialogFragment {
                 .setPositiveButton(R.string.button_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String newSourcePath = editPath.getText().toString();
-
-                        if (newSourcePath != null && !newSourcePath.isEmpty()) {
-                            if (existingPath) {
-                                MediatorPrefs.updateSource(getActivity(), originalPath, newSourcePath);
-                                doneListener.onDone(null);
-                            } else {
-                                MediatorPrefs.addSource(getActivity(), newSourcePath);
-                                doneListener.onDone(null);
-                            }
-                        }
-                    }
-                })
-                .setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (existingPath) {
-                            MediatorPrefs.removeSource(getActivity(), originalPath);
-                            doneListener.onDone(null);
-                        }
+                        saveVideoSource();
+                        onDone();
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
@@ -74,6 +54,39 @@ public class FragmentSourceDialog extends DialogFragment {
                     }
                 });
 
+        if (videoSource != null) {
+            builder.setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteSource();
+                    onDone();
+                }
+            });
+        }
+
         return builder.create();
     }
+
+    private void deleteSource() {
+        try {
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            helperSnappyDB.delete(videoSource);
+        } catch (SnappydbException e) {
+            e(e);
+        }
+    }
+
+    private void saveVideoSource() {
+        if (videoSource == null) videoSource = new VideoSource();
+        videoSource.setSshPath(editPath.getText().toString());
+
+        try {
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            helperSnappyDB.insertOrUpdate(videoSource);
+        } catch (SnappydbException e) {
+            e(e);
+        }
+    }
+
+    public abstract void onDone();
 }

@@ -1,5 +1,7 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -12,14 +14,17 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetAllVideos;
 import com.mediator.tasks.TaskGetLocalVideos;
 import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskSearchTMDb;
 import com.mediator.tasks.TaskUpdateLocalDB;
+import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -107,7 +112,7 @@ public class FragmentLocalVideos extends Fragment {
         inflater.inflate(R.menu.fragment_local_videos, menu);
     }
 
-    private void refreshLocalDB() {
+    private void refreshLocalDB() throws SnappydbException {
         progressDialog.setMessage(getString(R.string.message_getting_videos));
         progressDialog.show();
 
@@ -150,15 +155,21 @@ public class FragmentLocalVideos extends Fragment {
             }
         };
 
+        HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+
         TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(getActivity(), getAllVideosListener);
-        taskGetAllVideos.execute(MediatorPrefs.sources(getActivity()).toArray(new String[]{}));
+        taskGetAllVideos.execute(helperSnappyDB.all(VideoSource.class).toArray(new VideoSource[]{}));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_local_videos_refresh:
-                refreshLocalDB();
+                try {
+                    refreshLocalDB();
+                } catch (SnappydbException e) {
+                    e(e);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -16,7 +16,6 @@ import com.mediator.tasks.TaskUpdateLocalDB;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
-                    FragmentSource.OnFragmentInteractionListener,
                     FragmentVideos.OnFragmentInteractionListener {
 
     /**

@@ -7,5 +7,7 @@ import java.io.Serializable;
  */
 public interface SnappyKey extends Serializable {
 
-    String snappyKey();
+    void setSnappyKey(String key);
+
+    String getSnappyKey();
 }

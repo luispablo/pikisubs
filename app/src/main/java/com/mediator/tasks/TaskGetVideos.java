@@ -12,6 +12,7 @@ import com.mediator.helpers.HelperVideo;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoSource;
 import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
 
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Created by luispablo on 09/04/15.
  */
-public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
+public class TaskGetVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>> {
 
     public enum Filter { ALL, WITH_SUBS, WITHOUT_SUBS }
 
@@ -56,7 +57,7 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
     }
 
     @Override
-    protected List<VideoEntry> doInBackground(String... params) {
+    protected List<VideoEntry> doInBackground(VideoSource... videoSources) {
         HelperSSH helper = new HelperSSH();
         helper.setHost(MediatorPrefs.getString(context, MediatorPrefs.Key.VIDEOS_SERVER_HOST));
         helper.setUsername(MediatorPrefs.getString(context, MediatorPrefs.Key.VIDEOS_SERVER_USERNAME));
@@ -69,8 +70,8 @@ public class TaskGetVideos extends AsyncTask<String, Void, List<VideoEntry>> {
             ChannelSftp sftp = helper.openSFTP(session);
             HelperVideo videoHelper = new HelperVideo();
 
-            for (String path : params) {
-                List<VideoEntry> pathVideoEntries = videoHelper.videoEntriesFrom(path, sftp);
+            for (VideoSource videoSource : videoSources) {
+                List<VideoEntry> pathVideoEntries = videoHelper.videoEntriesFrom(videoSource.getSshPath(), sftp, videoSource);
 
                 if (filter.equals(Filter.WITH_SUBS)) {
                     pathVideoEntries = Oju.filter(pathVideoEntries, new WithSubsChecker());

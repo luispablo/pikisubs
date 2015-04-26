@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoSource;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -21,16 +22,16 @@ public class HelperVideo {
     public final static String[] VIDEO_EXTENSIONS = {"mp4", "mkv", "avi", "mov", "wmv", "ogv", "m4v", "mpg", "mpg4", "xvid", "mpeg"};
     public final static String[] SUBS_EXTENSIONS = {"sub", "srt"};
 
-    public List<VideoEntry> videoEntriesFrom(String path, ChannelSftp sftp) throws SftpException {
+    public List<VideoEntry> videoEntriesFrom(String path, ChannelSftp sftp, VideoSource videoSource) throws SftpException {
         List<VideoEntry> videoEntries = new ArrayList<>();
 
         for (ChannelSftp.LsEntry entry : (Vector<ChannelSftp.LsEntry>) sftp.ls(path)) {
             SftpATTRS attrs = entry.getAttrs();
 
             if (attrs.isDir() && !".".equals(entry.getFilename()) && !"..".equals(entry.getFilename())) {
-                videoEntries.addAll(videoEntriesFrom(path + File.separator + entry.getFilename(), sftp));
+                videoEntries.addAll(videoEntriesFrom(path + File.separator + entry.getFilename(), sftp, videoSource));
             } else if (Oju.anyEndsWith(entry.getFilename(), VIDEO_EXTENSIONS)) {
-                videoEntries.add(new VideoEntry(path, entry.getFilename(), hasSubs(entry.getFilename(), path, sftp)));
+                videoEntries.add(new VideoEntry(path, entry.getFilename(), hasSubs(entry.getFilename(), path, sftp), videoSource.getSnappyKey()));
             }
         }
 
