@@ -138,10 +138,12 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
         VideosDownloadListener videosDownloadListener = new VideosDownloadListener();
 
         HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+        List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
+        helperSnappyDB.close();
 
         TaskGetVideos task = new TaskGetVideos(getActivity(), filter, videosDownloadListener,
                                                                         videosDownloadListener);
-        task.execute(helperSnappyDB.all(VideoSource.class).toArray(new VideoSource[]{}));
+        task.execute(videoSources.toArray(new VideoSource[]{}));
     }
 
     private void refreshList() {

@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
+import com.mediator.actions.ActionNeedsSubs;
+import com.mediator.actions.ActionNotNeedsSubs;
 import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperAndroid;
@@ -20,13 +22,15 @@ import java.util.List;
 /**
  * Created by luispablo on 25/04/15.
  */
-public class FragmentVideoActionsDialog extends DialogFragment {
+public abstract class FragmentVideoActionsDialog extends DialogFragment {
 
     private VideoEntry videoEntry;
 
     public enum Action {
         PLAY(new ActionPlayVideo()),
-        DOWNLOAD_SUBS(new ActionDownloadSubs());
+        DOWNLOAD_SUBS(new ActionDownloadSubs()),
+        NEEDS_SUBS(new ActionNeedsSubs()),
+        NOT_NEEDS_SUBS(new ActionNotNeedsSubs());
 
         IAction videoAction;
 
@@ -55,7 +59,9 @@ public class FragmentVideoActionsDialog extends DialogFragment {
         builder.setTitle(R.string.title_dialog_video_actions)
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Action.values()[which].videoAction.execute(getActivity(), videoEntry);
+                        Action action = Action.values()[which];
+                        action.videoAction.execute(getActivity(), videoEntry);
+                        onDone(action.videoAction);
                     }
                 });
         return builder.create();
@@ -64,4 +70,6 @@ public class FragmentVideoActionsDialog extends DialogFragment {
     public void setVideoEntry(VideoEntry videoEntry) {
         this.videoEntry = videoEntry;
     }
+
+    public abstract void onDone(IAction action);
 }

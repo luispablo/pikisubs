@@ -55,6 +55,9 @@
 
     <string name="video_action_play">Play</string>
     <string name="video_action_download_subs">Download subtitles</string>
+    <string name="video_action_needs_subs">Needs subtitles</string>
+    <string name="video_action_not_needs_subs">Doesn\'t need subtitles</string>
+
     <string name="title_dialog_video_server">Video server</string>
     <string name="action_add">Add</string>
     <string name="server_hostname_or_ip">Hostname or IP</string>

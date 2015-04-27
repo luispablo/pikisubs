@@ -168,6 +168,7 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         try {
             HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
             helperSnappyDB.delete(videoSource);
+            helperSnappyDB.close();
         } catch (SnappydbException e) {
             e(e);
         }

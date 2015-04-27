@@ -1,7 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,19 +12,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.mediator.R;
-import com.mediator.helpers.MediatorPrefs;
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoSource;
-import com.mediator.tasks.TaskGetAllSources;
+import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+
+import static com.mediator.helpers.TinyLogger.e;
 
 public class FragmentSource extends Fragment {
 
@@ -110,14 +108,14 @@ public class FragmentSource extends Fragment {
     }
 
     private void loadList() {
-        TaskGetAllSources taskGetAllSources = new TaskGetAllSources(getActivity(), bus);
-        taskGetAllSources.execute();
-    }
+        try {
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            this.videoSources = helperSnappyDB.all(VideoSource.class);
+            helperSnappyDB.close();
+        } catch (SnappydbException e) {
+            e(e);
+        }
 
-    @Subscribe
-    public void onGotAllSources(ArrayList<VideoSource> videoSources) {
-        d("onGotAllSources()");
-        this.videoSources = videoSources;
         List<String> sourcesPaths = Oju.map(videoSources, new Oju.UnaryOperator<VideoSource, String>() {
             @Override
             public String operate(VideoSource videoSource) {

@@ -41,11 +41,11 @@ public class HelperSnappyDB {
 
     public <T> List<T> all(Class<T> clazz) throws SnappydbException {
         d("all()");
-        List<T> list = new ArrayList<>();
+        List list = new ArrayList<>();
 
         for (String key : db.findKeys(clazz.getName())) {
             d("getting key [" + key + "]");
-            list.add((T) db.getObject(key, clazz));
+            list.add(db.getObject(key, clazz));
         }
 
         return list;

@@ -66,7 +66,7 @@ public class AdapterVideoEntries extends BaseAdapter {
         ((TextView) convertView.findViewById(R.id.txtFilename)).setText(videoEntry.getFilename());
         ImageView imagePoster = (ImageView) convertView.findViewById(R.id.imagePoster);
 
-        int hasSubsText = videoEntry.hasSubs() ? R.string.empty_string : R.string.needs_subs;
+        int hasSubsText = (videoEntry.hasSubs() || !videoEntry.needsSubs()) ? R.string.empty_string : R.string.needs_subs;
         ((TextView) convertView.findViewById(R.id.txtSubsIndicator)).setText(hasSubsText);
 
         if (videoEntry.getTmdbResult() != null) {

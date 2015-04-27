@@ -1,7 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -14,19 +12,17 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperSnappyDB;
-import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetAllVideos;
-import com.mediator.tasks.TaskGetLocalVideos;
 import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskSearchTMDb;
 import com.mediator.tasks.TaskUpdateLocalDB;
 import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +32,7 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 
 import static com.mediator.helpers.TinyLogger.d;
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 23/04/15.
@@ -75,6 +72,8 @@ public class FragmentLocalVideos extends Fragment {
         bus = new Bus();
         bus.register(this);
 
+        videoEntries = new ArrayList<>();
+
         setHasOptionsMenu(true);
 
         loadList();
@@ -86,24 +85,30 @@ public class FragmentLocalVideos extends Fragment {
         d("loadList()");
         if (!progressDialog.isShowing()) progressDialog.show();
 
-        TaskGetLocalVideos taskGetLocalVideos = new TaskGetLocalVideos(getActivity(), bus);
-        taskGetLocalVideos.execute();
+        try {
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            videoEntries.clear();
+            videoEntries.addAll(helperSnappyDB.all(VideoEntry.class));
+            helperSnappyDB.close();
+        } catch (SnappydbException e) {
+            e(e);
+        }
+
+        listVideos.setAdapter(new AdapterVideoEntries(getActivity(), videoEntries));
+        progressDialog.dismiss();
     }
 
     @OnItemClick(R.id.listVideos)
     public void onClickVideo(int position) {
-        FragmentVideoActionsDialog actionsDialog = new FragmentVideoActionsDialog();
+        FragmentVideoActionsDialog actionsDialog = new FragmentVideoActionsDialog() {
+
+            @Override
+            public void onDone(IAction action) {
+                loadList();
+            }
+        };
         actionsDialog.setVideoEntry(videoEntries.get(position));
         actionsDialog.show(getFragmentManager(), null);
-    }
-
-    @Subscribe
-    public void onGotVideos(ArrayList<VideoEntry> videoEntries) {
-        progressDialog.dismiss();
-        this.videoEntries = videoEntries;
-
-        AdapterVideoEntries adapterVideoEntries = new AdapterVideoEntries(getActivity(), videoEntries);
-        listVideos.setAdapter(adapterVideoEntries);
     }
 
     @Override

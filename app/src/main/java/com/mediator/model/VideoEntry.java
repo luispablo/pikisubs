@@ -25,12 +25,15 @@ public class VideoEntry implements SnappyKey {
     private String videoSourceKey;
     private GuessitObject guessitObject;
     private TMDbMovieSearchResult tmdbResult;
+    private boolean needsSubs;
 
     public VideoEntry() {
-
+        this.needsSubs = true;
     }
 
     public VideoEntry(String path, String filename, boolean hasSubs, String videoSourceKey) {
+        this();
+
         this.path = path;
         this.filename = filename;
         this.hasSubs = hasSubs;
@@ -101,5 +104,13 @@ public class VideoEntry implements SnappyKey {
     @Override
     public String getSnappyKey() {
         return this.snappyKey;
+    }
+
+    public boolean needsSubs() {
+        return needsSubs;
+    }
+
+    public void setNeedsSubs(boolean needsSubs) {
+        this.needsSubs = needsSubs;
     }
 }
