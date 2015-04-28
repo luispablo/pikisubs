@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.mediator.R;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
@@ -39,17 +40,27 @@ import static com.mediator.helpers.TinyLogger.e;
  */
 public class FragmentLocalVideos extends Fragment {
 
-    Bus bus;
+    public enum Filter {
+        ALL,
+        WATCHED,
+        NOT_WATCHED;
+
+        public boolean applies(VideoEntry videoEntry) {
+            return ALL.equals(this) ||
+                    WATCHED.equals(this) && videoEntry.isWatched() ||
+                    NOT_WATCHED.equals(this) && !videoEntry.isWatched();
+        }
+    }
 
     @InjectView(R.id.listVideos)
     ListView listVideos;
     ProgressDialog progressDialog;
     List<VideoEntry> videoEntries;
+    Bus bus;
+    Filter filter;
 
     public static FragmentLocalVideos newInstance() {
-        FragmentLocalVideos fragment = new FragmentLocalVideos();
-
-        return fragment;
+        return new FragmentLocalVideos();
     }
 
     public FragmentLocalVideos() {
@@ -73,6 +84,7 @@ public class FragmentLocalVideos extends Fragment {
         bus.register(this);
 
         videoEntries = new ArrayList<>();
+        filter = Filter.NOT_WATCHED;
 
         setHasOptionsMenu(true);
 
@@ -82,13 +94,17 @@ public class FragmentLocalVideos extends Fragment {
     }
 
     private void loadList() {
-        d("loadList()");
         if (!progressDialog.isShowing()) progressDialog.show();
 
         try {
             HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
-            videoEntries.clear();
-            videoEntries.addAll(helperSnappyDB.all(VideoEntry.class));
+
+            videoEntries = Oju.filter(helperSnappyDB.all(VideoEntry.class), new Oju.UnaryChecker<VideoEntry>() {
+                @Override
+                public boolean check(VideoEntry videoEntry) {
+                    return filter.applies(videoEntry);
+                }
+            });
             helperSnappyDB.close();
         } catch (SnappydbException e) {
             e(e);
@@ -168,6 +184,11 @@ public class FragmentLocalVideos extends Fragment {
         taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
     }
 
+    private void filterList(Filter filter) {
+        this.filter = filter;
+        loadList();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -177,6 +198,17 @@ public class FragmentLocalVideos extends Fragment {
                 } catch (SnappydbException e) {
                     e(e);
                 }
+                return true;
+            case R.id.action_local_videos_filter:
+                FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
+                    @Override
+                    public void onSelected(Filter filter) {
+                        filterList(filter);
+                    }
+                };
+                filterVideosDialog.setFilterItems(Filter.values());
+                filterVideosDialog.show(getFragmentManager(), null);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

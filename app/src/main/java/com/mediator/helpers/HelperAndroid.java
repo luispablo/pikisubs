@@ -1,5 +1,7 @@
 package com.mediator.helpers;
 
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +26,7 @@ public class HelperAndroid {
     public static final String STRING = "string";
 
     public static String getStringByName(Context context, String name) {
+        d("Looking for string ["+ name +"]");
         int id = context.getResources().getIdentifier(name, STRING, context.getPackageName());
         return context.getString(id);
     }

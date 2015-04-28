@@ -59,6 +59,10 @@
     <string name="video_action_set_watched">Set as watched</string>
     <string name="video_action_set_unwatched">Set as unwatched</string>
 
+    <string name="filter_all">Show all</string>
+    <string name="filter_watched">Only watched</string>
+    <string name="filter_not_watched">Only not watched</string>
+
     <string name="title_dialog_video_server">Video server</string>
     <string name="action_add">Add</string>
     <string name="server_hostname_or_ip">Hostname or IP</string>
@@ -73,4 +77,6 @@
     <string name="tv_show">TV Show</string>
     <string name="title_progress_trailer">Looking for trailers</string>
     <string name="message_progress_trailer">Wait a moment please...</string>
+    <string name="filter">Filter</string>
+    <string name="title_dialog_videos_filter">Filter videos by</string>
 </resources>

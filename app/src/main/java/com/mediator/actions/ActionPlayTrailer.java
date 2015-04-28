@@ -6,8 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.mediator.R;
-import com.mediator.YouTubePlayer;
-import com.mediator.helpers.HelperAndroid;
+import com.mediator.helpers.YouTubePlayer;
 import com.mediator.model.TMDbMovieVideosResponse;
 import com.mediator.model.TMDbMovieVideosResult;
 import com.mediator.model.VideoEntry;
