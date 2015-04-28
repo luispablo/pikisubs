@@ -23,6 +23,7 @@ public class MediatorPrefs {
         TMDB_API_URL,
         TMDB_IMAGE_API_URL,
         TMDB_IMAGE_API_SIZE,
+        YOUTUBE_URL,
         VIDEOS_SERVER_HOST,
         VIDEOS_SERVER_USERNAME,
         VIDEOS_SERVER_PASSWORD
@@ -39,6 +40,7 @@ public class MediatorPrefs {
         defaultStringValues.put(Key.TMDB_API_URL, "http://api.themoviedb.org/3");
         defaultStringValues.put(Key.TMDB_IMAGE_API_URL, "http://image.tmdb.org/t/p/");
         defaultStringValues.put(Key.TMDB_IMAGE_API_SIZE, "w92");
+        defaultStringValues.put(Key.YOUTUBE_URL, "https://www.youtube.com/watch?v=%s");
     }
 
     public static String getString(Context context, Key key) {

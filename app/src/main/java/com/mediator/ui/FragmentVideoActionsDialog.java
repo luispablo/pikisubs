@@ -10,6 +10,7 @@ import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionNeedsSubs;
 import com.mediator.actions.ActionNotNeedsSubs;
+import com.mediator.actions.ActionPlayTrailer;
 import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
@@ -30,6 +31,7 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
 
     public enum Action {
         PLAY(new ActionPlayVideo()),
+        PLAY_TRAILER(new ActionPlayTrailer()),
         DOWNLOAD_SUBS(new ActionDownloadSubs()),
         SET_WATCHED(new ActionSetWatched()),
         SET_UNWATCHED(new ActionSetUnwatched()),
