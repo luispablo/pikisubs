@@ -23,7 +23,6 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:text="@string/dummy_text"
                     android:layout_toRightOf="@id/labelSearchText" />
 
         <TextView   android:id="@+id/labelFilename"
@@ -38,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:text="@string/dummy_text"
                     android:layout_toRightOf="@id/labelFilename"
                     android:layout_alignLeft="@id/txtSearchText"
                     android:layout_alignTop="@id/labelFilename" />

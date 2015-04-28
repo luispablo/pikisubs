@@ -11,6 +11,8 @@ import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionNeedsSubs;
 import com.mediator.actions.ActionNotNeedsSubs;
 import com.mediator.actions.ActionPlayVideo;
+import com.mediator.actions.ActionSetUnwatched;
+import com.mediator.actions.ActionSetWatched;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
@@ -29,6 +31,8 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
     public enum Action {
         PLAY(new ActionPlayVideo()),
         DOWNLOAD_SUBS(new ActionDownloadSubs()),
+        SET_WATCHED(new ActionSetWatched()),
+        SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),
         NOT_NEEDS_SUBS(new ActionNotNeedsSubs());
 
@@ -37,7 +41,6 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
         Action(IAction videoAction) {
             this.videoAction = videoAction;
         }
-
     }
 
     @Override

@@ -28,14 +28,13 @@
         style="@style/SubsIndicator" />
 
     <TextView
-        android:id="@+id/txtFilename"
+        android:id="@+id/txtWatched"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtSubsIndicator"
         android:layout_toRightOf="@id/imagePoster"
         android:paddingBottom="10dp"
         android:layout_alignParentBottom="true"
-        style="@android:style/TextAppearance.DeviceDefault.Small"
-        android:text="@string/dummy_text" />
+        style="@android:style/TextAppearance.DeviceDefault.Small" />
 
 </RelativeLayout>

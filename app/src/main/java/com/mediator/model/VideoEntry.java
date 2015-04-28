@@ -26,6 +26,7 @@ public class VideoEntry implements SnappyKey {
     private GuessitObject guessitObject;
     private TMDbMovieSearchResult tmdbResult;
     private boolean needsSubs;
+    private boolean watched;
 
     public VideoEntry() {
         this.needsSubs = true;
@@ -112,5 +113,13 @@ public class VideoEntry implements SnappyKey {
 
     public void setNeedsSubs(boolean needsSubs) {
         this.needsSubs = needsSubs;
+    }
+
+    public boolean isWatched() {
+        return watched;
+    }
+
+    public void setWatched(boolean watched) {
+        this.watched = watched;
     }
 }

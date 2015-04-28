@@ -11,7 +11,7 @@ public class TMDbMovieSearchResult implements Serializable {
     private boolean adult;
     @SerializedName("backdrop_path")
     private String backdropPath;
-    private int id;
+    private long id;
     @SerializedName("original_title")
     private String originalTitle;
     @SerializedName("release_date")
@@ -42,11 +42,11 @@ public class TMDbMovieSearchResult implements Serializable {
         this.backdropPath = backdropPath;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -63,7 +63,10 @@ public class AdapterVideoEntries extends BaseAdapter {
         if (videoEntry.getGuessitObject() != null) {
             ((TextView) convertView.findViewById(R.id.txtTitleToShow)).setText(videoEntry.titleToShow());
         }
-        ((TextView) convertView.findViewById(R.id.txtFilename)).setText(videoEntry.getFilename());
+
+        int watchedStringId = videoEntry.isWatched() ? R.string.watched : R.string.not_watched;
+        ((TextView) convertView.findViewById(R.id.txtWatched)).setText(watchedStringId);
+
         ImageView imagePoster = (ImageView) convertView.findViewById(R.id.imagePoster);
 
         int hasSubsText = (videoEntry.hasSubs() || !videoEntry.needsSubs()) ? R.string.empty_string : R.string.needs_subs;
