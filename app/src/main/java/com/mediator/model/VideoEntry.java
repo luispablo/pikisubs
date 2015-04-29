@@ -1,7 +1,5 @@
 package com.mediator.model;
 
-import java.io.Serializable;
-
 /**
  * Created by luispablo on 11/04/15.
  */
@@ -19,7 +17,8 @@ public class VideoEntry implements SnappyKey {
     }
 
     private String snappyKey;
-    private String path;
+    private String absolutePath;
+    private String pathRelativeToSource;
     private String filename;
     private boolean hasSubs;
     private String videoSourceKey;
@@ -32,12 +31,13 @@ public class VideoEntry implements SnappyKey {
         this.needsSubs = true;
     }
 
-    public VideoEntry(String path, String filename, boolean hasSubs, String videoSourceKey) {
+    public VideoEntry(String pathRelativeToSource, String absolutePath, String filename, boolean hasSubs, String videoSourceKey) {
         this();
 
-        this.path = path;
-        this.filename = filename;
         this.hasSubs = hasSubs;
+        this.pathRelativeToSource = pathRelativeToSource;
+        this.absolutePath = absolutePath;
+        this.filename = filename;
         this.videoSourceKey = videoSourceKey;
     }
 
@@ -81,12 +81,12 @@ public class VideoEntry implements SnappyKey {
         this.hasSubs = hasSubs;
     }
 
-    public String getPath() {
-        return path;
+    public String getAbsolutePath() {
+        return this.absolutePath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
     }
 
     public String getFilename() {
@@ -121,5 +121,13 @@ public class VideoEntry implements SnappyKey {
 
     public void setWatched(boolean watched) {
         this.watched = watched;
+    }
+
+    public String getPathRelativeToSource() {
+        return pathRelativeToSource;
+    }
+
+    public void setPathRelativeToSource(String pathRelativeToSource) {
+        this.pathRelativeToSource = pathRelativeToSource;
     }
 }

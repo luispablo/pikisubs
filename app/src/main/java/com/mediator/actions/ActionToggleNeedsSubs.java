@@ -14,6 +14,11 @@ import com.snappydb.SnappydbException;
 public abstract class ActionToggleNeedsSubs implements IAction {
 
     @Override
+    public boolean changedDB() {
+        return true;
+    }
+
+    @Override
     public void execute(Context context, VideoEntry videoEntry) {
         videoEntry.setNeedsSubs(!videoEntry.needsSubs());
 

@@ -9,6 +9,8 @@ import com.mediator.model.VideoEntry;
  */
 public interface IAction {
 
+    boolean changedDB();
+
     boolean isAvailableFor(VideoEntry videoEntry);
 
     void execute(Context context, VideoEntry videoEntry);

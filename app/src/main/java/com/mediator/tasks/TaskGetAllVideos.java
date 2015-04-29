@@ -49,7 +49,7 @@ public class TaskGetAllVideos extends AsyncTask<VideoSource, Void, List<VideoEnt
                 Session session = helper.connectSession();
                 ChannelSftp sftp = helper.openSFTP(session);
 
-                videoEntries.addAll(videoHelper.videoEntriesFrom(videoSource.getSshPath(), sftp, videoSource));
+                videoEntries.addAll(videoHelper.videoEntriesFrom("/", videoSource.getSshPath(), sftp, videoSource));
 
                 sftp.disconnect();
                 session.disconnect();

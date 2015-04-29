@@ -70,7 +70,7 @@
     <string name="server_password">Server password</string>
     <string name="server_http_url">HTTP URL</string>
     <string name="server">Server</string>
-    <string name="path">Path</string>
+    <string name="absolutePath">Path</string>
     <string name="video_type">Video type</string>
     <string name="http_path">HTTP Path</string>
     <string name="movie">Movie</string>

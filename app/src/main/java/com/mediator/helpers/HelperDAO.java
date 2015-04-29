@@ -34,6 +34,21 @@ public class HelperDAO {
         return null;
     }
 
+    public VideoServer getServer(VideoEntry videoEntry) {
+        try {
+            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
+            VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
+            VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
+            helperSnappyDB.close();
+
+            return videoServer;
+        } catch (SnappydbException e) {
+            e(e);
+        }
+
+        return null;
+    }
+
     public VideoServer getServer(VideoSource videoSource) {
         try {
             HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
@@ -47,5 +62,4 @@ public class HelperDAO {
 
         return null;
     }
-
 }

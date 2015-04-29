@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDownloadSubs;
+import com.mediator.actions.ActionNeedsSubs;
+import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
@@ -120,7 +123,7 @@ public class FragmentLocalVideos extends Fragment {
 
             @Override
             public void onDone(IAction action) {
-                loadList();
+                if (action.changedDB()) loadList();
             }
         };
         actionsDialog.setVideoEntry(videoEntries.get(position));

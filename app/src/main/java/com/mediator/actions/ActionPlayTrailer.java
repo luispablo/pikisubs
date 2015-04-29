@@ -23,6 +23,11 @@ public class ActionPlayTrailer implements IAction {
     private ProgressDialog progressDialog;
 
     @Override
+    public boolean changedDB() {
+        return false;
+    }
+
+    @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
         return true;
     }

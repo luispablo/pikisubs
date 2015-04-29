@@ -72,7 +72,7 @@ public class TaskGetVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>
                 Session session = helperSSH.connectSession();
                 ChannelSftp sftp = helperSSH.openSFTP(session);
 
-                List<VideoEntry> pathVideoEntries = videoHelper.videoEntriesFrom(videoSource.getSshPath(), sftp, videoSource);
+                List<VideoEntry> pathVideoEntries = videoHelper.videoEntriesFrom("/", videoSource.getSshPath(), sftp, videoSource);
 
                 if (filter.equals(Filter.WITH_SUBS)) {
                     pathVideoEntries = Oju.filter(pathVideoEntries, new WithSubsChecker());

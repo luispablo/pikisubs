@@ -9,12 +9,13 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
-import com.mediator.helpers.MediatorPrefs;
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
 import com.orhanobut.logger.Logger;
+import com.snappydb.SnappydbException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,13 +52,12 @@ public class TaskUploadSubtitles extends AsyncTask<File, Void, File> {
             ChannelSftp sftp = sshHelper.openSFTP(session);
 
             FileInputStream inputStream = new FileInputStream(subtitleFile);
-            sftp.cd(videoEntry.getPath());
-            sftp.put(inputStream, filename +"."+ subtitleExtension, ChannelSftp.OVERWRITE);
+            sftp.cd(videoEntry.getAbsolutePath());
+            sftp.put(inputStream, filename + "." + subtitleExtension, ChannelSftp.OVERWRITE);
             inputStream.close();
 
             sftp.exit();
             session.disconnect();
-
         } catch (JSchException | SftpException | IOException e) {
             Logger.e(e);
         }

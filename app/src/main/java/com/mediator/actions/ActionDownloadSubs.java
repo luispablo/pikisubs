@@ -13,6 +13,11 @@ import com.mediator.ui.ActivitySubtitles;
 public class ActionDownloadSubs implements IAction {
 
     @Override
+    public boolean changedDB() {
+        return true;
+    }
+
+    @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
         return true;
     }

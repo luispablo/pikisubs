@@ -14,6 +14,11 @@ import static com.mediator.helpers.TinyLogger.e;
 public abstract class ActionToggleWatched implements IAction {
 
     @Override
+    public boolean changedDB() {
+        return true;
+    }
+
+    @Override
     public void execute(Context context, VideoEntry videoEntry) {
         videoEntry.setWatched(!videoEntry.isWatched());
 
