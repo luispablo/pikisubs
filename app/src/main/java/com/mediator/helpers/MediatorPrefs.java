@@ -23,18 +23,12 @@ public class MediatorPrefs {
         TMDB_API_URL,
         TMDB_IMAGE_API_URL,
         TMDB_IMAGE_API_SIZE,
-        YOUTUBE_URL,
-        VIDEOS_SERVER_HOST,
-        VIDEOS_SERVER_USERNAME,
-        VIDEOS_SERVER_PASSWORD
+        YOUTUBE_URL
     }
 
     static {
         defaultStringValues = new HashMap<>();
         defaultStringValues.put(Key.GUESSIT_URL, "http://guessit.io/");
-        defaultStringValues.put(Key.VIDEOS_SERVER_HOST, "192.168.1.152");
-        defaultStringValues.put(Key.VIDEOS_SERVER_USERNAME, "pi");
-        defaultStringValues.put(Key.VIDEOS_SERVER_PASSWORD, "raspberry");
         defaultStringValues.put(Key.SUBDIVX_DOWNLOAD_URL, "http://www.subdivx.com/");
         defaultStringValues.put(Key.TMDB_API_KEY, "579a1ce2133e0663a3e1b78d737fc5c2");
         defaultStringValues.put(Key.TMDB_API_URL, "http://api.themoviedb.org/3");
