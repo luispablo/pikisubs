@@ -21,14 +21,38 @@ public class HelperSnappyDB {
 
     public static final String LAST_KEY_INDEX_PREFIX = "lastKeyIndex";
 
+    private static HelperSnappyDB singleton;
+    private static boolean locked = false;
+
     private DB db;
 
-    public HelperSnappyDB(Context context) throws SnappydbException {
-        this.db = DBFactory.open(context);
+    public static HelperSnappyDB getSingleton(Context context) {
+        try {
+            while (locked) Thread.sleep(500);
+
+            if (singleton == null) singleton = new HelperSnappyDB();
+
+            singleton.open(context);
+
+            return singleton;
+
+        } catch (SnappydbException | InterruptedException e) {
+            e(e);
+            return null;
+        }
+    }
+
+    private HelperSnappyDB() {
+
+    }
+
+    private void open(Context context) throws SnappydbException {
+        db = DBFactory.open(context);
     }
 
     public void close() throws SnappydbException {
         db.close();
+        locked = false;
     }
 
     public DB getDB() {

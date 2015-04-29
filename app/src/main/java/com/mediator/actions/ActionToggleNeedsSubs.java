@@ -23,7 +23,7 @@ public abstract class ActionToggleNeedsSubs implements IAction {
         videoEntry.setNeedsSubs(!videoEntry.needsSubs());
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

@@ -53,7 +53,7 @@ public class ActionPlayVideo implements IAction {
     @Subscribe
     public void onSubsFileDownloaed(File subsFile) {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
             VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
             VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
             helperSnappyDB.close();

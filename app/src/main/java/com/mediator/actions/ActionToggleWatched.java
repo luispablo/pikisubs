@@ -23,7 +23,7 @@ public abstract class ActionToggleWatched implements IAction {
         videoEntry.setWatched(!videoEntry.isWatched());
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

@@ -137,7 +137,7 @@ public class FragmentVideos extends Fragment implements AbsListView.OnItemClickL
 
         VideosDownloadListener videosDownloadListener = new VideosDownloadListener();
 
-        HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+        HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
         List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
         helperSnappyDB.close();
 

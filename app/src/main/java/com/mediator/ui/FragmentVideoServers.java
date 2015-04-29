@@ -83,7 +83,7 @@ public class FragmentVideoServers extends Fragment {
 
     private void loadList() {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
 
             videoServers = helperSnappyDB.all(VideoServer.class);
             List<String> videoServersNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {

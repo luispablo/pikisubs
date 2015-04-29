@@ -100,7 +100,7 @@ public class FragmentLocalVideos extends Fragment {
         if (!progressDialog.isShowing()) progressDialog.show();
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
 
             videoEntries = Oju.filter(helperSnappyDB.all(VideoEntry.class), new Oju.UnaryChecker<VideoEntry>() {
                 @Override
@@ -179,7 +179,7 @@ public class FragmentLocalVideos extends Fragment {
             }
         };
 
-        HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+        HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
         List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
         helperSnappyDB.close();
 

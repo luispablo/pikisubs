@@ -38,7 +38,7 @@ public class TaskUpdateLocalDB extends AsyncTask<VideoEntry, Void, List<VideoEnt
     @Override
     protected List<VideoEntry> doInBackground(final VideoEntry... videoEntries) {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
 
             EqualsFilenameVideoEntry checker = new EqualsFilenameVideoEntry();
 

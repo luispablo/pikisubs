@@ -95,7 +95,7 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
 
     private void delete() {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             helperSnappyDB.delete(videoServer);
             helperSnappyDB.close();
         } catch (SnappydbException e) {
@@ -107,7 +107,7 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
         fillObject();
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             helperSnappyDB.insertOrUpdate(videoServer);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

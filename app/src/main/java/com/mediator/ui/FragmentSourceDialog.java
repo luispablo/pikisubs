@@ -60,17 +60,8 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         ButterKnife.inject(this, view);
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             videoServers = helperSnappyDB.all(VideoServer.class);
-
-            DB db = helperSnappyDB.getDB();
-            KeyIterator iterator = db.allKeysIterator();
-
-            while (iterator.hasNext()) {
-                String key = iterator.next(1)[0];
-                d("key ["+ key +"]");
-            }
-
             helperSnappyDB.close();
         } catch (SnappydbException e) {
             e(e);
@@ -133,13 +124,11 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         VideoServer videoServer = null;
 
         if (videoSource.getServerSnappyKey() != null) {
-            try {
-                HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
-                videoServer = helperSnappyDB.get(videoSource.getSnappyKey(), VideoServer.class);
-                helperSnappyDB.close();
-                spinnerServers.setSelection(videoServers.indexOf(videoServer));
-            } catch (SnappydbException e) {
-                e(e);
+            for (VideoServer item : videoServers) {
+                if (item.getSnappyKey().equals(videoSource.getServerSnappyKey())) {
+                    videoServer = item;
+                    spinnerServers.setSelection(videoServers.indexOf(videoServer));
+                }
             }
         }
 
@@ -166,7 +155,7 @@ public abstract class FragmentSourceDialog extends DialogFragment {
 
     private void delete() {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             helperSnappyDB.delete(videoSource);
             helperSnappyDB.close();
         } catch (SnappydbException e) {
@@ -178,7 +167,7 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         inputsToObject();
 
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             helperSnappyDB.insertOrUpdate(videoSource);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

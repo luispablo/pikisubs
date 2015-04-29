@@ -82,14 +82,9 @@ public class FragmentSource extends Fragment {
         bus.register(this);
 
         setHasOptionsMenu(true);
+        loadList();
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadList();
     }
 
     @OnItemClick(android.R.id.list)
@@ -109,7 +104,7 @@ public class FragmentSource extends Fragment {
 
     private void loadList() {
         try {
-            HelperSnappyDB helperSnappyDB = new HelperSnappyDB(getActivity());
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
             this.videoSources = helperSnappyDB.all(VideoSource.class);
             helperSnappyDB.close();
         } catch (SnappydbException e) {
