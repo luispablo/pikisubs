@@ -1,6 +1,6 @@
 package com.mediator.actions;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,13 +23,13 @@ public class ActionDownloadSubs implements IAction {
     }
 
     @Override
-    public void execute(Context context, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoEntry", videoEntry);
 
-        Intent intent = new Intent(context, ActivitySubtitles.class);
+        Intent intent = new Intent(activity, ActivitySubtitles.class);
         intent.putExtras(bundle);
 
-        context.startActivity(intent);
+        activity.startActivity(intent);
     }
 }

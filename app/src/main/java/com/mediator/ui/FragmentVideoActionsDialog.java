@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
+import com.mediator.actions.ActionEditTitle;
 import com.mediator.actions.ActionNeedsSubs;
 import com.mediator.actions.ActionNotNeedsSubs;
 import com.mediator.actions.ActionPlayTrailer;
@@ -33,6 +34,7 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
         PLAY(new ActionPlayVideo()),
         PLAY_TRAILER(new ActionPlayTrailer()),
         DOWNLOAD_SUBS(new ActionDownloadSubs()),
+        EDIT_TITLE(new ActionEditTitle()),
         SET_WATCHED(new ActionSetWatched()),
         SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),

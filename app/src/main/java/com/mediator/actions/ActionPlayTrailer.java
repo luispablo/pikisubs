@@ -1,7 +1,6 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 
@@ -13,6 +12,8 @@ import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskTMDbMovieVideos;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import static com.mediator.helpers.TinyLogger.d;
 
 /**
  * Created by luispablo on 28/04/15.
@@ -33,7 +34,7 @@ public class ActionPlayTrailer implements IAction {
     }
 
     @Override
-    public void execute(Context context, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry) {
         this.context = context;
 
         progressDialog = new ProgressDialog(context);

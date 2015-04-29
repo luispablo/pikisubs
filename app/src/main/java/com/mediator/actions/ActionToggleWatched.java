@@ -1,6 +1,6 @@
 package com.mediator.actions;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.model.VideoEntry;
@@ -19,11 +19,11 @@ public abstract class ActionToggleWatched implements IAction {
     }
 
     @Override
-    public void execute(Context context, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry) {
         videoEntry.setWatched(!videoEntry.isWatched());
 
         try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(activity);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

@@ -1,12 +1,12 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
-import android.content.Context;
+import android.app.Activity;
 
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.model.VideoEntry;
 import com.snappydb.SnappydbException;
+
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 26/04/15.
@@ -19,11 +19,11 @@ public abstract class ActionToggleNeedsSubs implements IAction {
     }
 
     @Override
-    public void execute(Context context, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry) {
         videoEntry.setNeedsSubs(!videoEntry.needsSubs());
 
         try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(activity);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
         } catch (SnappydbException e) {

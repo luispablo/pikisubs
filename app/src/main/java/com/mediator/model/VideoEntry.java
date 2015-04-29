@@ -16,6 +16,7 @@ public class VideoEntry implements SnappyKey {
         }
     }
 
+    private String userEditedTitle;
     private String snappyKey;
     private String absolutePath;
     private String pathRelativeToSource;
@@ -42,11 +43,21 @@ public class VideoEntry implements SnappyKey {
     }
 
     public String titleToShow() {
-        if (getGuessitObject() != null) {
+        if (getUserEditedTitle() != null) {
+            return getUserEditedTitle();
+        } else if (getGuessitObject() != null) {
             return getGuessitObject().suggestedSearchText();
         } else {
             return getFilename();
         }
+    }
+
+    public String getUserEditedTitle() {
+        return userEditedTitle;
+    }
+
+    public void setUserEditedTitle(String userEditedTitle) {
+        this.userEditedTitle = userEditedTitle;
     }
 
     public TMDbMovieSearchResult getTmdbResult() {

@@ -51,6 +51,7 @@
     <string name="empty_string" />
     <string name="title_dialog_video_actions">Video actions</string>
 
+    <string name="video_action_edit_title">Edit title</string>
     <string name="video_action_play">Play</string>
     <string name="video_action_play_trailer">Play trailer</string>
     <string name="video_action_download_subs">Download subtitles</string>
@@ -79,4 +80,6 @@
     <string name="message_progress_trailer">Wait a moment please...</string>
     <string name="filter">Filter</string>
     <string name="title_dialog_videos_filter">Filter videos by</string>
+    <string name="title_dialog_edit_title">Edit video title</string>
+    <string name="button_ok">OK</string>
 </resources>

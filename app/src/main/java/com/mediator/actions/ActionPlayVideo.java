@@ -1,13 +1,11 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
 import com.mediator.helpers.HelperSnappyDB;
-import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
@@ -18,7 +16,9 @@ import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import static com.mediator.helpers.TinyLogger.d;
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 25/04/15.
@@ -39,7 +39,7 @@ public class ActionPlayVideo implements IAction {
     }
 
     @Override
-    public void execute(Context context, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry) {
         this.context = context;
         this.videoEntry = videoEntry;
 
