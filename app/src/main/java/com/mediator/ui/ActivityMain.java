@@ -16,8 +16,7 @@ import com.mediator.helpers.HelperAndroid;
 import com.mediator.tasks.TaskGetVideos;
 
 public class ActivityMain extends ActionBarActivity
-        implements FragmentNavigationDrawer.NavigationDrawerCallbacks,
-                    FragmentVideos.OnFragmentInteractionListener {
+        implements FragmentNavigationDrawer.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -43,12 +42,6 @@ public class ActivityMain extends ActionBarActivity
         switch (currentDrawerItem) {
             case LOCAL_VIDEOS:
                 fragment = FragmentLocalVideos.newInstance();
-                break;
-            case VIDEOS_NO_SUBS:
-                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITHOUT_SUBS);
-                break;
-            case VIDEOS_WITH_SUBS:
-                fragment = FragmentVideos.newInstance(TaskGetVideos.Filter.WITH_SUBS);
                 break;
             case SOURCES:
                 fragment = FragmentSource.newInstance();
@@ -93,9 +86,5 @@ public class ActivityMain extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(String id) {
     }
 }

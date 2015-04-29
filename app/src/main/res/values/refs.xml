@@ -16,7 +16,6 @@
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
-    <item name="fragment_video" type="layout">@layout/fragment_video_list</item>
     <item name="fragment_local_videos" type="layout">@layout/fragment_local_videos_list</item>
 
 </resources>

@@ -51,8 +51,6 @@ public class FragmentNavigationDrawer extends Fragment {
 
     public enum DrawerItem {
         LOCAL_VIDEOS("menu_local_videos"),
-        VIDEOS_NO_SUBS("menu_videos_no_subs"),
-        VIDEOS_WITH_SUBS("menu_videos_subs"),
         SOURCES("menu_sources"),
         SERVERS("menu_servers"),
         SETTINGS("menu_settings");
