@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Pikisubs</string>
+
+    <string name="title_dialog_source">Fuente</string>
+
+    <string name="navigation_drawer_open">Abrir cajón de navegación</string>
+    <string name="navigation_drawer_close">Cerrar cajón de navegación</string>
+
+    <string name="action_example">Acción de ejemplo</string>
+    <string name="action_settings">Configuración</string>
+    <string name="action_add_source">Agregar fuente</string>
+
+    <string name="button_save">Grabar</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_delete">Borrar</string>
+
+    <string name="menu_local_videos">Videos</string>
+    <string name="menu_videos_no_subs">Videos sin subtítulos</string>
+    <string name="menu_videos_subs">Videos con subtítulos</string>
+    <string name="menu_sources">Fuentes</string>
+    <string name="menu_settings">Configuración</string>
+    <string name="menu_servers">Servidores</string>
+
+    <string name="title_activity_subtitles">Subtítulos</string>
+
+    <string name="message_no_files">No hay subtítulos en el archivo descargado</string>
+    <string name="message_many_files">No se pueden procesar archivos sin subítulos aún... Lo siento.</string>
+    <string name="message_subs_uploaded">Subtítulos subidos!</string>
+
+    <string name="title_dialog_many_subs">Por favor seleccione subtítulo del archivo</string>
+    <string name="message_cannot_download">Problema procesando archivo %s</string>
+    <string name="message_searching_in">Buscando en %s</string>
+    <string name="title_progress_videos">Cargando videos</string>
+    <string name="message_wait_please">Aguarde por favor...</string>
+    <string name="title_progress_subtitles">Buscando subtítulos</string>
+    <string name="title_progress_subtitle_download">Bajando subtítulos</string>
+    <string name="label_filename">Nombre de archivo</string>
+    <string name="label_search_text">Buscar texto</string>
+    <string name="needs_subs">Necesita subtítulos!</string>
+    <string name="watched">Visto</string>
+    <string name="not_watched">No visto</string>
+    <string name="action_refresh">Refrescar</string>
+    <string name="message_getting_videos">Obteniendo videos de las fuentes</string>
+    <string name="message_guessing_videos">Obteniendo información de los videos</string>
+    <string name="message_updating_local_db">Actualizando base de datos local</string>
+    <string name="message_getting_posters">Descargando posters</string>
+    <string name="empty_string" />
+    <string name="title_dialog_video_actions">Acciones de video</string>
+
+    <string name="video_action_edit_title">Editar título</string>
+    <string name="video_action_play">Ver</string>
+    <string name="video_action_play_trailer">Ver trailer</string>
+    <string name="video_action_download_subs">Descargar subtítulos</string>
+    <string name="video_action_needs_subs">Necesita subtítulos</string>
+    <string name="video_action_not_needs_subs">No necesita subtítulos</string>
+    <string name="video_action_set_watched">Ya lo he visto</string>
+    <string name="video_action_set_unwatched">No lo he visto</string>
+
+    <string name="filter_all">Ver todo</string>
+    <string name="filter_watched">Solo los vistos</string>
+    <string name="filter_not_watched">Solo los no vistos</string>
+
+    <string name="title_dialog_video_server">Servidor de videos</string>
+    <string name="action_add">Agregar</string>
+    <string name="server_hostname_or_ip">Nombre o dirección IP</string>
+    <string name="server_username">Nombre de usuario del servidor</string>
+    <string name="server_password">Contraseña del servidor</string>
+    <string name="server_http_url">HTTP URL</string>
+    <string name="server">Servidor</string>
+    <string name="absolutePath">Path</string>
+    <string name="video_type">Tipo de video</string>
+    <string name="http_path">HTTP Path</string>
+    <string name="movie">Película</string>
+    <string name="tv_show">Serie de TV</string>
+    <string name="title_progress_trailer">Buscando trailers</string>
+    <string name="message_progress_trailer">Aguarde un momento por favor...</string>
+    <string name="filter">Filtro</string>
+    <string name="title_dialog_videos_filter">Filtrar videos por</string>
+    <string name="title_dialog_edit_title">Editar título de video</string>
+    <string name="button_ok">OK</string>
+</resources>
