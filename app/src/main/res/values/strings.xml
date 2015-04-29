@@ -23,7 +23,6 @@
 
     <string name="title_activity_subtitles">Subtitles</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="message_no_files">There are no subtitles in the downloaded file</string>
     <string name="message_many_files">Cannot process files with many subtitles yet... Sorry.</string>
     <string name="message_subs_uploaded">Subtitles uploaded!</string>
@@ -37,9 +36,6 @@
     <string name="title_progress_subtitle_download">Downloading subtitle</string>
     <string name="label_filename">Filename</string>
     <string name="label_search_text">Search text</string>
-    <string name="preference_videos_server_host">Videos server hostname or IP</string>
-    <string name="preference_videos_server_username">Videos server username</string>
-    <string name="preference_videos_server_password">Videos server password</string>
     <string name="needs_subs">Needs subs!</string>
     <string name="watched">Watched</string>
     <string name="not_watched">Not watched</string>
