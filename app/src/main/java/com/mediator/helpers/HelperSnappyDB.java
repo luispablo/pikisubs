@@ -28,15 +28,13 @@ public class HelperSnappyDB {
 
     public static HelperSnappyDB getSingleton(Context context) {
         try {
-            while (locked) Thread.sleep(500);
-
             if (singleton == null) singleton = new HelperSnappyDB();
 
             singleton.open(context);
 
             return singleton;
 
-        } catch (SnappydbException | InterruptedException e) {
+        } catch (SnappydbException e) {
             e(e);
             return null;
         }

@@ -53,9 +53,12 @@ public class ActionPlayVideo implements IAction {
     @Subscribe
     public void onSubsFileDownloaed(File subsFile) {
         try {
+            videoEntry.setWatched(true);
+
             HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
             VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
             VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
+            helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
 
             String videoURL = videoServer.getHttpUrl() + videoSource.getHttpPath() +
