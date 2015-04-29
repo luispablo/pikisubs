@@ -1,8 +1,10 @@
 package com.mediator.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -58,16 +60,18 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
         List<String> labels = Oju.map(availableActions, new Oju.UnaryOperator<Action, String>() {
             @Override
             public String operate(Action action) {
-                return HelperAndroid.getStringByName(getActivity(), "video_action_"+ action.name().toLowerCase());
+                return HelperAndroid.getStringByName(getActivity(), "video_action_" + action.name().toLowerCase());
             }
         });
+
+        final Activity activity = getActivity();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.title_dialog_video_actions)
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Action action = Action.values()[which];
-                        action.videoAction.execute(getActivity(), videoEntry);
+                        action.videoAction.execute(activity, videoEntry);
                         onDone(action.videoAction);
                     }
                 });

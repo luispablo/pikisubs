@@ -40,7 +40,7 @@ public class ActionPlayVideo implements IAction {
 
     @Override
     public void execute(Activity activity, VideoEntry videoEntry) {
-        this.context = context;
+        this.context = activity;
         this.videoEntry = videoEntry;
 
         Bus bus = new Bus();

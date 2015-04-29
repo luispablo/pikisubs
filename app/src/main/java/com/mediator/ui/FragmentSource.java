@@ -8,8 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperSnappyDB;
@@ -29,7 +29,7 @@ import static com.mediator.helpers.TinyLogger.e;
 public class FragmentSource extends Fragment {
 
     @InjectView(android.R.id.list)
-    ListView listViewSources;
+    AbsListView listViewSources;
     ArrayAdapter<String> adapter;
     List<VideoSource> videoSources;
     Bus bus;

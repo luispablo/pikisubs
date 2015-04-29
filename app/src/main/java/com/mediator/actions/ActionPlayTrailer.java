@@ -20,7 +20,7 @@ import static com.mediator.helpers.TinyLogger.d;
  */
 public class ActionPlayTrailer implements IAction {
 
-    private Context context;
+    private Activity activity;
     private ProgressDialog progressDialog;
 
     @Override
@@ -35,17 +35,17 @@ public class ActionPlayTrailer implements IAction {
 
     @Override
     public void execute(Activity activity, VideoEntry videoEntry) {
-        this.context = context;
+        this.activity = activity;
 
-        progressDialog = new ProgressDialog(context);
+        progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle(R.string.title_progress_trailer);
-        progressDialog.setMessage(context.getString(R.string.message_progress_trailer));
+        progressDialog.setMessage(activity.getString(R.string.message_progress_trailer));
         progressDialog.show();
 
         Bus bus = new Bus();
         bus.register(this);
 
-        TaskTMDbMovieVideos taskTMDbMovieVideos = new TaskTMDbMovieVideos(context, bus);
+        TaskTMDbMovieVideos taskTMDbMovieVideos = new TaskTMDbMovieVideos(activity, bus);
         taskTMDbMovieVideos.execute(videoEntry.getTmdbResult().getId());
     }
 
@@ -57,7 +57,7 @@ public class ActionPlayTrailer implements IAction {
 
         if (tmDbMovieVideosResponse.getResults().size() > 0) {
             TMDbMovieVideosResult tmDbMovieVideosResult = tmDbMovieVideosResponse.getResults().get(0);
-            YouTubePlayer youTubePlayer = new YouTubePlayer(context, tmDbMovieVideosResult.getKey());
+            YouTubePlayer youTubePlayer = new YouTubePlayer(activity, tmDbMovieVideosResult.getKey());
             youTubePlayer.play();
         }
     }

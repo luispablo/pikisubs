@@ -16,6 +16,8 @@ import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
+import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
 
 import java.io.BufferedInputStream;
@@ -47,10 +49,12 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
         VideoEntry videoEntry = videoEntries[0];
         File subsFile = null;
 
-        HelperDAO helperDAO = new HelperDAO(context);
-        VideoServer videoServer = helperDAO.getServer(videoEntry);
-
         try {
+            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
+            VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
+            VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
+            helperSnappyDB.close();
+
             HelperSSH helper = new HelperSSH(videoServer);
             Session session = helper.connectSession();
             ChannelSftp sftp = helper.openSFTP(session);
@@ -75,7 +79,7 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
             sftp.disconnect();
             session.disconnect();
 
-        } catch (IOException | SftpException | JSchException e) {
+        } catch (IOException | SftpException | JSchException | SnappydbException e) {
             e(e);
         }
 
