@@ -9,12 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AbsListView;
 
 import com.mediator.R;
-import com.mediator.actions.ActionDownloadSubs;
-import com.mediator.actions.ActionNeedsSubs;
-import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
@@ -56,7 +53,7 @@ public class FragmentLocalVideos extends Fragment {
     }
 
     @InjectView(R.id.listVideos)
-    ListView listVideos;
+    AbsListView listVideos;
     ProgressDialog progressDialog;
     List<VideoEntry> videoEntries;
     Bus bus;
