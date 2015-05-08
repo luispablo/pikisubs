@@ -74,7 +74,7 @@ public class AdapterVideoEntries extends BaseAdapter {
 
         if (videoEntry.getTmdbResult() != null) {
             Picasso.with(context)
-                    .load(buildTMDbPosterURL(videoEntry.getTmdbResult()))
+                    .load(videoEntry.getTmdbResult().buildPosterURL(context))
                     .placeholder(R.drawable.poster_placeholder)
                     .error(R.drawable.poster_placeholder)
                     .fit()
@@ -83,15 +83,5 @@ public class AdapterVideoEntries extends BaseAdapter {
         }
 
         return convertView;
-    }
-
-    private String buildTMDbPosterURL(TMDbMovieSearchResult tmdbResult) {
-        String baseUrl = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_URL);
-        String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
-        String imagePath = tmdbResult.getPosterPath();
-        String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
-        d("image URL: "+ baseUrl + size + imagePath +"?api_key="+ apiKey);
-
-        return baseUrl + size + imagePath +"?api_key="+ apiKey;
     }
 }

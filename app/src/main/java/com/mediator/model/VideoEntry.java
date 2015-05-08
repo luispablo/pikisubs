@@ -1,5 +1,7 @@
 package com.mediator.model;
 
+import android.content.Context;
+
 /**
  * Created by luispablo on 11/04/15.
  */
@@ -42,6 +44,17 @@ public class VideoEntry implements SnappyKey {
         this.videoSourceKey = videoSourceKey;
     }
 
+    public TVShow buildTVShow(Context context) {
+        TVShow tvShow = new TVShow();
+        tvShow.setTitle(getGuessitObject().getSeries());
+
+        if (getTmdbResult() != null) {
+            tvShow.setPosterFullURL(getTmdbResult().buildPosterURL(context));
+        }
+
+        return  tvShow;
+    }
+
     public String titleToShow() {
         if (getUserEditedTitle() != null) {
             return getUserEditedTitle();
@@ -50,6 +63,16 @@ public class VideoEntry implements SnappyKey {
         } else {
             return getFilename();
         }
+    }
+
+    public boolean isMovie() {
+        return getGuessitObject() == null ||
+                getGuessitObject().isMovie();
+    }
+
+    public boolean isTVShow() {
+        return getGuessitObject() == null ||
+                getGuessitObject().isEpisode();
     }
 
     public String getUserEditedTitle() {

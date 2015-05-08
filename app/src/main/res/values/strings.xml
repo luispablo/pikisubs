@@ -14,7 +14,8 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
 
-    <string name="menu_local_videos">Videos</string>
+    <string name="menu_movies">Movies</string>
+    <string name="menu_tv_shows">TV Shows</string>
     <string name="menu_videos_no_subs">Videos without subs</string>
     <string name="menu_videos_subs">Videos with subs</string>
     <string name="menu_sources">Sources</string>
@@ -74,8 +75,9 @@
     <string name="tv_show">TV Show</string>
     <string name="title_progress_trailer">Looking for trailers</string>
     <string name="message_progress_trailer">Wait a moment please...</string>
-    <string name="filter">Filter</string>
+    <string name="movieFilter">Filter</string>
     <string name="title_dialog_videos_filter">Filter videos by</string>
     <string name="title_dialog_edit_title">Edit video title</string>
     <string name="button_ok">OK</string>
+    <string name="title_progress_tv_shows">Loading TV shows</string>
 </resources>

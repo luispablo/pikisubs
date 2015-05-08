@@ -50,7 +50,8 @@ public class FragmentNavigationDrawer extends Fragment {
     private NavigationDrawerCallbacks mCallbacks;
 
     public enum DrawerItem {
-        LOCAL_VIDEOS("menu_local_videos"),
+        MOVIES("menu_movies"),
+        TV_SHOWS("menu_tv_shows"),
         SOURCES("menu_sources"),
         SERVERS("menu_servers"),
         SETTINGS("menu_settings");

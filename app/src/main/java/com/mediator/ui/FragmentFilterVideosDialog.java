@@ -10,7 +10,6 @@ import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,13 +18,13 @@ import java.util.List;
  */
 public abstract class FragmentFilterVideosDialog extends DialogFragment {
 
-    private FragmentLocalVideos.Filter[] filterItems;
+    private FragmentMovies.MovieFilter[] movieFilterItems;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<String> filterLabels = Oju.map(Arrays.asList(filterItems), new Oju.UnaryOperator<FragmentLocalVideos.Filter, String>() {
+        List<String> filterLabels = Oju.map(Arrays.asList(movieFilterItems), new Oju.UnaryOperator<FragmentMovies.MovieFilter, String>() {
             @Override
-            public String operate(FragmentLocalVideos.Filter filterItem) {
+            public String operate(FragmentMovies.MovieFilter filterItem) {
                 return HelperAndroid.getStringByName(getActivity(), "filter_"+ filterItem.name().toLowerCase());
             }
         });
@@ -34,15 +33,15 @@ public abstract class FragmentFilterVideosDialog extends DialogFragment {
         builder.setTitle(R.string.title_dialog_videos_filter)
                 .setItems(filterLabels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        onSelected(filterItems[which]);
+                        onSelected(movieFilterItems[which]);
                     }
                 });
         return builder.create();
     }
 
-    public void setFilterItems(FragmentLocalVideos.Filter[] filterItems) {
-        this.filterItems = filterItems;
+    public void setMovieFilterItems(FragmentMovies.MovieFilter[] movieFilterItems) {
+        this.movieFilterItems = movieFilterItems;
     }
 
-    public abstract void onSelected(FragmentLocalVideos.Filter filter);
+    public abstract void onSelected(FragmentMovies.MovieFilter movieFilter);
 }

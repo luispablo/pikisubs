@@ -38,17 +38,17 @@ import static com.mediator.helpers.TinyLogger.e;
 /**
  * Created by luispablo on 23/04/15.
  */
-public class FragmentLocalVideos extends Fragment {
+public class FragmentMovies extends Fragment {
 
-    public enum Filter {
+    public enum MovieFilter {
         ALL,
         WATCHED,
         NOT_WATCHED;
 
         public boolean applies(VideoEntry videoEntry) {
-            return ALL.equals(this) ||
+            return videoEntry.isMovie() && (ALL.equals(this) ||
                     WATCHED.equals(this) && videoEntry.isWatched() ||
-                    NOT_WATCHED.equals(this) && !videoEntry.isWatched();
+                    NOT_WATCHED.equals(this) && !videoEntry.isWatched());
         }
     }
 
@@ -57,13 +57,13 @@ public class FragmentLocalVideos extends Fragment {
     ProgressDialog progressDialog;
     List<VideoEntry> videoEntries;
     Bus bus;
-    Filter filter;
+    MovieFilter movieFilter;
 
-    public static FragmentLocalVideos newInstance() {
-        return new FragmentLocalVideos();
+    public static FragmentMovies newInstance() {
+        return new FragmentMovies();
     }
 
-    public FragmentLocalVideos() {
+    public FragmentMovies() {
     }
 
     @Override
@@ -73,7 +73,7 @@ public class FragmentLocalVideos extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_local_videos, container, false);
+        View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.inject(this, view);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -84,7 +84,7 @@ public class FragmentLocalVideos extends Fragment {
         bus.register(this);
 
         videoEntries = new ArrayList<>();
-        filter = Filter.NOT_WATCHED;
+        movieFilter = MovieFilter.NOT_WATCHED;
 
         setHasOptionsMenu(true);
 
@@ -102,7 +102,7 @@ public class FragmentLocalVideos extends Fragment {
             videoEntries = Oju.filter(helperSnappyDB.all(VideoEntry.class), new Oju.UnaryChecker<VideoEntry>() {
                 @Override
                 public boolean check(VideoEntry videoEntry) {
-                    return filter.applies(videoEntry);
+                    return movieFilter.applies(videoEntry);
                 }
             });
             helperSnappyDB.close();
@@ -184,8 +184,8 @@ public class FragmentLocalVideos extends Fragment {
         taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
     }
 
-    private void filterList(Filter filter) {
-        this.filter = filter;
+    private void filterList(MovieFilter movieFilter) {
+        this.movieFilter = movieFilter;
         loadList();
     }
 
@@ -202,11 +202,11 @@ public class FragmentLocalVideos extends Fragment {
             case R.id.action_local_videos_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
                     @Override
-                    public void onSelected(Filter filter) {
+                    public void onSelected(MovieFilter filter) {
                         filterList(filter);
                     }
                 };
-                filterVideosDialog.setFilterItems(Filter.values());
+                filterVideosDialog.setMovieFilterItems(MovieFilter.values());
                 filterVideosDialog.show(getFragmentManager(), null);
 
                 return true;

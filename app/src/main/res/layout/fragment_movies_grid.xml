@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mediator.ui.FragmentLocalVideos">
+    tools:context="com.mediator.ui.FragmentMovies">
 
-    <ListView
+    <GridView
+        android:numColumns="3"
         android:id="@+id/listVideos"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

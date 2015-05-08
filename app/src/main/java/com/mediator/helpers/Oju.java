@@ -2,8 +2,10 @@ package com.mediator.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -163,6 +165,25 @@ public class Oju {
         list.addAll(set);
 
         return list;
+    }
+
+    public static <T, M> Map<M, List<T>> groupBy(List<T> list, UnaryOperator<T, M> unaryOperator) {
+        Map<M, List<T>> groups = new HashMap<>();
+
+        for (T t : list) {
+            M key = unaryOperator.operate(t);
+
+            if (groups.containsKey(key)) {
+                groups.get(key).add(t);
+            } else {
+                List<T> keyList = new ArrayList<>();
+                keyList.add(t);
+
+                groups.put(key, keyList);
+            }
+        }
+
+        return groups;
     }
 
     public interface UnaryOperator<T, M> {
