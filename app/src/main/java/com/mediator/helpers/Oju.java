@@ -26,6 +26,16 @@ public class Oju {
         return matches;
     }
 
+    public static <T> List<T> distinct(List<T> list) {
+        Set<T> tempSet = new HashSet<>();
+        tempSet.addAll(list);
+
+        List<T> distinctList = new ArrayList<>();
+        distinctList.addAll(tempSet);
+
+        return distinctList;
+    }
+
     public static Set<String> lowerCaseTerms(String string) {
         String replaced = string.toLowerCase().replaceAll(" ", ".");
         List<String> termsList = Oju.filter(Arrays.asList(replaced.split("\\.")), new Oju.UnaryChecker<String>() {

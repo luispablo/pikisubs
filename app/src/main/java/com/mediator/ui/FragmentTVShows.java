@@ -2,6 +2,7 @@ package com.mediator.ui;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -24,8 +25,9 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
-import static com.mediator.helpers.TinyLogger.e;
+import static com.mediator.helpers.TinyLogger.*;
 
 /**
  * Created by luispablo on 07/05/15.
@@ -35,7 +37,7 @@ public class FragmentTVShows extends Fragment {
     @InjectView(R.id.listTVShows)
     AbsListView listVideos;
     ProgressDialog progressDialog;
-    Map<TVShow, List<VideoEntry>> videoEntries;
+    List<TVShow> tvShows;
 
     public static FragmentTVShows newInstance() {
         return new FragmentTVShows();
@@ -69,21 +71,29 @@ public class FragmentTVShows extends Fragment {
             });
             helperSnappyDB.close();
 
-            videoEntries = Oju.groupBy(allVideos, new Oju.UnaryOperator<VideoEntry, TVShow>() {
+            tvShows = Oju.distinct(Oju.map(allVideos, new Oju.UnaryOperator<VideoEntry, TVShow>() {
                 @Override
                 public TVShow operate(VideoEntry videoEntry) {
-                    return videoEntry.buildTVShow(getActivity());
+                return videoEntry.buildTVShow(getActivity());
                 }
-            });
-
+            }));
         } catch (SnappydbException e) {
             e(e);
         }
 
-        List<TVShow> tvShows = Oju.list(videoEntries.keySet());
         Collections.sort(tvShows);
 
         listVideos.setAdapter(new AdapterTVShows(getActivity(), tvShows));
         progressDialog.dismiss();
+    }
+
+    @OnItemClick(R.id.listTVShows)
+    public void onItemClick(int position) {
+        TVShow tvShow = tvShows.get(position);
+
+        Intent intent = new Intent(getActivity(), ActivityEpisodes.class);
+        intent.putExtra(TVShow.class.getName(), tvShow);
+
+        startActivity(intent);
     }
 }
