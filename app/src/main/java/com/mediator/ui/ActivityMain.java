@@ -1,5 +1,6 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
 import static com.mediator.ui.FragmentNavigationDrawer.DrawerItem;
 
 import android.app.Fragment;
