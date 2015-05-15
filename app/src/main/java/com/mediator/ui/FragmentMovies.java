@@ -40,24 +40,12 @@ import static com.mediator.helpers.TinyLogger.e;
  */
 public class FragmentMovies extends Fragment {
 
-    public enum MovieFilter {
-        ALL,
-        WATCHED,
-        NOT_WATCHED;
-
-        public boolean applies(VideoEntry videoEntry) {
-            return videoEntry.isMovie() && (ALL.equals(this) ||
-                    WATCHED.equals(this) && videoEntry.isWatched() ||
-                    NOT_WATCHED.equals(this) && !videoEntry.isWatched());
-        }
-    }
-
     @InjectView(R.id.listVideos)
     AbsListView listVideos;
     ProgressDialog progressDialog;
     List<VideoEntry> videoEntries;
     Bus bus;
-    MovieFilter movieFilter;
+    FragmentFilterVideosDialog.VideoFilter filter;
 
     public static FragmentMovies newInstance() {
         return new FragmentMovies();
@@ -84,7 +72,7 @@ public class FragmentMovies extends Fragment {
         bus.register(this);
 
         videoEntries = new ArrayList<>();
-        movieFilter = MovieFilter.NOT_WATCHED;
+        filter = FragmentFilterVideosDialog.VideoFilter.NOT_WATCHED;
 
         setHasOptionsMenu(true);
 
@@ -102,7 +90,7 @@ public class FragmentMovies extends Fragment {
             videoEntries = Oju.filter(helperSnappyDB.all(VideoEntry.class), new Oju.UnaryChecker<VideoEntry>() {
                 @Override
                 public boolean check(VideoEntry videoEntry) {
-                    return movieFilter.applies(videoEntry);
+                    return videoEntry.isMovie() && filter.applies(videoEntry);
                 }
             });
             helperSnappyDB.close();
@@ -184,8 +172,8 @@ public class FragmentMovies extends Fragment {
         taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
     }
 
-    private void filterList(MovieFilter movieFilter) {
-        this.movieFilter = movieFilter;
+    private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
+        this.filter = filter;
         loadList();
     }
 
@@ -202,11 +190,11 @@ public class FragmentMovies extends Fragment {
             case R.id.action_local_videos_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
                     @Override
-                    public void onSelected(MovieFilter filter) {
+                    public void onSelected(VideoFilter filter) {
                         filterList(filter);
                     }
                 };
-                filterVideosDialog.setMovieFilterItems(MovieFilter.values());
+                filterVideosDialog.setFilterItems(FragmentFilterVideosDialog.VideoFilter.values());
                 filterVideosDialog.show(getFragmentManager(), null);
 
                 return true;

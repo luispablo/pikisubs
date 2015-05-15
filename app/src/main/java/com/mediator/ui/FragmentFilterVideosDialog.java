@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
+import com.mediator.model.VideoEntry;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,13 +19,24 @@ import java.util.List;
  */
 public abstract class FragmentFilterVideosDialog extends DialogFragment {
 
-    private FragmentMovies.MovieFilter[] movieFilterItems;
+    public enum VideoFilter {
+        ALL,
+        WATCHED,
+        NOT_WATCHED;
+
+        public boolean applies(VideoEntry videoEntry) {
+            return ALL.equals(this) || WATCHED.equals(this) && videoEntry.isWatched() ||
+                    NOT_WATCHED.equals(this) && !videoEntry.isWatched();
+        }
+    }
+
+    private VideoFilter[] filterItems;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<String> filterLabels = Oju.map(Arrays.asList(movieFilterItems), new Oju.UnaryOperator<FragmentMovies.MovieFilter, String>() {
+        List<String> filterLabels = Oju.map(Arrays.asList(filterItems), new Oju.UnaryOperator<VideoFilter, String>() {
             @Override
-            public String operate(FragmentMovies.MovieFilter filterItem) {
+            public String operate(VideoFilter filterItem) {
                 return HelperAndroid.getStringByName(getActivity(), "filter_"+ filterItem.name().toLowerCase());
             }
         });
@@ -33,15 +45,15 @@ public abstract class FragmentFilterVideosDialog extends DialogFragment {
         builder.setTitle(R.string.title_dialog_videos_filter)
                 .setItems(filterLabels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        onSelected(movieFilterItems[which]);
+                        onSelected(filterItems[which]);
                     }
                 });
         return builder.create();
     }
 
-    public void setMovieFilterItems(FragmentMovies.MovieFilter[] movieFilterItems) {
-        this.movieFilterItems = movieFilterItems;
+    public void setFilterItems(VideoFilter[] filterItems) {
+        this.filterItems = filterItems;
     }
 
-    public abstract void onSelected(FragmentMovies.MovieFilter movieFilter);
+    public abstract void onSelected(VideoFilter movieFilter);
 }

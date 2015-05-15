@@ -1,13 +1,15 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.mediator.R;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperDAO;
+import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 
@@ -24,6 +26,7 @@ import butterknife.OnItemClick;
  */
 public class ActivityEpisodes extends ActionBarActivity {
 
+    FragmentFilterVideosDialog.VideoFilter filter;
     TVShow tvShow;
     List<VideoEntry> listEpisodes;
 
@@ -37,6 +40,7 @@ public class ActivityEpisodes extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvShow = (TVShow) getIntent().getSerializableExtra(TVShow.class.getName());
+        filter = FragmentFilterVideosDialog.VideoFilter.NOT_WATCHED;
 
         ButterKnife.inject(this);
     }
@@ -47,9 +51,44 @@ public class ActivityEpisodes extends ActionBarActivity {
         load();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_episodes, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_episodes_filter:
+                FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
+                    @Override
+                    public void onSelected(VideoFilter filter) {
+                        filterList(filter);
+                    }
+                };
+                filterVideosDialog.setFilterItems(FragmentFilterVideosDialog.VideoFilter.values());
+                filterVideosDialog.show(getFragmentManager(), null);
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
+        this.filter = filter;
+        load();
+    }
+
     private void load() {
         HelperDAO helperDAO = new HelperDAO(this);
-        listEpisodes = helperDAO.episodesFrom(tvShow);
+        listEpisodes = Oju.filter(helperDAO.episodesFrom(tvShow), new Oju.UnaryChecker<VideoEntry>() {
+            @Override
+            public boolean check(VideoEntry episode) {
+                return filter.applies(episode);
+            }
+        });
         Collections.sort(listEpisodes, new EpisodeComparator());
         listViewEpisodes.setAdapter(new AdapterEpisodes(this, listEpisodes));
     }
