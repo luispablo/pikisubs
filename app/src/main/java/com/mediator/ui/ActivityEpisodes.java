@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 
 /**
  * Created by luispablo on 11/05/15.
@@ -50,6 +52,18 @@ public class ActivityEpisodes extends ActionBarActivity {
         listEpisodes = helperDAO.episodesFrom(tvShow);
         Collections.sort(listEpisodes, new EpisodeComparator());
         listViewEpisodes.setAdapter(new AdapterEpisodes(this, listEpisodes));
+    }
+
+    @OnItemClick(R.id.listViewEpisodes)
+    public void onItemClick(int position) {
+        FragmentEpisodeActionsDialog fragmentEpisodeActionsDialog = new FragmentEpisodeActionsDialog() {
+            @Override
+            public void onDone(IAction action) {
+                if (action.changedDB()) load();
+            }
+        };
+        fragmentEpisodeActionsDialog.setEpisode(listEpisodes.get(position));
+        fragmentEpisodeActionsDialog.show(getFragmentManager(), null);
     }
 
     class EpisodeComparator implements Comparator<VideoEntry> {
