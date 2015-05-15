@@ -46,7 +46,7 @@ public class VideoEntry implements SnappyKey {
 
     public TVShow buildTVShow(Context context) {
         TVShow tvShow = new TVShow();
-        tvShow.setTitle(getGuessitObject().getSeries());
+        tvShow.setTitle(getSeriesTitle());
 
         if (getTmdbResult() != null) {
             tvShow.setPosterFullURL(getTmdbResult().buildPosterURL(context));
@@ -163,5 +163,36 @@ public class VideoEntry implements SnappyKey {
 
     public void setPathRelativeToSource(String pathRelativeToSource) {
         this.pathRelativeToSource = pathRelativeToSource;
+    }
+
+    public String getSeriesTitle() {
+        GuessitObject guessitObject = getGuessitObject();
+        String seriesTile = "";
+
+        if (guessitObject != null) {
+            seriesTile = guessitObject.getSeries();
+        }
+
+        return seriesTile;
+    }
+
+    public String getEpisodeNumber() {
+        GuessitObject guessitObject = getGuessitObject();
+
+        if (guessitObject != null) {
+            return guessitObject.getEpisodeNumber();
+        } else {
+            return "-";
+        }
+    }
+
+    public int getSeason() {
+        GuessitObject guessitObject = getGuessitObject();
+
+        if (guessitObject != null) {
+            return guessitObject.getSeason();
+        } else {
+            return -1;
+        }
     }
 }

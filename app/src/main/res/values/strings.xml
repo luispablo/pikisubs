@@ -81,4 +81,5 @@
     <string name="button_ok">OK</string>
     <string name="title_progress_tv_shows">Loading TV shows</string>
     <string name="title_activity_episodes">Episodes</string>
+    <string name="season_episode">Season %1$d, episode %2$s.</string>
 </resources>

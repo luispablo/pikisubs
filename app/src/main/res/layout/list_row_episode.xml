@@ -11,4 +11,11 @@
         android:layout_height="wrap_content"
         android:paddingTop="15dp" />
 
+    <TextView
+        android:id="@+id/textSeasonEpisode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtTitle"
+        style="@android:style/TextAppearance.DeviceDefault.Small" />
+
 </RelativeLayout>
