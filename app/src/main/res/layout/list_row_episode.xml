@@ -5,17 +5,32 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/textTitle"
         style="@android:style/TextAppearance.DeviceDefault.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="15dp" />
 
     <TextView
+        android:id="@+id/textWatched"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/textTitle"
+        style="@android:style/TextAppearance.DeviceDefault.Small" />
+
+    <TextView
         android:id="@+id/textSeasonEpisode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtTitle"
+        android:layout_below="@id/textTitle"
         style="@android:style/TextAppearance.DeviceDefault.Small" />
+
+    <TextView
+        android:id="@+id/textSubsIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textWatched"
+        android:layout_toRightOf="@id/textSeasonEpisode"
+        style="@style/SubsIndicator" />
 
 </RelativeLayout>

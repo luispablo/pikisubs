@@ -51,10 +51,17 @@ public class AdapterEpisodes extends BaseAdapter {
         VideoEntry videoEntry = (VideoEntry) getItem(position);
 
         String title = videoEntry.getGuessitObject() != null ? videoEntry.getGuessitObject().getTitle() : videoEntry.titleToShow();
-        ((TextView) view.findViewById(R.id.txtTitle)).setText(title);
+        ((TextView) view.findViewById(R.id.textTitle)).setText(title);
 
         String seasonEpisode = String.format(context.getString(R.string.season_episode), videoEntry.getSeason(), videoEntry.getEpisodeNumber());
         ((TextView) view.findViewById(R.id.textSeasonEpisode)).setText(seasonEpisode);
+
+        int watchedTextId = videoEntry.isWatched() ? R.string.watched : R.string.not_watched;
+        ((TextView) view.findViewById(R.id.textWatched)).setText(context.getString(watchedTextId));
+
+        if (videoEntry.needsSubs()) {
+            ((TextView) view.findViewById(R.id.textSubsIndicator)).setText(context.getString(R.string.needs_subs));
+        }
 
         return view;
     }
