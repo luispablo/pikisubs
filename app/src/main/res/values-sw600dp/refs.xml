@@ -17,6 +17,6 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
     <item name="fragment_movies" type="layout">@layout/fragment_movies_grid</item>
-    <item name="fragment_tv_shows" type="layout">@layout/fragment_tv_shows</item>
+    <item name="fragment_tv_shows" type="layout">@layout/fragment_tv_shows_grid</item>
 
 </resources>
