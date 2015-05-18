@@ -82,4 +82,6 @@
     <string name="title_progress_tv_shows">Loading TV shows</string>
     <string name="title_activity_episodes">Episodes</string>
     <string name="season_episode">Season %1$d, episode %2$s.</string>
+    <string name="title_dialog_set_tmdb_id">Set TMDb ID</string>
+    <string name="title_dialog_get_tmdb_movie">Contacting TMDb</string>
 </resources>

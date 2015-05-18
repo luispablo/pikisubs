@@ -9,7 +9,19 @@ import java.io.Serializable;
  */
 public class GuessitObject implements Serializable {
 
-    public enum Type { episode, movie }
+    public enum Type {
+        episode, movie;
+
+        public VideoEntry.VideoType getVideoType() {
+            if (episode.equals(this)) {
+                return VideoEntry.VideoType.TV_SHOW;
+            } else if (movie.equals(this)) {
+                return VideoEntry.VideoType.MOVIE;
+            } else {
+                return null;
+            }
+        }
+    }
 
     private String title;
     private Type type;
@@ -18,33 +30,6 @@ public class GuessitObject implements Serializable {
     private String episodeNumber;
     private int season;
     private String series;
-
-    public String suggestedSearchText() {
-        String searchText = "";
-
-        if (isMovie()) {
-            searchText = getTitle();
-        } else if (isEpisode()) {
-            searchText = getSeries() +" S"+ Oju.right("0" + String.valueOf(season), 2)
-                                        +"E"+ Oju.right("0"+ episodeNumber.trim(), 2);
-        } else {
-            searchText = "##UNKNOWN TYPE";
-        }
-
-        return searchText;
-    }
-
-    public String posterSearchText() {
-        String posterSearchText = "";
-
-        if (isMovie()) {
-            posterSearchText = getTitle();
-        } else if (isEpisode()) {
-            posterSearchText = getSeries();
-        }
-
-        return posterSearchText;
-    }
 
     public boolean isMovie() {
         return Type.movie.equals(getType());

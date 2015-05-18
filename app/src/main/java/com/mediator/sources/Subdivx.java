@@ -2,6 +2,7 @@ package com.mediator.sources;
 
 import com.mediator.model.GuessitObject;
 import com.mediator.model.Subtitle;
+import com.mediator.model.VideoEntry;
 import com.mediator.retrofit.RetrofitServiceSubdivx;
 import com.orhanobut.logger.Logger;
 
@@ -20,17 +21,15 @@ import retrofit.converter.SimpleXMLConverter;
 public class Subdivx implements SubtitlesSource {
 
     @Override
-    public List<Subtitle> search(GuessitObject giObject) {
+    public List<Subtitle> search(VideoEntry videoEntry) {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://www.subdivx.com/")
                 .setConverter(new SimpleXMLConverter())
                 .build();
 
         RetrofitServiceSubdivx service = restAdapter.create(RetrofitServiceSubdivx.class);
-        String searchText = giObject.suggestedSearchText();
-        Logger.d("Searching subs for ["+ searchText +"]");
 
-        return service.search(searchText).getChannel().getItems();
+        return service.search(videoEntry.getTitle()).getChannel().getItems();
     }
 
     @Override

@@ -26,7 +26,7 @@ public class TVShow implements Comparable<TVShow>, Serializable {
     }
 
     public boolean contains(VideoEntry videoEntry) {
-        return videoEntry.isTVShow() && getTitle().equals(videoEntry.getSeriesTitle());
+        return videoEntry.isTVShow() && getTitle().equals(videoEntry.getTitle());
     }
 
     @Override

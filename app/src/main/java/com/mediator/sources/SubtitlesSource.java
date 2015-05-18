@@ -2,6 +2,7 @@ package com.mediator.sources;
 
 import com.mediator.model.GuessitObject;
 import com.mediator.model.Subtitle;
+import com.mediator.model.VideoEntry;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public interface SubtitlesSource {
 
-    public List<Subtitle> search(GuessitObject giObject);
+    public List<Subtitle> search(VideoEntry videoEntry);
 
     public String getName();
 }

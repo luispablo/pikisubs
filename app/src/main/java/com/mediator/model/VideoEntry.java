@@ -2,6 +2,11 @@ package com.mediator.model;
 
 import android.content.Context;
 
+import com.mediator.helpers.MediatorPrefs;
+import com.mediator.helpers.Oju;
+
+import static com.mediator.helpers.TinyLogger.d;
+
 /**
  * Created by luispablo on 11/04/15.
  */
@@ -18,17 +23,26 @@ public class VideoEntry implements SnappyKey {
         }
     }
 
-    private String userEditedTitle;
-    private String snappyKey;
     private String absolutePath;
     private String pathRelativeToSource;
     private String filename;
-    private boolean hasSubs;
+
+    private String snappyKey;
     private String videoSourceKey;
-    private GuessitObject guessitObject;
-    private TMDbMovieSearchResult tmdbResult;
+
+    private String title;
+    private String seriesTitle;
+
+    private VideoType videoType;
+    private int seasonNumber;
+    private int episodeNumber;
+    private String posterPath;
+
+    private boolean hasSubs;
     private boolean needsSubs;
     private boolean watched;
+
+    private long tmdbId;
 
     public VideoEntry() {
         this.needsSubs = true;
@@ -48,55 +62,108 @@ public class VideoEntry implements SnappyKey {
         TVShow tvShow = new TVShow();
         tvShow.setTitle(getSeriesTitle());
 
-        if (getTmdbResult() != null) {
-            tvShow.setPosterFullURL(getTmdbResult().buildPosterURL(context));
+        if (getPosterPath() != null) {
+            tvShow.setPosterFullURL(buildPosterURL(context));
         }
 
         return  tvShow;
     }
 
     public String titleToShow() {
-        if (getUserEditedTitle() != null) {
-            return getUserEditedTitle();
-        } else if (getGuessitObject() != null) {
-            return getGuessitObject().suggestedSearchText();
+        String title = "-";
+
+        if (getTitle() != null) {
+            title = getTitle();
+        } else if (getFilename() != null) {
+            title = getFilename();
+        }
+
+        return title;
+    }
+
+    public String buildPosterURL(Context context) {
+        if (getPosterPath() != null) {
+            String baseUrl = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_URL);
+            String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
+            String imagePath = getPosterPath();
+            String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
+            d("image URL: " + baseUrl + size + imagePath + "?api_key=" + apiKey);
+
+            return baseUrl + size + imagePath + "?api_key=" + apiKey;
         } else {
-            return getFilename();
+            return "";
         }
     }
 
+    public int getEpisodeNumber() {
+        return episodeNumber;
+    }
+
+    public String suggestedSearchText() {
+        String searchText = "";
+
+        if (isMovie()) {
+            searchText = getTitle();
+        } else if (isTVShow()) {
+            searchText = getSeriesTitle() +" S"+ Oju.right("0" + String.valueOf(getSeasonNumber()), 2)
+                    +"E"+ Oju.right("0"+ String.valueOf(getEpisodeNumber()), 2);
+        } else {
+            searchText = "##UNKNOWN TYPE";
+        }
+
+        return searchText;
+    }
+
     public boolean isMovie() {
-        return getGuessitObject() == null ||
-                getGuessitObject().isMovie();
+        return getVideoType() != null && VideoType.MOVIE.equals(getVideoType());
     }
 
     public boolean isTVShow() {
-        return getGuessitObject() == null ||
-                getGuessitObject().isEpisode();
+        return getVideoType() != null && VideoType.TV_SHOW.equals(getVideoType());
     }
 
-    public String getUserEditedTitle() {
-        return userEditedTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setUserEditedTitle(String userEditedTitle) {
-        this.userEditedTitle = userEditedTitle;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getSeriesTitle() {
+        return seriesTitle;
     }
 
-    public TMDbMovieSearchResult getTmdbResult() {
-        return tmdbResult;
+    public void setSeriesTitle(String seriesTitle) {
+        this.seriesTitle = seriesTitle;
     }
 
-    public void setTmdbResult(TMDbMovieSearchResult tmdbResult) {
-        this.tmdbResult = tmdbResult;
+
+    public VideoType getVideoType() {
+        return videoType;
     }
 
-    public GuessitObject getGuessitObject() {
-        return guessitObject;
+    public void setVideoType(VideoType videoType) {
+        this.videoType = videoType;
     }
 
-    public void setGuessitObject(GuessitObject guessitObject) {
-        this.guessitObject = guessitObject;
+    public int getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    public void setSeasonNumber(int seasonNumber) {
+        this.seasonNumber = seasonNumber;
+    }
+
+    public void setEpisodeNumber(int episodeNumber) {
+        this.episodeNumber = episodeNumber;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public String getVideoSourceKey() {
@@ -165,34 +232,11 @@ public class VideoEntry implements SnappyKey {
         this.pathRelativeToSource = pathRelativeToSource;
     }
 
-    public String getSeriesTitle() {
-        GuessitObject guessitObject = getGuessitObject();
-        String seriesTile = "";
-
-        if (guessitObject != null) {
-            seriesTile = guessitObject.getSeries();
-        }
-
-        return seriesTile;
+    public long getTmdbId() {
+        return tmdbId;
     }
 
-    public String getEpisodeNumber() {
-        GuessitObject guessitObject = getGuessitObject();
-
-        if (guessitObject != null) {
-            return guessitObject.getEpisodeNumber();
-        } else {
-            return "-";
-        }
-    }
-
-    public int getSeason() {
-        GuessitObject guessitObject = getGuessitObject();
-
-        if (guessitObject != null) {
-            return guessitObject.getSeason();
-        } else {
-            return -1;
-        }
+    public void setTmdbId(long tmdbId) {
+        this.tmdbId = tmdbId;
     }
 }

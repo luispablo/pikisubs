@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.mediator.helpers.MediatorPrefs;
-import com.mediator.model.TMDbMovieVideosResponse;
+import com.mediator.model.tmdb.TMDbMovieVideosResponse;
 import com.mediator.retrofit.RetrofitServiceTMDbMovie;
 import com.squareup.otto.Bus;
 

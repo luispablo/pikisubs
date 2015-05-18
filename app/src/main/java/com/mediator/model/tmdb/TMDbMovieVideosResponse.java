@@ -1,4 +1,4 @@
-package com.mediator.model;
+package com.mediator.model.tmdb;
 
 import java.io.Serializable;
 import java.util.List;

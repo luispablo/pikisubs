@@ -50,13 +50,23 @@ public class TaskGuessitVideos extends AsyncTask<VideoEntry, VideoEntry, List<Vi
 
         Cache cache = new Cache(context);
 
-        for (VideoEntry entry : videoEntries) {
+        for (VideoEntry videoEntry : videoEntries) {
             try {
-                entry.setGuessitObject(cache.guessit(entry.getFilename(), fallback));
+
+                GuessitObject guessitObject = cache.guessit(videoEntry.getFilename(), fallback);
+
+                videoEntry.setTitle(guessitObject.getTitle());
+                videoEntry.setVideoType(guessitObject.getType().getVideoType());
+
+                if (videoEntry.isTVShow()) {
+                    videoEntry.setEpisodeNumber(Integer.parseInt(guessitObject.getEpisodeNumber()));
+                    videoEntry.setSeasonNumber(guessitObject.getSeason());
+                    videoEntry.setSeriesTitle(guessitObject.getSeries());
+                }
             } catch (SnappydbException e) {
                 Logger.e(e);
             }
-            if (progressedListener != null) progressedListener.onProgressed(entry);
+            if (progressedListener != null) progressedListener.onProgressed(videoEntry);
         }
 
         return Arrays.asList(videoEntries);

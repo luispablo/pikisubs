@@ -1,6 +1,6 @@
 package com.mediator.retrofit;
 
-import com.mediator.model.TMDbMovieSearchResponse;
+import com.mediator.model.tmdb.TMDbMovieSearchResponse;
 
 import retrofit.http.GET;
 import retrofit.http.Query;

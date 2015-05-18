@@ -109,15 +109,12 @@ public class ActivityEpisodes extends ActionBarActivity {
 
         @Override
         public int compare(VideoEntry v1, VideoEntry v2) {
-            if (v1.getSeason() < v2.getSeason()) {
+            if (v1.getSeasonNumber() < v2.getSeasonNumber()) {
                 return -1;
-            } else if (v1.getSeason() == v2.getSeason()) {
-                int episode1 = Integer.parseInt(v1.getEpisodeNumber());
-                int episode2 = Integer.parseInt(v2.getEpisodeNumber());
-
-                if (episode1 < episode2) {
+            } else if (v1.getSeasonNumber() == v2.getSeasonNumber()) {
+                if (v1.getEpisodeNumber() < v2.getEpisodeNumber()) {
                     return -1;
-                } else if (episode1 == episode2) {
+                } else if (v1.getEpisodeNumber() == v2.getEpisodeNumber()) {
                     return 0;
                 } else {
                     return 1;

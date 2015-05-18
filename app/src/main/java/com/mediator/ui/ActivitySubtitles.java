@@ -82,7 +82,7 @@ public class ActivitySubtitles extends ActionBarActivity {
             }
         };
 
-        new TaskGetSubtitles(this, listener) {
+        new TaskGetSubtitles(listener) {
             @Override
             protected void onPostExecute(List<Subtitle> subtitles) {
                 Collections.sort(subtitles, new SubtitleComparator(videoEntry));

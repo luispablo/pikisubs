@@ -20,7 +20,7 @@ import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetAllVideos;
 import com.mediator.tasks.TaskGuessitVideos;
-import com.mediator.tasks.TaskSearchTMDb;
+import com.mediator.tasks.TaskSearchPoster;
 import com.mediator.tasks.TaskUpdateLocalDB;
 import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
@@ -98,7 +98,7 @@ public class FragmentMovies extends Fragment {
             e(e);
         }
 
-        listVideos.setAdapter(new AdapterVideoEntries(getActivity(), videoEntries));
+        listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
         progressDialog.dismiss();
     }
 
@@ -144,13 +144,13 @@ public class FragmentMovies extends Fragment {
             }
         };
 
-        final TaskSearchTMDb taskSearchTMDb = new TaskSearchTMDb(getActivity(), searchTMDbListener);
+        final TaskSearchPoster taskSearchPoster = new TaskSearchPoster(getActivity(), searchTMDbListener);
 
         TaskDoneListener<List<VideoEntry>> guessitListener = new TaskDoneListener<List<VideoEntry>>() {
             @Override
             public void onDone(List<VideoEntry> videoEntries) {
                 progressDialog.setMessage(getString(R.string.message_getting_posters));
-                taskSearchTMDb.execute(videoEntries);
+                taskSearchPoster.execute(videoEntries);
             }
         };
 

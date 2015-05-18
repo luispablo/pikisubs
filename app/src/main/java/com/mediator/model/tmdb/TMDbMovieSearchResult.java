@@ -1,4 +1,4 @@
-package com.mediator.model;
+package com.mediator.model.tmdb;
 
 import android.content.Context;
 
@@ -117,19 +117,5 @@ public class TMDbMovieSearchResult implements Serializable {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
-    }
-
-    public String buildPosterURL(Context context) {
-        if (getPosterPath() != null) {
-            String baseUrl = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_URL);
-            String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
-            String imagePath = getPosterPath();
-            String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
-            d("image URL: " + baseUrl + size + imagePath + "?api_key=" + apiKey);
-
-            return baseUrl + size + imagePath + "?api_key=" + apiKey;
-        } else {
-            return "";
-        }
     }
 }

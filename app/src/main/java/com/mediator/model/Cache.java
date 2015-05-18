@@ -2,7 +2,7 @@ package com.mediator.model;
 
 import android.content.Context;
 
-import com.orhanobut.logger.Logger;
+import com.mediator.model.tmdb.TMDbMovieSearchResponse;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;

@@ -2,12 +2,11 @@ package com.mediator.actions;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 
 import com.mediator.R;
 import com.mediator.helpers.YouTubePlayer;
-import com.mediator.model.TMDbMovieVideosResponse;
-import com.mediator.model.TMDbMovieVideosResult;
+import com.mediator.model.tmdb.TMDbMovieVideosResponse;
+import com.mediator.model.tmdb.TMDbMovieVideosResult;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskTMDbMovieVideos;
 import com.squareup.otto.Bus;
@@ -46,7 +45,7 @@ public class ActionPlayTrailer implements IAction {
         bus.register(this);
 
         TaskTMDbMovieVideos taskTMDbMovieVideos = new TaskTMDbMovieVideos(activity, bus);
-        taskTMDbMovieVideos.execute(videoEntry.getTmdbResult().getId());
+        taskTMDbMovieVideos.execute(videoEntry.getTmdbId());
     }
 
     @Subscribe

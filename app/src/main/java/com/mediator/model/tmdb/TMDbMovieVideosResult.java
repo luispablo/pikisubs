@@ -1,4 +1,4 @@
-package com.mediator.model;
+package com.mediator.model.tmdb;
 
 import com.google.gson.annotations.SerializedName;
 
