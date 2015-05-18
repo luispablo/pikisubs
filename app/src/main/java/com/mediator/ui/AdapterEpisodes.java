@@ -50,7 +50,7 @@ public class AdapterEpisodes extends BaseAdapter {
 
         VideoEntry videoEntry = (VideoEntry) getItem(position);
 
-        ((TextView) view.findViewById(R.id.textTitle)).setText(videoEntry.titleToShow());
+        ((TextView) view.findViewById(R.id.textTitle)).setText(videoEntry.getTitle());
 
         String seasonEpisode = String.format(context.getString(R.string.season_episode), videoEntry.getSeasonNumber(), videoEntry.getEpisodeNumber());
         ((TextView) view.findViewById(R.id.textSeasonEpisode)).setText(seasonEpisode);
