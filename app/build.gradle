@@ -41,4 +41,6 @@ dependencies {
         exclude group: 'xpp3', module: 'xpp3'
     }
     compile project(':java-unrar')
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile fileTree(dir: 'libs', include: 'Parse-1.9.2.jar')
 }
