@@ -84,4 +84,5 @@
     <string name="title_activity_episodes">Episodios</string>
     <string name="title_dialog_get_tmdb_movie">Contactando TMDb</string>
     <string name="title_dialog_set_tmdb_id">Setear ID de TMDb</string>
+    <string name="video_action_set_tmdb_id">Setear ID de TMDb</string>
 </resources>

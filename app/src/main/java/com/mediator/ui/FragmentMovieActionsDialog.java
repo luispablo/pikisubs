@@ -13,6 +13,7 @@ import com.mediator.actions.ActionNeedsSubs;
 import com.mediator.actions.ActionNotNeedsSubs;
 import com.mediator.actions.ActionPlayTrailer;
 import com.mediator.actions.ActionPlayVideo;
+import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
 import com.mediator.actions.IAction;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Created by luispablo on 25/04/15.
  */
-public abstract class FragmentVideoActionsDialog extends DialogFragment {
+public abstract class FragmentMovieActionsDialog extends DialogFragment {
 
     private VideoEntry videoEntry;
 
@@ -34,6 +35,7 @@ public abstract class FragmentVideoActionsDialog extends DialogFragment {
         PLAY(new ActionPlayVideo()),
         PLAY_TRAILER(new ActionPlayTrailer()),
         DOWNLOAD_SUBS(new ActionDownloadSubs()),
+        SET_TMDB_ID(new ActionSetTMDbId()),
         SET_WATCHED(new ActionSetWatched()),
         SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),

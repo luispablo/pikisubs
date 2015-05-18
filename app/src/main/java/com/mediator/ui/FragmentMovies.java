@@ -104,7 +104,7 @@ public class FragmentMovies extends Fragment {
 
     @OnItemClick(R.id.listVideos)
     public void onClickVideo(int position) {
-        FragmentVideoActionsDialog actionsDialog = new FragmentVideoActionsDialog() {
+        FragmentMovieActionsDialog actionsDialog = new FragmentMovieActionsDialog() {
 
             @Override
             public void onDone(IAction action) {

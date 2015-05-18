@@ -84,4 +84,5 @@
     <string name="season_episode">Season %1$d, episode %2$s.</string>
     <string name="title_dialog_set_tmdb_id">Set TMDb ID</string>
     <string name="title_dialog_get_tmdb_movie">Contacting TMDb</string>
+    <string name="video_action_set_tmdb_id">Set TMDb ID</string>
 </resources>

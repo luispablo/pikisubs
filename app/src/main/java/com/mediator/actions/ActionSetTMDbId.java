@@ -1,5 +1,7 @@
 package com.mediator.actions;
 
+import static com.mediator.helpers.TinyLogger.*;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,7 +35,7 @@ public class ActionSetTMDbId implements IAction {
 
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
-        return false;
+        return true;
     }
 
     @Override
@@ -72,6 +74,7 @@ public class ActionSetTMDbId implements IAction {
     public void onGotTMDbMovie(TMDbMovieResult tmdBMovieResult) throws SnappydbException {
         progressDialog.dismiss();
 
+        d("Found ["+ tmdBMovieResult.getPosterPath() +"] for ["+ tmdBMovieResult.getTitle() +"]");
         videoEntry.setPosterPath(tmdBMovieResult.getPosterPath());
         videoEntry.setTitle(tmdBMovieResult.getTitle());
         videoEntry.setVideoType(VideoEntry.VideoType.MOVIE);
