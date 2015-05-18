@@ -69,6 +69,18 @@ public class VideoEntry implements SnappyKey {
         return  tvShow;
     }
 
+    public String seriesTitleToShow() {
+        String seriesTitle = "-";
+
+        if (getSeriesTitle() != null) {
+            seriesTitle = getSeriesTitle();
+        } else if (getFilename() != null) {
+            seriesTitle = getFilename();
+        }
+
+        return seriesTitle;
+    }
+
     public String titleToShow() {
         String title = "-";
 

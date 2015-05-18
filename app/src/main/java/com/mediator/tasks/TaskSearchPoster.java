@@ -63,7 +63,8 @@ public class TaskSearchPoster extends AsyncTask<List<VideoEntry>, VideoEntry, Li
             Cache cache = new Cache(context);
 
             for (VideoEntry videoEntry : videoEntries) {
-                TMDbMovieSearchResponse response = cache.tmdbSearch(videoEntry.titleToShow(), fallback);
+                String searchText = videoEntry.isMovie() ? videoEntry.titleToShow() : videoEntry.seriesTitleToShow();
+                TMDbMovieSearchResponse response = cache.tmdbSearch(searchText, fallback);
 
                 if (!response.getResults().isEmpty()) {
                     TMDbMovieSearchResult tmDbMovieSearchResult = response.getResults().get(0);
