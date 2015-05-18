@@ -85,4 +85,7 @@
     <string name="title_dialog_get_tmdb_movie">Contactando TMDb</string>
     <string name="title_dialog_set_tmdb_id">Setear ID de TMDb</string>
     <string name="video_action_set_tmdb_id">Setear ID de TMDb</string>
+    <string name="menu_rescan">Rearmar colección</string>
+    <string name="message_rescanning_db">Re-escaneando videos</string>
+    <string name="message_cleaning_local_db">Borrando la base local</string>
 </resources>

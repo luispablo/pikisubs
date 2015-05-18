@@ -56,7 +56,8 @@ public class FragmentNavigationDrawer extends Fragment {
         TV_SHOWS("menu_tv_shows"),
         SOURCES("menu_sources"),
         SERVERS("menu_servers"),
-        SETTINGS("menu_settings");
+        SETTINGS("menu_settings"),
+        RESCAN("menu_rescan");
 
         String labelKey;
 

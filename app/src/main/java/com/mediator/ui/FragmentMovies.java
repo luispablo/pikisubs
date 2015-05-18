@@ -20,6 +20,7 @@ import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskDoneListener;
 import com.mediator.tasks.TaskGetAllVideos;
 import com.mediator.tasks.TaskGuessitVideos;
+import com.mediator.tasks.TaskRefreshLocalDB;
 import com.mediator.tasks.TaskSearchPoster;
 import com.mediator.tasks.TaskUpdateLocalDB;
 import com.snappydb.SnappydbException;
@@ -121,71 +122,34 @@ public class FragmentMovies extends Fragment {
         inflater.inflate(R.menu.fragment_local_videos, menu);
     }
 
-    private void refreshLocalDB() throws SnappydbException {
-        progressDialog.setMessage(getString(R.string.message_getting_videos));
-        progressDialog.show();
-
-        TaskDoneListener<List<VideoEntry>> updateLocalDBListener = new TaskDoneListener<List<VideoEntry>>(){
-
-            @Override
-            public void onDone(List<VideoEntry> o) {
-                d("updateLocalDBListener onDone()");
-                loadList();
-            }
-        };
-
-        final TaskUpdateLocalDB taskUpdateLocalDB = new TaskUpdateLocalDB(getActivity(), updateLocalDBListener);
-
-        TaskDoneListener<List<VideoEntry>> searchTMDbListener = new TaskDoneListener<List<VideoEntry>>() {
-            @Override
-            public void onDone(List<VideoEntry> videoEntries) {
-                progressDialog.setMessage(getString(R.string.message_updating_local_db));
-                taskUpdateLocalDB.execute(videoEntries.toArray(new VideoEntry[]{}));
-            }
-        };
-
-        final TaskSearchPoster taskSearchPoster = new TaskSearchPoster(getActivity(), searchTMDbListener);
-
-        TaskDoneListener<List<VideoEntry>> guessitListener = new TaskDoneListener<List<VideoEntry>>() {
-            @Override
-            public void onDone(List<VideoEntry> videoEntries) {
-                progressDialog.setMessage(getString(R.string.message_getting_posters));
-                taskSearchPoster.execute(videoEntries);
-            }
-        };
-
-        final TaskGuessitVideos taskGuessitVideos = new TaskGuessitVideos(getActivity(), null, guessitListener);
-
-        TaskDoneListener<List<VideoEntry>> getAllVideosListener = new TaskDoneListener<List<VideoEntry>>() {
-            @Override
-            public void onDone(List<VideoEntry> videoEntries) {
-                progressDialog.setMessage(getString(R.string.message_guessing_videos));
-                taskGuessitVideos.execute(videoEntries.toArray(new VideoEntry[]{}));
-            }
-        };
-
-        HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-        List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
-        helperSnappyDB.close();
-
-        TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(getActivity(), getAllVideosListener);
-        taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
-    }
-
     private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
         this.filter = filter;
         loadList();
+    }
+
+    private void refreshLocalDB() {
+        progressDialog.setMessage(getString(R.string.message_getting_videos));
+        progressDialog.show();
+
+        TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(getActivity()) {
+            @Override
+            public void onProgress(String message) {
+                progressDialog.setMessage(message);
+            }
+
+            @Override
+            public void onFinished() {
+                loadList();
+            }
+        };
+        taskRefreshLocalDB.run();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_local_videos_refresh:
-                try {
-                    refreshLocalDB();
-                } catch (SnappydbException e) {
-                    e(e);
-                }
+                refreshLocalDB();
                 return true;
             case R.id.action_local_videos_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
