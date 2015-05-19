@@ -46,8 +46,10 @@ public class ActionPlayVideo implements IAction {
         Bus bus = new Bus();
         bus.register(this);
 
-        TaskBuildSubtitleFile taskBuildSubtitleFile = new TaskBuildSubtitleFile(context, bus);
-        taskBuildSubtitleFile.execute(videoEntry);
+        if (videoEntry.hasSubs()) {
+            TaskBuildSubtitleFile taskBuildSubtitleFile = new TaskBuildSubtitleFile(context, bus);
+            taskBuildSubtitleFile.execute(videoEntry);
+        }
     }
 
     @Subscribe
@@ -63,16 +65,17 @@ public class ActionPlayVideo implements IAction {
 
             String videoURL = videoServer.getHttpUrl() + videoSource.getHttpPath() +
                     videoEntry.getPathRelativeToSource() +"/"+ videoEntry.getFilename();
-            d("URL [" + videoURL + "]");
-
-            ArrayList<Uri> subsUris = new ArrayList<>();
-            subsUris.add(Uri.fromFile(subsFile));
-            d("subs URI ["+ subsUris.get(0).toString() +"]");
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(videoURL));
-            intent.putParcelableArrayListExtra("subs", subsUris);
-            intent.putParcelableArrayListExtra("subs.enable", subsUris);
+
+            if (videoEntry.hasSubs()) {
+                ArrayList<Uri> subsUris = new ArrayList<>();
+                subsUris.add(Uri.fromFile(subsFile));
+                intent.putParcelableArrayListExtra("subs", subsUris);
+                intent.putParcelableArrayListExtra("subs.enable", subsUris);
+            }
+
             context.startActivity(intent);
         } catch (SnappydbException e) {
             e(e);
