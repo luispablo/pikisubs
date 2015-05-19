@@ -12,11 +12,15 @@ import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.model.GuessitObject;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieResult;
+import com.mediator.model.tmdb.TMDbTVResult;
 import com.mediator.tasks.TaskGetTMDbMovie;
+import com.mediator.tasks.TaskGetTMDbTV;
 import com.mediator.ui.FragmentSetTMDbIdDialog;
 import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import java.util.Map;
 
 /**
  * Created by luispablo on 17/05/15.
@@ -66,15 +70,29 @@ public class ActionSetTMDbId implements IAction {
         Bus bus = new Bus();
         bus.register(this);
 
-        TaskGetTMDbMovie taskGetTMDbMovie = new TaskGetTMDbMovie(context, bus);
-        taskGetTMDbMovie.execute(tmdbId);
+        if (VideoEntry.VideoType.MOVIE.equals(videoType)) {
+            TaskGetTMDbMovie taskGetTMDbMovie = new TaskGetTMDbMovie(context, bus);
+            taskGetTMDbMovie.execute(tmdbId);
+        } else {
+            TaskGetTMDbTV taskGetTMDbTV = new TaskGetTMDbTV(context) {
+                @Override
+                protected void onPostExecute(TMDbTVResult tmdbTVResult) {
+                    progressDialog.dismiss();
+                    gotTVShowResult(tmdbTVResult);
+                }
+            };
+            taskGetTMDbTV.execute(tmdbId);
+        }
+    }
+
+    protected void gotTVShowResult(TMDbTVResult tmDbTVResult) {
+        // To be overriden
     }
 
     @Subscribe
     public void onGotTMDbMovie(TMDbMovieResult tmdBMovieResult) throws SnappydbException {
         progressDialog.dismiss();
 
-        d("Found ["+ tmdBMovieResult.getPosterPath() +"] for ["+ tmdBMovieResult.getTitle() +"]");
         videoEntry.setPosterPath(tmdBMovieResult.getPosterPath());
         videoEntry.setTitle(tmdBMovieResult.getTitle());
         videoEntry.setVideoType(VideoEntry.VideoType.MOVIE);

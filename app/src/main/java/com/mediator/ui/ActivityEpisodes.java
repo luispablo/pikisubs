@@ -1,5 +1,6 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -7,11 +8,15 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperDAO;
+import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.tmdb.TMDbTVResult;
+import com.snappydb.SnappydbException;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,6 +65,9 @@ public class ActivityEpisodes extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_set_tmdb_id:
+                setTVShowTMDbId();
+                return true;
             case R.id.action_episodes_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
                     @Override
@@ -74,6 +82,33 @@ public class ActivityEpisodes extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setTVShowTMDbId() {
+        HelperDAO helperDAO = new HelperDAO(this);
+        final List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
+
+        ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
+            @Override
+            protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
+                d("ActivityEpisodes > ActionSetTMDbId.gotTVShowResult()");
+                HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(ActivityEpisodes.this);
+
+                try {
+                    for (VideoEntry episode : episodes) {
+                        episode.setPosterPath(tmdbTVResult.getPosterPath());
+                        episode.setSeriesTitle(tmdbTVResult.getName());
+                        episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
+                        helperSnappyDB.update(episode);
+                    }
+
+                    helperSnappyDB.close();
+                } catch (SnappydbException e) {
+                    e(e);
+                }
+            }
+        };
+        actionSetTMDbId.execute(this, episodes.get(0));
     }
 
     private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {

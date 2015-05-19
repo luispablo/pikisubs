@@ -5,7 +5,12 @@
 
     <item
         android:id="@+id/action_episodes_filter"
-        android:title="@string/movieFilter"
         android:icon="@drawable/ic_filter_list_white_48dp"
+        android:title="@string/movieFilter"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_set_tmdb_id"
+        android:title="@string/video_action_set_tmdb_id"
+        app:showAsAction="never" />
 </menu>
