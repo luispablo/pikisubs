@@ -36,7 +36,7 @@
     <string name="title_progress_subtitle_download">Bajando subtítulos</string>
     <string name="label_filename">Nombre de archivo</string>
     <string name="label_search_text">Buscar texto</string>
-    <string name="needs_subs">Necesita subtítulos!</string>
+    <string name="needs_subs">¡Sin subs!</string>
     <string name="watched">Visto</string>
     <string name="not_watched">No visto</string>
     <string name="action_refresh">Refrescar</string>

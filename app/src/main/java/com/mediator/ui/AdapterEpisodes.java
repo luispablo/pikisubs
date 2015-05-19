@@ -58,7 +58,7 @@ public class AdapterEpisodes extends BaseAdapter {
         int watchedTextId = videoEntry.isWatched() ? R.string.watched : R.string.not_watched;
         ((TextView) view.findViewById(R.id.textWatched)).setText(context.getString(watchedTextId));
 
-        if (videoEntry.needsSubs()) {
+        if (videoEntry.needsSubs() && !videoEntry.hasSubs()) {
             ((TextView) view.findViewById(R.id.textSubsIndicator)).setText(context.getString(R.string.needs_subs));
         }
 
