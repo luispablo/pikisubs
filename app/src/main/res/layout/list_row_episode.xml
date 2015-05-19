@@ -9,28 +9,31 @@
         style="@android:style/TextAppearance.DeviceDefault.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp" />
-
-    <TextView
-        android:id="@+id/textWatched"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/textTitle"
-        style="@android:style/TextAppearance.DeviceDefault.Small" />
-
-    <TextView
-        android:id="@+id/textSeasonEpisode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textTitle"
-        style="@android:style/TextAppearance.DeviceDefault.Small" />
+        android:paddingBottom="10dp" />
 
     <TextView
         android:id="@+id/textSubsIndicator"
+        style="@style/SubsIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textWatched"
-        android:layout_toRightOf="@id/textSeasonEpisode"
-        style="@style/SubsIndicator" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/textSeasonEpisode"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/textTitle"
+        android:layout_below="@id/textTitle" />
+
+    <TextView
+        android:id="@+id/textWatched"
+        style="@android:style/TextAppearance.DeviceDefault.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/textSubsIndicator" />
 
 </RelativeLayout>

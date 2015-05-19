@@ -88,4 +88,5 @@
     <string name="menu_rescan">Re-scan collection</string>
     <string name="message_rescanning_db">Re-scanning videos</string>
     <string name="message_cleaning_local_db">Cleaning local DB</string>
+    <string name="unknown">Unknown</string>
 </resources>
