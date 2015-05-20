@@ -1,5 +1,6 @@
 package com.mediator.ui;
 
+import static com.mediator.helpers.TinyLogger.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -50,7 +51,7 @@ public abstract class FragmentMovieActionsDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<Action> availableActions = Oju.filter(Arrays.asList(Action.values()), new Oju.UnaryChecker<Action>() {
+        final List<Action> availableActions = Oju.filter(Arrays.asList(Action.values()), new Oju.UnaryChecker<Action>() {
             @Override
             public boolean check(Action action) {
                 return action.videoAction.isAvailableFor(videoEntry);
@@ -69,7 +70,7 @@ public abstract class FragmentMovieActionsDialog extends DialogFragment {
         builder.setTitle(R.string.title_dialog_video_actions)
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Action action = Action.values()[which];
+                        Action action = availableActions.get(which);
                         action.videoAction.execute(activity, videoEntry);
                         onDone(action.videoAction);
                     }

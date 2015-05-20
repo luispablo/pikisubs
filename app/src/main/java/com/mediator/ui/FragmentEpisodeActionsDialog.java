@@ -46,7 +46,7 @@ public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        List<EpisodeAction> availableActions = Oju.filter(Arrays.asList(EpisodeAction.values()), new Oju.UnaryChecker<EpisodeAction>() {
+        final List<EpisodeAction> availableActions = Oju.filter(Arrays.asList(EpisodeAction.values()), new Oju.UnaryChecker<EpisodeAction>() {
             @Override
             public boolean check(EpisodeAction action) {
                 return action.videoAction.isAvailableFor(episode);
@@ -65,7 +65,7 @@ public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
         builder.setTitle(R.string.title_dialog_video_actions)
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        EpisodeAction action = EpisodeAction.values()[which];
+                        EpisodeAction action = availableActions.get(which);
                         action.videoAction.execute(activity, episode);
                         onDone(action.videoAction);
                     }
