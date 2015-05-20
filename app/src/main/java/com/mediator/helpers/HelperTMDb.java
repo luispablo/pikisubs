@@ -2,6 +2,7 @@ package com.mediator.helpers;
 
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieSearchResult;
+import com.mediator.model.tmdb.TMDbTVSearchResult;
 
 /**
  * Created by luispablo on 20/05/15.
@@ -12,6 +13,15 @@ public class HelperTMDb {
 
     public HelperTMDb(VideoEntry videoEntry) {
         this.videoEntry = videoEntry;
+    }
+
+    public VideoEntry applyTVShow(TMDbTVSearchResult tmdbTVSearchResult) {
+        videoEntry.setVideoType(VideoEntry.VideoType.TV_SHOW);
+        videoEntry.setTmdbId(tmdbTVSearchResult.getId());
+        videoEntry.setPosterPath(tmdbTVSearchResult.getPosterPath());
+        videoEntry.setSeriesTitle(tmdbTVSearchResult.getName());
+
+        return videoEntry;
     }
 
     public VideoEntry apply(TMDbMovieSearchResult tmdbMovieSearchResult) {

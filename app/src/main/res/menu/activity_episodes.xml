@@ -10,6 +10,11 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_identify_video"
+        android:title="@string/video_action_identify_video"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_set_tmdb_id"
         android:title="@string/video_action_set_tmdb_id"
         app:showAsAction="never" />

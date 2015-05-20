@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperDAO;
@@ -67,6 +68,9 @@ public class ActivityEpisodes extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_identify_video:
+                identifyVideo();
+                return true;
             case R.id.action_set_tmdb_id:
                 setTVShowTMDbId();
                 return true;
@@ -84,6 +88,11 @@ public class ActivityEpisodes extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void identifyVideo() {
+        ActionIdentifyVideo actionIdentifyVideo = new ActionIdentifyVideo();
+        actionIdentifyVideo.execute(this, listEpisodes.get(0));
     }
 
     private void setTVShowTMDbId() {
