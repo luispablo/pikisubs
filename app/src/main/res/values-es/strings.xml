@@ -89,4 +89,6 @@
     <string name="message_rescanning_db">Re-escaneando videos</string>
     <string name="message_cleaning_local_db">Borrando la base local</string>
     <string name="unknown">Desconocido</string>
+    <string name="video_action_identify_video">Video incorrecto</string>
+    <string name="message_select_option">Seleccione cuál</string>
 </resources>
