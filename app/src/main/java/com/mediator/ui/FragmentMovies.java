@@ -3,6 +3,7 @@ package com.mediator.ui;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +48,7 @@ public class FragmentMovies extends Fragment {
     List<VideoEntry> videoEntries;
     Bus bus;
     FragmentFilterVideosDialog.VideoFilter filter;
+    Parcelable listVideosState;
 
     public static FragmentMovies newInstance() {
         return new FragmentMovies();
@@ -100,11 +102,16 @@ public class FragmentMovies extends Fragment {
         }
 
         listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
+
+        if (listVideosState != null) listVideos.onRestoreInstanceState(listVideosState);
+
         progressDialog.dismiss();
     }
 
     @OnItemClick(R.id.listVideos)
     public void onClickVideo(int position) {
+        listVideosState = listVideos.onSaveInstanceState();
+
         FragmentMovieActionsDialog actionsDialog = new FragmentMovieActionsDialog() {
 
             @Override
