@@ -2,6 +2,7 @@ package com.mediator.ui;
 
 import static com.mediator.helpers.TinyLogger.*;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ public class ActivityEpisodes extends ActionBarActivity {
     FragmentFilterVideosDialog.VideoFilter filter;
     TVShow tvShow;
     List<VideoEntry> listEpisodes;
+    Parcelable listViewEpisodesState;
 
     @InjectView(R.id.listViewEpisodes)
     ListView listViewEpisodes;
@@ -126,10 +128,14 @@ public class ActivityEpisodes extends ActionBarActivity {
         });
         Collections.sort(listEpisodes, new EpisodeComparator());
         listViewEpisodes.setAdapter(new AdapterEpisodes(this, listEpisodes));
+
+        if (listViewEpisodesState != null) listViewEpisodes.onRestoreInstanceState(listViewEpisodesState);
     }
 
     @OnItemClick(R.id.listViewEpisodes)
     public void onItemClick(int position) {
+        listViewEpisodesState = listViewEpisodes.onSaveInstanceState();
+
         FragmentEpisodeActionsDialog fragmentEpisodeActionsDialog = new FragmentEpisodeActionsDialog() {
             @Override
             public void onDone(IAction action) {
