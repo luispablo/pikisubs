@@ -29,7 +29,7 @@ public class Subdivx implements SubtitlesSource {
 
         RetrofitServiceSubdivx service = restAdapter.create(RetrofitServiceSubdivx.class);
 
-        return service.search(videoEntry.getTitle()).getChannel().getItems();
+        return service.search(videoEntry.suggestedSearchText()).getChannel().getItems();
     }
 
     @Override

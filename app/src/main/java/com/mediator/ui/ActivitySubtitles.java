@@ -52,7 +52,7 @@ public class ActivitySubtitles extends ActionBarActivity {
         listSubtitles.setOnItemClickListener(new SubtitleClickListener());
 
         videoEntry = (VideoEntry) getIntent().getSerializableExtra("videoEntry");
-        txtSearchText.setText(videoEntry.titleToShow());
+        txtSearchText.setText(videoEntry.suggestedSearchText());
         txtFilename.setText(videoEntry.getFilename());
 
         progressDialog = new ProgressDialog(this);
