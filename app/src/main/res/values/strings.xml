@@ -91,4 +91,24 @@
     <string name="unknown">Unknown</string>
     <string name="message_select_option">Select which one</string>
     <string name="video_action_identify_video">Wrong video</string>
+    <string name="title_video_info">Technical info</string>
+    <string name="filename">filename</string>
+    <string name="title">title</string>
+    <string name="episode_number">episode number</string>
+    <string name="series_title">series title</string>
+    <string name="poster_path">poster path</string>
+    <string name="absolute_path">absolute path</string>
+    <string name="path_relative_to_source">path relative to source</string>
+    <string name="snappy_key">snappy db key</string>
+    <string name="video_source_key">video source snappy db key</string>
+    <string name="season_number">season number</string>
+    <string name="tmdb_id">TMDb ID</string>
+    <string name="title_to_show">title to show</string>
+    <string name="poster_url">poster URL</string>
+    <string name="series_title_to_show">series title to show</string>
+    <string name="suggested_search_text">suggested search text</string>
+    <string name="has_subs">has subs</string>
+    <string name="is_watched">is watched</string>
+    <string name="video_action_show_info">Technical info</string>
+    <string name="info_needs_subs">needs subs</string>
 </resources>

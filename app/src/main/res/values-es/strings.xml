@@ -91,4 +91,24 @@
     <string name="unknown">Desconocido</string>
     <string name="video_action_identify_video">Video incorrecto</string>
     <string name="message_select_option">Seleccione cuál</string>
+    <string name="absolute_path">Path absoluto</string>
+    <string name="episode_number">número de episodio</string>
+    <string name="filename">nombre de archivo</string>
+    <string name="has_subs">tiene subs</string>
+    <string name="is_watched">fue visto</string>
+    <string name="path_relative_to_source">path relativo a la fuente</string>
+    <string name="poster_path">path del poster</string>
+    <string name="poster_url">URL del poster</string>
+    <string name="season_number">numero de temporada</string>
+    <string name="series_title">titulo de la serie</string>
+    <string name="series_title_to_show">título de serie a mostrar</string>
+    <string name="snappy_key">clave de Snappy DB</string>
+    <string name="suggested_search_text">texto sugerido para buscar</string>
+    <string name="title">título</string>
+    <string name="title_to_show">titulo a mostrar</string>
+    <string name="title_video_info">Información técnica</string>
+    <string name="tmdb_id">ID de TMDb</string>
+    <string name="video_action_show_info">Información técnica</string>
+    <string name="video_source_key">clave de Snappy DB de la fuente</string>
+    <string name="info_needs_subs">necesita subtítulos</string>
 </resources>

@@ -1,8 +1,11 @@
 package com.mediator.helpers;
 
+import android.content.Context;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.mediator.R;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoSource;
 import com.orhanobut.logger.Logger;
@@ -82,5 +85,42 @@ public class HelperVideo {
         }
 
         return filename;
+    }
+
+    public String[] technicalInfo(Context context, VideoEntry videoEntry) {
+        String[] items = new String[19];
+        int i = 0;
+
+        items[i++] = buildTechnicalItem(context, R.string.video_type, videoEntry.getVideoType().name());
+
+        items[i++] = buildTechnicalItem(context, R.string.filename, videoEntry.getFilename());
+
+        items[i++] = buildTechnicalItem(context, R.string.tmdb_id, String.valueOf(videoEntry.getTmdbId()));
+        items[i++] = buildTechnicalItem(context, R.string.title, videoEntry.getTitle());
+        items[i++] = buildTechnicalItem(context, R.string.title_to_show, videoEntry.titleToShow());
+        items[i++] = buildTechnicalItem(context, R.string.poster_path, videoEntry.getPosterPath());
+        items[i++] = buildTechnicalItem(context, R.string.poster_url, videoEntry.buildPosterURL(context));
+
+        items[i++] = buildTechnicalItem(context, R.string.series_title, videoEntry.getSeriesTitle());
+        items[i++] = buildTechnicalItem(context, R.string.series_title_to_show, videoEntry.seriesTitleToShow());
+        items[i++] = buildTechnicalItem(context, R.string.season_number, String.valueOf(videoEntry.getSeasonNumber()));
+        items[i++] = buildTechnicalItem(context, R.string.episode_number, String.valueOf(videoEntry.getEpisodeNumber()));
+
+        items[i++] = buildTechnicalItem(context, R.string.absolute_path, videoEntry.getAbsolutePath());
+        items[i++] = buildTechnicalItem(context, R.string.path_relative_to_source, videoEntry.getPathRelativeToSource());
+
+        items[i++] = buildTechnicalItem(context, R.string.snappy_key, videoEntry.getSnappyKey());
+        items[i++] = buildTechnicalItem(context, R.string.video_source_key, videoEntry.getVideoSourceKey());
+
+        items[i++] = buildTechnicalItem(context, R.string.suggested_search_text, videoEntry.suggestedSearchText());
+        items[i++] = buildTechnicalItem(context, R.string.has_subs, String.valueOf(videoEntry.hasSubs()));
+        items[i++] = buildTechnicalItem(context, R.string.info_needs_subs, String.valueOf(videoEntry.needsSubs()));
+        items[i++] = buildTechnicalItem(context, R.string.is_watched, String.valueOf(videoEntry.isWatched()));
+
+        return items;
+    }
+
+    private String buildTechnicalItem(Context context, int stringId, String value) {
+        return context.getString(stringId) +": "+ value;
     }
 }

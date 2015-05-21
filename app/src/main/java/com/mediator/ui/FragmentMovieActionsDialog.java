@@ -18,6 +18,7 @@ import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
+import com.mediator.actions.ActionShowVideoInfo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
@@ -42,7 +43,8 @@ public abstract class FragmentMovieActionsDialog extends DialogFragment {
         SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),
         NOT_NEEDS_SUBS(new ActionNotNeedsSubs()),
-        IDENTIFY_VIDEO(new ActionIdentifyVideo());
+        IDENTIFY_VIDEO(new ActionIdentifyVideo()),
+        SHOW_INFO(new ActionShowVideoInfo());
 
         IAction videoAction;
 

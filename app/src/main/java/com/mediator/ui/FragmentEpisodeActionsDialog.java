@@ -14,6 +14,7 @@ import com.mediator.actions.ActionNotNeedsSubs;
 import com.mediator.actions.ActionPlayVideo;
 import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
+import com.mediator.actions.ActionShowVideoInfo;
 import com.mediator.actions.IAction;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
@@ -35,7 +36,8 @@ public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
         SET_WATCHED(new ActionSetWatched()),
         SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),
-        NOT_NEEDS_SUBS(new ActionNotNeedsSubs());
+        NOT_NEEDS_SUBS(new ActionNotNeedsSubs()),
+        SHOW_INFO(new ActionShowVideoInfo());
 
         IAction videoAction;
 
