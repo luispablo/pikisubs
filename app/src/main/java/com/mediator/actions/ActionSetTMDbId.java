@@ -31,11 +31,7 @@ public class ActionSetTMDbId implements IAction {
     ProgressDialog progressDialog;
     VideoEntry.VideoType videoType;
     VideoEntry videoEntry;
-
-    @Override
-    public boolean changedDB() {
-        return true;
-    }
+    IActionCallback callback;
 
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
@@ -43,9 +39,10 @@ public class ActionSetTMDbId implements IAction {
     }
 
     @Override
-    public void execute(final Activity activity, final VideoEntry videoEntry) {
+    public void execute(final Activity activity, final VideoEntry videoEntry, IActionCallback callback) {
         this.videoEntry = videoEntry;
         this.context = activity;
+        this.callback = callback;
 
         Bundle arguments = new Bundle();
         arguments.putSerializable(VideoEntry.class.getName(), videoEntry);
@@ -100,5 +97,7 @@ public class ActionSetTMDbId implements IAction {
         HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
         helperSnappyDB.update(videoEntry);
         helperSnappyDB.close();
+
+        if (callback != null) callback.onDone(true);
     }
 }

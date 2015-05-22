@@ -10,9 +10,7 @@ import com.mediator.model.VideoEntry;
  */
 public interface IAction {
 
-    boolean changedDB();
-
     boolean isAvailableFor(VideoEntry videoEntry);
 
-    void execute(Activity activity, VideoEntry videoEntry);
+    void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback);
 }

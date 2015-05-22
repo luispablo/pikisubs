@@ -14,18 +14,15 @@ import static com.mediator.helpers.TinyLogger.e;
 public abstract class ActionToggleNeedsSubs implements IAction {
 
     @Override
-    public boolean changedDB() {
-        return true;
-    }
-
-    @Override
-    public void execute(Activity activity, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback) {
         videoEntry.setNeedsSubs(!videoEntry.needsSubs());
 
         try {
             HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(activity);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
+
+            if (callback != null) callback.onDone(true);
         } catch (SnappydbException e) {
             e(e);
         }

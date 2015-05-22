@@ -21,11 +21,7 @@ public class ActionPlayTrailer implements IAction {
 
     private Activity activity;
     private ProgressDialog progressDialog;
-
-    @Override
-    public boolean changedDB() {
-        return false;
-    }
+    private IActionCallback callback;
 
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
@@ -33,8 +29,9 @@ public class ActionPlayTrailer implements IAction {
     }
 
     @Override
-    public void execute(Activity activity, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback) {
         this.activity = activity;
+        this.callback = callback;
 
         progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle(R.string.title_progress_trailer);
@@ -59,5 +56,6 @@ public class ActionPlayTrailer implements IAction {
             YouTubePlayer youTubePlayer = new YouTubePlayer(activity, tmDbMovieVideosResult.getKey());
             youTubePlayer.play();
         }
+        if (callback != null) callback.onDone(false);
     }
 }

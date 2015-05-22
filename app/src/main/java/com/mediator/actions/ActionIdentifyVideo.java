@@ -30,10 +30,7 @@ import java.util.List;
  */
 public class ActionIdentifyVideo implements IAction {
 
-    @Override
-    public boolean changedDB() {
-        return true;
-    }
+    IActionCallback callback;
 
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
@@ -41,7 +38,9 @@ public class ActionIdentifyVideo implements IAction {
     }
 
     @Override
-    public void execute(final Activity activity, final VideoEntry videoEntry) {
+    public void execute(final Activity activity, final VideoEntry videoEntry, IActionCallback callback) {
+        this.callback = callback;
+
         Bundle arguments = new Bundle();
         arguments.putSerializable(VideoEntry.class.getName(), videoEntry);
 
@@ -137,6 +136,8 @@ public class ActionIdentifyVideo implements IAction {
             }
 
             helperSnappyDB.close();
+
+            if (callback != null) callback.onDone(true);
         } catch (SnappydbException e) {
             e(e);
         }
@@ -151,6 +152,8 @@ public class ActionIdentifyVideo implements IAction {
             HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
             helperSnappyDB.update(videoEntry);
             helperSnappyDB.close();
+
+            if (callback != null) callback.onDone(true);
         } catch (SnappydbException e) {
             e(e);
         }

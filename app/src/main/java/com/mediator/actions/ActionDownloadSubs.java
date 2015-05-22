@@ -13,17 +13,12 @@ import com.mediator.ui.ActivitySubtitles;
 public class ActionDownloadSubs implements IAction {
 
     @Override
-    public boolean changedDB() {
-        return true;
-    }
-
-    @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
         return true;
     }
 
     @Override
-    public void execute(Activity activity, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("videoEntry", videoEntry);
 

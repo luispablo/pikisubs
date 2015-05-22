@@ -27,11 +27,7 @@ public class ActionPlayVideo implements IAction {
 
     private Context context;
     private VideoEntry videoEntry;
-
-    @Override
-    public boolean changedDB() {
-        return false;
-    }
+    private IActionCallback callback;
 
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
@@ -39,7 +35,7 @@ public class ActionPlayVideo implements IAction {
     }
 
     @Override
-    public void execute(Activity activity, VideoEntry videoEntry) {
+    public void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback) {
         this.context = activity;
         this.videoEntry = videoEntry;
 
@@ -75,6 +71,8 @@ public class ActionPlayVideo implements IAction {
                 intent.putParcelableArrayListExtra("subs", subsUris);
                 intent.putParcelableArrayListExtra("subs.enable", subsUris);
             }
+
+            if (callback != null) callback.onDone(false);
 
             context.startActivity(intent);
         } catch (SnappydbException e) {

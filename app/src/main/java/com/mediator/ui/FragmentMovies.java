@@ -14,6 +14,7 @@ import android.widget.AbsListView;
 
 import com.mediator.R;
 import com.mediator.actions.IAction;
+import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
@@ -40,7 +41,7 @@ import static com.mediator.helpers.TinyLogger.e;
 /**
  * Created by luispablo on 23/04/15.
  */
-public class FragmentMovies extends Fragment {
+public class FragmentMovies extends Fragment implements IActionCallback {
 
     @InjectView(R.id.listVideos)
     AbsListView listVideos;
@@ -112,14 +113,9 @@ public class FragmentMovies extends Fragment {
     public void onClickVideo(int position) {
         listVideosState = listVideos.onSaveInstanceState();
 
-        FragmentMovieActionsDialog actionsDialog = new FragmentMovieActionsDialog() {
-
-            @Override
-            public void onDone(IAction action) {
-                if (action.changedDB()) loadList();
-            }
-        };
+        FragmentMovieActionsDialog actionsDialog = new FragmentMovieActionsDialog();
         actionsDialog.setVideoEntry(videoEntries.get(position));
+        actionsDialog.setCallback(this);
         actionsDialog.show(getFragmentManager(), null);
     }
 
@@ -172,5 +168,10 @@ public class FragmentMovies extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDone(boolean changedDB) {
+        if (changedDB) loadList();
     }
 }

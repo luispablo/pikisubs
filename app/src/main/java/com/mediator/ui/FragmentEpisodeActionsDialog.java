@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDelete;
 import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionNeedsSubs;
 import com.mediator.actions.ActionNotNeedsSubs;
@@ -16,6 +17,7 @@ import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
 import com.mediator.actions.ActionShowVideoInfo;
 import com.mediator.actions.IAction;
+import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
@@ -26,9 +28,10 @@ import java.util.List;
 /**
  * Created by luispablo on 15/05/15.
  */
-public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
+public class FragmentEpisodeActionsDialog extends DialogFragment {
 
     private VideoEntry episode;
+    private IActionCallback callback;
 
     public enum EpisodeAction {
         PLAY(new ActionPlayVideo()),
@@ -37,6 +40,7 @@ public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
         SET_UNWATCHED(new ActionSetUnwatched()),
         NEEDS_SUBS(new ActionNeedsSubs()),
         NOT_NEEDS_SUBS(new ActionNotNeedsSubs()),
+        DELETE_VIDEO(new ActionDelete()),
         SHOW_INFO(new ActionShowVideoInfo());
 
         IAction videoAction;
@@ -68,16 +72,17 @@ public abstract class FragmentEpisodeActionsDialog extends DialogFragment {
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         EpisodeAction action = availableActions.get(which);
-                        action.videoAction.execute(activity, episode);
-                        onDone(action.videoAction);
+                        action.videoAction.execute(activity, episode, callback);
                     }
                 });
         return builder.create();
     }
 
+    public void setCallback(IActionCallback callback) {
+        this.callback = callback;
+    }
+
     public void setEpisode(VideoEntry episode) {
         this.episode = episode;
     }
-
-    public abstract void onDone(IAction action);
 }

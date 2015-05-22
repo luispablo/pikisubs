@@ -111,4 +111,7 @@
     <string name="is_watched">is watched</string>
     <string name="video_action_show_info">Technical info</string>
     <string name="info_needs_subs">needs subs</string>
+    <string name="video_action_delete_video">Delete</string>
+    <string name="title_confirm_dialog">Are you sure?</string>
+    <string name="confirm_delete">Delete %1$s?</string>
 </resources>

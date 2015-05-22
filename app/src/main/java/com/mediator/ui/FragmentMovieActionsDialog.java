@@ -20,6 +20,7 @@ import com.mediator.actions.ActionSetUnwatched;
 import com.mediator.actions.ActionSetWatched;
 import com.mediator.actions.ActionShowVideoInfo;
 import com.mediator.actions.IAction;
+import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
@@ -30,9 +31,10 @@ import java.util.List;
 /**
  * Created by luispablo on 25/04/15.
  */
-public abstract class FragmentMovieActionsDialog extends DialogFragment {
+public class FragmentMovieActionsDialog extends DialogFragment {
 
     private VideoEntry videoEntry;
+    private IActionCallback callback;
 
     public enum Action {
         PLAY(new ActionPlayVideo()),
@@ -75,8 +77,7 @@ public abstract class FragmentMovieActionsDialog extends DialogFragment {
                 .setItems(labels.toArray(new String[]{}), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Action action = availableActions.get(which);
-                        action.videoAction.execute(activity, videoEntry);
-                        onDone(action.videoAction);
+                        action.videoAction.execute(activity, videoEntry, callback);
                     }
                 });
         return builder.create();
@@ -86,5 +87,7 @@ public abstract class FragmentMovieActionsDialog extends DialogFragment {
         this.videoEntry = videoEntry;
     }
 
-    public abstract void onDone(IAction action);
+    public void setCallback(IActionCallback callback) {
+        this.callback = callback;
+    }
 }

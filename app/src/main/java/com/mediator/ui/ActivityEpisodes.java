@@ -12,6 +12,7 @@ import com.mediator.R;
 import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.IAction;
+import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
@@ -31,7 +32,7 @@ import butterknife.OnItemClick;
 /**
  * Created by luispablo on 11/05/15.
  */
-public class ActivityEpisodes extends ActionBarActivity {
+public class ActivityEpisodes extends ActionBarActivity implements IActionCallback {
 
     FragmentFilterVideosDialog.VideoFilter filter;
     TVShow tvShow;
@@ -92,7 +93,7 @@ public class ActivityEpisodes extends ActionBarActivity {
 
     private void identifyVideo() {
         ActionIdentifyVideo actionIdentifyVideo = new ActionIdentifyVideo();
-        actionIdentifyVideo.execute(this, listEpisodes.get(0));
+        actionIdentifyVideo.execute(this, listEpisodes.get(0), this);
     }
 
     private void setTVShowTMDbId() {
@@ -119,7 +120,7 @@ public class ActivityEpisodes extends ActionBarActivity {
                 }
             }
         };
-        actionSetTMDbId.execute(this, episodes.get(0));
+        actionSetTMDbId.execute(this, episodes.get(0), this);
     }
 
     private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
@@ -145,14 +146,15 @@ public class ActivityEpisodes extends ActionBarActivity {
     public void onItemClick(int position) {
         listViewEpisodesState = listViewEpisodes.onSaveInstanceState();
 
-        FragmentEpisodeActionsDialog fragmentEpisodeActionsDialog = new FragmentEpisodeActionsDialog() {
-            @Override
-            public void onDone(IAction action) {
-                if (action.changedDB()) load();
-            }
-        };
+        FragmentEpisodeActionsDialog fragmentEpisodeActionsDialog = new FragmentEpisodeActionsDialog();
         fragmentEpisodeActionsDialog.setEpisode(listEpisodes.get(position));
+        fragmentEpisodeActionsDialog.setCallback(this);
         fragmentEpisodeActionsDialog.show(getFragmentManager(), null);
+    }
+
+    @Override
+    public void onDone(boolean changedDB) {
+        if (changedDB) load();
     }
 
     class EpisodeComparator implements Comparator<VideoEntry> {

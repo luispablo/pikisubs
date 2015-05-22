@@ -111,4 +111,5 @@
     <string name="video_action_show_info">Información técnica</string>
     <string name="video_source_key">clave de Snappy DB de la fuente</string>
     <string name="info_needs_subs">necesita subtítulos</string>
+    <string name="video_action_delete_video">Borrar</string>
 </resources>
