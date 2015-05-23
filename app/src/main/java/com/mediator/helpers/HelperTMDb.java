@@ -2,6 +2,7 @@ package com.mediator.helpers;
 
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieSearchResult;
+import com.mediator.model.tmdb.TMDbTVEpisodeResult;
 import com.mediator.model.tmdb.TMDbTVSearchResult;
 
 /**
@@ -20,6 +21,15 @@ public class HelperTMDb {
         videoEntry.setTmdbId(tmdbTVSearchResult.getId());
         videoEntry.setPosterPath(tmdbTVSearchResult.getPosterPath());
         videoEntry.setSeriesTitle(tmdbTVSearchResult.getName());
+
+        return videoEntry;
+    }
+
+    public VideoEntry apply(TMDbTVEpisodeResult tmdbTVEpisodeResult) {
+        videoEntry.setEpisodeNumber(tmdbTVEpisodeResult.getEpisodeNumber());
+        videoEntry.setSeasonNumber(tmdbTVEpisodeResult.getSeasonNumber());
+        videoEntry.setTmdbId(tmdbTVEpisodeResult.getId());
+        videoEntry.setTitle(tmdbTVEpisodeResult.getName());
 
         return videoEntry;
     }

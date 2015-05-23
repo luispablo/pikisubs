@@ -4,7 +4,11 @@ import android.content.Context;
 
 import static com.mediator.helpers.TinyLogger.*;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.mediator.model.SnappyKey;
+import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
@@ -46,6 +50,11 @@ public class HelperSnappyDB {
 
     private void open(Context context) throws SnappydbException {
         db = DBFactory.open(context);
+
+        Kryo kryo = db.getKryoInstance();
+        kryo.register(VideoEntry.class);
+        kryo.register(VideoSource.class);
+        kryo.register(VideoServer.class);
     }
 
     public void close() throws SnappydbException {

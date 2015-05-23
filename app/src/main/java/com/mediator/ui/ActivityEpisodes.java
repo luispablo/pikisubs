@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionGetEpisodesInfo;
 import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.IAction;
@@ -75,6 +76,9 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
             case R.id.action_set_tmdb_id:
                 setTVShowTMDbId();
                 return true;
+            case R.id.action_get_videos_info:
+                getEpisodesInfo();
+                return true;
             case R.id.action_episodes_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
                     @Override
@@ -89,6 +93,11 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void getEpisodesInfo() {
+        ActionGetEpisodesInfo actionGetEpisodesInfo = new ActionGetEpisodesInfo();
+        actionGetEpisodesInfo.execute(this, listEpisodes.get(0), this);
     }
 
     private void identifyVideo() {

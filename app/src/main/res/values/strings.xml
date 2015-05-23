@@ -114,4 +114,7 @@
     <string name="video_action_delete_video">Delete</string>
     <string name="title_confirm_dialog">Are you sure?</string>
     <string name="confirm_delete">Delete %1$s?</string>
+    <string name="message_getting_episode_info">Getting info for %1$s</string>
+    <string name="video_action_get_videos_info">Get episodes info</string>
+    <string name="message_error_getting_info">Error getting episode info</string>
 </resources>

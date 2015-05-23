@@ -112,4 +112,9 @@
     <string name="video_source_key">clave de Snappy DB de la fuente</string>
     <string name="info_needs_subs">necesita subtítulos</string>
     <string name="video_action_delete_video">Borrar</string>
+    <string name="confirm_delete">¿Borrar %1$s?</string>
+    <string name="message_getting_episode_info">Obteniendo información para %1$s</string>
+    <string name="title_confirm_dialog">¿Estás seguro?</string>
+    <string name="message_error_getting_info">Error obteniendo información del episodio</string>
+    <string name="video_action_get_videos_info">Obtener informacion del episodio</string>
 </resources>
