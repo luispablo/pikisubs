@@ -1,18 +1,20 @@
 package com.mediator.tasks;
 
 import static com.mediator.helpers.TinyLogger.*;
+
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.mediator.helpers.HelperTMDb;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.Cache;
 import com.mediator.model.CacheFallback;
 import com.mediator.model.tmdb.TMDbMovieSearchResponse;
 import com.mediator.model.VideoEntry;
-import com.mediator.model.tmdb.TMDbMovieSearchResult;
+import com.mediator.model.tmdb.TMDbTVSearchResponse;
 import com.mediator.retrofit.RetrofitServiceTMDbSearch;
-import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RestAdapter;
@@ -44,6 +46,7 @@ public class TaskSearchPoster extends AsyncTask<List<VideoEntry>, VideoEntry, Li
     @Override
     protected List<VideoEntry> doInBackground(List<VideoEntry>... params) {
         List<VideoEntry> videoEntries = params[0];
+        List<VideoEntry> updatedVideoEntries = new ArrayList<>();
 
         try {
             RestAdapter restAdapter = new RestAdapter.Builder()
@@ -53,10 +56,16 @@ public class TaskSearchPoster extends AsyncTask<List<VideoEntry>, VideoEntry, Li
             final RetrofitServiceTMDbSearch tmdbSearch = restAdapter.create(RetrofitServiceTMDbSearch.class);
             final String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
 
-            CacheFallback<TMDbMovieSearchResponse> fallback = new CacheFallback<TMDbMovieSearchResponse>() {
+            CacheFallback<TMDbMovieSearchResponse> movieFallback = new CacheFallback<TMDbMovieSearchResponse>() {
                 @Override
-                public TMDbMovieSearchResponse onNotFoundOnCache(String posterSearchText) {
-                    return tmdbSearch.movie(posterSearchText, apiKey);
+                public TMDbMovieSearchResponse onNotFoundOnCache(String searchText) {
+                    return tmdbSearch.movie(searchText, apiKey);
+                }
+            };
+            CacheFallback<TMDbTVSearchResponse> tvFallback = new CacheFallback<TMDbTVSearchResponse>() {
+                @Override
+                public TMDbTVSearchResponse onNotFoundOnCache(String searchText) {
+                    return tmdbSearch.tv(searchText, apiKey);
                 }
             };
 
@@ -64,23 +73,36 @@ public class TaskSearchPoster extends AsyncTask<List<VideoEntry>, VideoEntry, Li
 
             for (VideoEntry videoEntry : videoEntries) {
                 String searchText = videoEntry.isMovie() ? videoEntry.titleToShow() : videoEntry.seriesTitleToShow();
-                TMDbMovieSearchResponse response = cache.tmdbSearch(searchText, fallback);
+                HelperTMDb helperTMDb = new HelperTMDb(videoEntry);
 
-                if (!response.getResults().isEmpty()) {
-                    TMDbMovieSearchResult tmDbMovieSearchResult = response.getResults().get(0);
+                if (videoEntry.isMovie()) {
+                    TMDbMovieSearchResponse tmdbMovieSearchResponse = cache.tmdbMovieSearch(searchText, movieFallback);
 
-                    if (tmDbMovieSearchResult.getPosterPath() != null) {
-                        videoEntry.setPosterPath(tmDbMovieSearchResult.getPosterPath());
-                        videoEntry.setTmdbId(tmDbMovieSearchResult.getId());
+                    if (!tmdbMovieSearchResponse.getResults().isEmpty()) {
+                        videoEntry = helperTMDb.apply(tmdbMovieSearchResponse.getResults().get(0));
+                    } else {
+                        e("Nothing found for ["+ videoEntry.getFilename() +"]");
                     }
+                } else if (videoEntry.isTVShow()) {
+                    TMDbTVSearchResponse tmDbTVSearchResponse = cache.tmdbTVShowSearch(searchText, tvFallback);
+
+                    if (!tmDbTVSearchResponse.getResults().isEmpty()) {
+                        videoEntry = helperTMDb.applyTVShow(tmDbTVSearchResponse.getResults().get(0));
+                        d("Got ID ["+ videoEntry.getTmdbId() +"] for video ["+ videoEntry.getFilename() +"]");
+                    } else {
+                        e("Nothing found for ["+ videoEntry.getFilename() +"]");
+                    }
+                } else {
+                    throw new RuntimeException("Not movie nor tv show... ["+ videoEntry.getFilename() +"]");
                 }
+                updatedVideoEntries.add(videoEntry);
 
                 if (progressedListener != null) progressedListener.onProgressed(videoEntry);
             }
         } catch (Exception e) {
-            Logger.e(e);
+            e(e);
         }
 
-        return videoEntries;
+        return updatedVideoEntries;
     }
 }
