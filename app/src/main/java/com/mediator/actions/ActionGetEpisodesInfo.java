@@ -65,7 +65,7 @@ public class ActionGetEpisodesInfo implements IAction {
                     }
                 }
             };
-            taskGetTMDbEpisode.execute(videoEntry);
+            taskGetTMDbEpisode.execute(episode);
         }
     }
 

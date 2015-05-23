@@ -9,6 +9,7 @@ import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbTVEpisodeResult;
 import com.mediator.retrofit.RetrofitServiceTMDbTV;
+import com.squareup.otto.Bus;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
