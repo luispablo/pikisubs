@@ -21,6 +21,7 @@ import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
+import com.parse.ParseUser;
 import com.snappydb.SnappydbException;
 
 import java.util.List;
@@ -41,6 +42,18 @@ public class ActivityMain extends ActionBarActivity
 
         navDrawerFragment = (FragmentNavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         navDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        if (currentUser == null) {
+            Intent intent = new Intent(this, ActivitySignIn.class);
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -117,4 +117,12 @@
     <string name="message_getting_episode_info">Getting info for %1$s</string>
     <string name="video_action_get_videos_info">Get episodes info</string>
     <string name="message_error_getting_info">Error getting episode info</string>
+    <string name="email">e-mail</string>
+    <string name="password">Password</string>
+    <string name="title_wait_please">Wait please</string>
+    <string name="signing_up">Signing up...</string>
+    <string name="button_sign_up">New user. Sign up</string>
+    <string name="button_sign_in">Existing user. Sign in</string>
+    <string name="signing_in">Signing in...</string>
+    <string name="title_activity_sign_in">Sign in</string>
 </resources>
