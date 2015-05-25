@@ -1,6 +1,8 @@
 package com.mediator.ui;
 
 import static com.mediator.helpers.TinyLogger.*;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionGetEpisodesInfo;
 import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
@@ -159,6 +162,13 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
         fragmentEpisodeActionsDialog.setEpisode(listEpisodes.get(position));
         fragmentEpisodeActionsDialog.setCallback(this);
         fragmentEpisodeActionsDialog.show(getFragmentManager(), null);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ActionDownloadSubs.REQUEST_CODE_DOWNLOAD_SUBS == requestCode) {
+            load();
+        }
     }
 
     @Override

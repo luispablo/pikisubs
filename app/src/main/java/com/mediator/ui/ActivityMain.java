@@ -6,6 +6,7 @@ import static com.mediator.ui.FragmentNavigationDrawer.DrawerItem;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSnappyDB;
@@ -131,5 +133,11 @@ public class ActivityMain extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // This is to transfer the event to the fragments
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

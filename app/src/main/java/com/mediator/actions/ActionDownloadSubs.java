@@ -12,6 +12,8 @@ import com.mediator.ui.ActivitySubtitles;
  */
 public class ActionDownloadSubs implements IAction {
 
+    public static final int REQUEST_CODE_DOWNLOAD_SUBS = 16;
+
     @Override
     public boolean isAvailableFor(VideoEntry videoEntry) {
         return true;
@@ -25,6 +27,6 @@ public class ActionDownloadSubs implements IAction {
         Intent intent = new Intent(activity, ActivitySubtitles.class);
         intent.putExtras(bundle);
 
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, REQUEST_CODE_DOWNLOAD_SUBS);
     }
 }

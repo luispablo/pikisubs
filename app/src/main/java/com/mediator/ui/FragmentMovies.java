@@ -2,6 +2,7 @@ package com.mediator.ui;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.IAction;
 import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperSnappyDB;
@@ -167,6 +169,13 @@ public class FragmentMovies extends Fragment implements IActionCallback {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ActionDownloadSubs.REQUEST_CODE_DOWNLOAD_SUBS == requestCode) {
+            loadList();
         }
     }
 
