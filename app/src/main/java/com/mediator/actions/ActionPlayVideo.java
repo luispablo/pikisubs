@@ -45,6 +45,8 @@ public class ActionPlayVideo implements IAction {
         if (videoEntry.hasSubs()) {
             TaskBuildSubtitleFile taskBuildSubtitleFile = new TaskBuildSubtitleFile(context, bus);
             taskBuildSubtitleFile.execute(videoEntry);
+        } else {
+            onSubsFileDownloaed(null);
         }
     }
 
