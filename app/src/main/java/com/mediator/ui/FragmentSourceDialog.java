@@ -1,8 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-import static com.mediator.model.VideoEntry.VideoType;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,13 +14,11 @@ import android.widget.Spinner;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
-import com.snappydb.DB;
-import com.snappydb.KeyIterator;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +26,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import static com.mediator.helpers.TinyLogger.e;
+import static com.mediator.model.VideoEntry.VideoType;
 
 /**
  * Created by luispablo on 07/04/15.
@@ -59,27 +54,11 @@ public abstract class FragmentSourceDialog extends DialogFragment {
 
         ButterKnife.inject(this, view);
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-            videoServers = helperSnappyDB.all(VideoServer.class);
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
-        }
-
         if (getArguments() != null) {
             videoSource = (VideoSource) getArguments().get(VideoSource.class.getName());
         } else {
             videoSource = new VideoSource();
         }
-
-        List<String> serverNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
-            @Override
-            public String operate(VideoServer videoServer) {
-                return videoServer.getHost();
-            }
-        });
-        spinnerServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, serverNames));
 
         List<String> videoTypesNames = Oju.map(Arrays.asList(VideoType.values()), new Oju.UnaryOperator<VideoType, String>() {
             @Override
@@ -89,7 +68,22 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         });
         spinnerVideoTypes.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, videoTypesNames));
 
-        objectToInputs();
+        HelperParse helperParse = new HelperParse();
+        helperParse.allVideoServers(new HelperParse.CustomFindCallback<VideoServer>() {
+            @Override
+            public void done(List<VideoServer> list, ParseException e) {
+                videoServers = list;
+                List<String> serverNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
+                    @Override
+                    public String operate(VideoServer videoServer) {
+                        return videoServer.getHost();
+                    }
+                });
+                spinnerServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, serverNames));
+
+                objectToInputs();
+            }
+        });
 
         builder.setView(view)
                 .setTitle(getString(R.string.title_dialog_source))
@@ -123,9 +117,9 @@ public abstract class FragmentSourceDialog extends DialogFragment {
     private void objectToInputs() {
         VideoServer videoServer = null;
 
-        if (videoSource.getServerSnappyKey() != null) {
+        if (videoSource.getObjectId() != null) {
             for (VideoServer item : videoServers) {
-                if (item.getSnappyKey().equals(videoSource.getServerSnappyKey())) {
+                if (item.getObjectId().equals(videoSource.getVideoServer().getObjectId())) {
                     videoServer = item;
                     spinnerServers.setSelection(videoServers.indexOf(videoServer));
                 }
@@ -143,35 +137,24 @@ public abstract class FragmentSourceDialog extends DialogFragment {
     private void inputsToObject() {
         videoSource.setHttpPath(editHTTPPath.getText().toString());
         videoSource.setSshPath(editPath.getText().toString());
-
-        VideoServer videoServer = videoServers.get(spinnerServers.getSelectedItemPosition());
-
-        videoSource.setServerSnappyKey(videoServer.getSnappyKey());
-
-        VideoType videoType = VideoType.values()[spinnerVideoTypes.getSelectedItemPosition()];
-
-        videoSource.setVideoType(videoType);
+        videoSource.setVideoServer(videoServers.get(spinnerServers.getSelectedItemPosition()));
+        videoSource.setVideoType(VideoType.values()[spinnerVideoTypes.getSelectedItemPosition()]);
     }
 
     private void delete() {
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-            helperSnappyDB.delete(videoSource);
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        HelperParse helperParse = new HelperParse();
+        helperParse.delete(videoSource.getObjectId(), VideoSource.class);
     }
 
     private void save() {
         inputsToObject();
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-            helperSnappyDB.insertOrUpdate(videoSource);
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
+        HelperParse helperParse = new HelperParse();
+
+        if (videoSource.getObjectId() == null) {
+            helperParse.toParse(videoSource).saveInBackground();
+        } else {
+            helperParse.update(videoSource, null);
         }
     }
 

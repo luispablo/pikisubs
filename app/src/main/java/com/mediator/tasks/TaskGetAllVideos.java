@@ -3,25 +3,23 @@ package com.mediator.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperSSH;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
+import com.parse.ParseException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mediator.helpers.TinyLogger.d;
 import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 24/04/15.
  */
-public class TaskGetAllVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>> {
+public class TaskGetAllVideos extends AsyncTask<VideoSource, Void, Void> {
 
     private Context context;
     private TaskDoneListener taskDoneListener;
@@ -31,33 +29,38 @@ public class TaskGetAllVideos extends AsyncTask<VideoSource, Void, List<VideoEnt
         this.taskDoneListener = taskDoneListener;
     }
 
-    @Override
-    protected void onPostExecute(List<VideoEntry> videoEntries) {
-        taskDoneListener.onDone(videoEntries);
-    }
+    int sourcesLoaded;
 
     @Override
-    protected List<VideoEntry> doInBackground(VideoSource... videoSources) {
-        List<VideoEntry> videoEntries = new ArrayList<>();
+    protected Void doInBackground(final VideoSource... videoSources) {
+        final List<VideoEntry> allVideoEntries = new ArrayList<>();
 
-        try {
-            HelperDAO helperDAO = new HelperDAO(context);
-            HelperVideo videoHelper = new HelperVideo();
+        final HelperVideo videoHelper = new HelperVideo();
+        HelperParse helperParse = new HelperParse();
 
-            for (VideoSource videoSource : videoSources) {
-                HelperSSH helper = new HelperSSH(helperDAO.getServer(videoSource));
-                Session session = helper.connectSession();
-                ChannelSftp sftp = helper.openSFTP(session);
+        sourcesLoaded = 0;
 
-                videoEntries.addAll(videoHelper.videoEntriesFrom("/", videoSource.getSshPath(), sftp, videoSource));
+        for (final VideoSource videoSource : videoSources) {
+            d("Using server [" + videoSource.getVideoServer().getObjectId() + "]");
 
-                sftp.disconnect();
-                session.disconnect();
-            }
-        } catch (JSchException | SftpException e) {
-            e(e);
+            helperParse.getVideoServer(videoSource.getVideoServer().getObjectId(), new HelperParse.CustomGetCallback<VideoServer>() {
+                @Override
+                public void done(VideoServer videoServer, ParseException e) {
+                    if (e != null) e(e);
+
+                    TaskGetVideosFromServer taskGetVideosFromServer = new TaskGetVideosFromServer(videoServer, videoSource) {
+                        @Override
+                        protected void onPostExecute(List<VideoEntry> videoEntries) {
+                            allVideoEntries.addAll(videoEntries);
+                            if (++sourcesLoaded == videoSources.length)
+                                taskDoneListener.onDone(allVideoEntries);
+                        }
+                    };
+                    taskGetVideosFromServer.execute();
+                }
+            });
         }
 
-        return videoEntries;
+        return null;
     }
 }

@@ -1,16 +1,18 @@
 package com.mediator.model;
 
+import java.io.Serializable;
+
 import static com.mediator.model.VideoEntry.VideoType;
 
 /**
  * Created by luispablo on 26/04/15.
  */
-public class VideoSource implements SnappyKey {
+public class VideoSource implements Serializable {
 
-    private String snappyKey;
+    private String objectId;
     private String sshPath;
     private VideoType videoType;
-    private String serverSnappyKey;
+    private VideoServer videoServer;
     private String httpPath;
 
     public String getSshPath() {
@@ -21,16 +23,6 @@ public class VideoSource implements SnappyKey {
         this.sshPath = sshPath;
     }
 
-    @Override
-    public void setSnappyKey(String key) {
-        this.snappyKey = key;
-    }
-
-    @Override
-    public String getSnappyKey() {
-        return this.snappyKey;
-    }
-
     public VideoType getVideoType() {
         return videoType;
     }
@@ -39,19 +31,27 @@ public class VideoSource implements SnappyKey {
         this.videoType = videoType;
     }
 
-    public String getServerSnappyKey() {
-        return serverSnappyKey;
-    }
-
-    public void setServerSnappyKey(String serverSnappyKey) {
-        this.serverSnappyKey = serverSnappyKey;
-    }
-
     public String getHttpPath() {
         return httpPath;
     }
 
     public void setHttpPath(String httpPath) {
         this.httpPath = httpPath;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public VideoServer getVideoServer() {
+        return videoServer;
+    }
+
+    public void setVideoServer(VideoServer videoServer) {
+        this.videoServer = videoServer;
     }
 }

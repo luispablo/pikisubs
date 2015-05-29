@@ -1,26 +1,22 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperSnappyDB;
-import com.mediator.model.GuessitObject;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieResult;
 import com.mediator.model.tmdb.TMDbTVResult;
 import com.mediator.tasks.TaskGetTMDbMovie;
 import com.mediator.tasks.TaskGetTMDbTV;
 import com.mediator.ui.FragmentSetTMDbIdDialog;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-
-import java.util.Map;
 
 /**
  * Created by luispablo on 17/05/15.
@@ -87,17 +83,19 @@ public class ActionSetTMDbId implements IAction {
     }
 
     @Subscribe
-    public void onGotTMDbMovie(TMDbMovieResult tmdBMovieResult) throws SnappydbException {
+    public void onGotTMDbMovie(TMDbMovieResult tmdBMovieResult) {
         progressDialog.dismiss();
 
         videoEntry.setPosterPath(tmdBMovieResult.getPosterPath());
         videoEntry.setTitle(tmdBMovieResult.getTitle());
         videoEntry.setVideoType(VideoEntry.VideoType.MOVIE);
 
-        HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
-        helperSnappyDB.update(videoEntry);
-        helperSnappyDB.close();
-
-        if (callback != null) callback.onDone(true);
+        HelperParse helperParse = new HelperParse();
+        helperParse.toParse(videoEntry).saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (callback != null) callback.onDone(e == null);
+            }
+        });
     }
 }

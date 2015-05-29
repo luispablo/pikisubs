@@ -1,27 +1,25 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
 import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.HelperTMDb;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieSearchResponse;
 import com.mediator.model.tmdb.TMDbMovieSearchResult;
-import com.mediator.model.tmdb.TMDbTVResult;
 import com.mediator.model.tmdb.TMDbTVSearchResponse;
 import com.mediator.model.tmdb.TMDbTVSearchResult;
 import com.mediator.tasks.TaskTMDbSearchMovie;
 import com.mediator.tasks.TaskTMDbSearchTV;
 import com.mediator.ui.FragmentSelectStringDialog;
 import com.mediator.ui.FragmentVideoSearchDialog;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -122,25 +120,30 @@ public class ActionIdentifyVideo implements IAction {
         fragmentSelectStringDialog.show(activity.getFragmentManager(), null);
     }
 
-    protected void onTVShowSelected(Context context, TVShow tvShow, TMDbTVSearchResult tmDbTVSearchResult) {
+    int updated;
+
+    protected void onTVShowSelected(Context context, TVShow tvShow, final TMDbTVSearchResult tmDbTVSearchResult) {
         HelperDAO helperDAO = new HelperDAO(context);
-        List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
+        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
+            @Override
+            public void done(final List<VideoEntry> episodes, ParseException e) {
+                updated = 0;
+                HelperParse helperParse = new HelperParse();
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
+                for (VideoEntry episode : episodes) {
+                    HelperTMDb helperTMDb = new HelperTMDb(episode);
+                    episode = helperTMDb.applyTVShow(tmDbTVSearchResult);
 
-            for (VideoEntry episode : episodes) {
-                HelperTMDb helperTMDb = new HelperTMDb(episode);
-                episode = helperTMDb.applyTVShow(tmDbTVSearchResult);
-                helperSnappyDB.update(episode);
+                    helperParse.toParse(episode).saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (++updated == episodes.size() && callback != null)
+                                callback.onDone(true);
+                        }
+                    });
+                }
             }
-
-            helperSnappyDB.close();
-
-            if (callback != null) callback.onDone(true);
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        });
     }
 
     protected void onMovieSelected(Context context, VideoEntry videoEntry,
@@ -148,14 +151,12 @@ public class ActionIdentifyVideo implements IAction {
         HelperTMDb helperTMDb = new HelperTMDb(videoEntry);
         videoEntry = helperTMDb.apply(tmdbMovieSearchResult);
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
-            helperSnappyDB.update(videoEntry);
-            helperSnappyDB.close();
-
-            if (callback != null) callback.onDone(true);
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        HelperParse helperParse = new HelperParse();
+        helperParse.toParse(videoEntry).saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (callback != null) callback.onDone(e == null);
+            }
+        });
     }
 }

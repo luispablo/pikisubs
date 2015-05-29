@@ -14,18 +14,14 @@ import android.widget.TextView;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
-import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.snappydb.SnappydbException;
 
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 17/05/15.

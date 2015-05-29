@@ -2,11 +2,10 @@ package com.mediator.actions;
 
 import android.app.Activity;
 
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
-import com.snappydb.SnappydbException;
-
-import static com.mediator.helpers.TinyLogger.e;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 /**
  * Created by luispablo on 26/04/15.
@@ -14,17 +13,15 @@ import static com.mediator.helpers.TinyLogger.e;
 public abstract class ActionToggleNeedsSubs implements IAction {
 
     @Override
-    public void execute(Activity activity, VideoEntry videoEntry, IActionCallback callback) {
+    public void execute(Activity activity, VideoEntry videoEntry, final IActionCallback callback) {
         videoEntry.setNeedsSubs(!videoEntry.needsSubs());
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(activity);
-            helperSnappyDB.update(videoEntry);
-            helperSnappyDB.close();
-
-            if (callback != null) callback.onDone(true);
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        HelperParse helperParse = new HelperParse();
+        helperParse.update(videoEntry, new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (callback != null) callback.onDone(e == null);
+            }
+        });
     }
 }

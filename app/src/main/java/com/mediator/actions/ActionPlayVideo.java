@@ -5,20 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskBuildSubtitleFile;
-import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static com.mediator.helpers.TinyLogger.d;
-import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 25/04/15.
@@ -51,34 +47,31 @@ public class ActionPlayVideo implements IAction {
     }
 
     @Subscribe
-    public void onSubsFileDownloaed(File subsFile) {
-        try {
-            videoEntry.setWatched(true);
+    public void onSubsFileDownloaed(final File subsFile) {
 
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
-            VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
-            VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
-            helperSnappyDB.update(videoEntry);
-            helperSnappyDB.close();
+        final HelperParse helperParse = new HelperParse();
 
-            String videoURL = videoServer.getHttpUrl() + videoSource.getHttpPath() +
-                    videoEntry.getPathRelativeToSource() +"/"+ videoEntry.getFilename();
+        videoEntry.setWatched(true);
+        helperParse.toParse(videoEntry).saveInBackground();
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(videoURL));
+        VideoSource videoSource = videoEntry.getVideoSource();
+        VideoServer videoServer = videoSource.getVideoServer();
 
-            if (videoEntry.hasSubs()) {
-                ArrayList<Uri> subsUris = new ArrayList<>();
-                subsUris.add(Uri.fromFile(subsFile));
-                intent.putParcelableArrayListExtra("subs", subsUris);
-                intent.putParcelableArrayListExtra("subs.enable", subsUris);
-            }
+        String videoURL = videoServer.getHttpUrl() + videoSource.getHttpPath() +
+                videoEntry.getPathRelativeToSource() + "/" + videoEntry.getFilename();
 
-            if (callback != null) callback.onDone(false);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(videoURL));
 
-            context.startActivity(intent);
-        } catch (SnappydbException e) {
-            e(e);
+        if (videoEntry.hasSubs()) {
+            ArrayList<Uri> subsUris = new ArrayList<>();
+            subsUris.add(Uri.fromFile(subsFile));
+            intent.putParcelableArrayListExtra("subs", subsUris);
+            intent.putParcelableArrayListExtra("subs.enable", subsUris);
         }
+
+        if (callback != null) callback.onDone(false);
+
+        context.startActivity(intent);
     }
 }

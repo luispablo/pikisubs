@@ -1,23 +1,20 @@
 package com.mediator.tasks;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoSource;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
 
 import java.util.List;
-
-import static com.mediator.helpers.TinyLogger.d;
 
 /**
  * Created by luispablo on 18/05/15.
  */
-public class TaskRefreshLocalDB implements Runnable {
+public class TaskRefreshLocalDB extends AsyncTask<Void, Void, Void> {
 
     Context context;
 
@@ -26,7 +23,7 @@ public class TaskRefreshLocalDB implements Runnable {
     }
 
     @Override
-    public void run() {
+    protected Void doInBackground(Void... params) {
 
         TaskDoneListener<List<VideoEntry>> updateLocalDBListener = new TaskDoneListener<List<VideoEntry>>(){
 
@@ -58,7 +55,7 @@ public class TaskRefreshLocalDB implements Runnable {
 
         final TaskGuessitVideos taskGuessitVideos = new TaskGuessitVideos(context, null, guessitListener);
 
-        TaskDoneListener<List<VideoEntry>> getAllVideosListener = new TaskDoneListener<List<VideoEntry>>() {
+        final TaskDoneListener<List<VideoEntry>> getAllVideosListener = new TaskDoneListener<List<VideoEntry>>() {
             @Override
             public void onDone(List<VideoEntry> videoEntries) {
                 onProgress(context.getString(R.string.message_guessing_videos));
@@ -66,16 +63,16 @@ public class TaskRefreshLocalDB implements Runnable {
             }
         };
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
-            List<VideoSource> videoSources = helperSnappyDB.all(VideoSource.class);
-            helperSnappyDB.close();
+        HelperParse helperParse = new HelperParse();
+        helperParse.allVideoSources(new HelperParse.CustomFindCallback<VideoSource>() {
+            @Override
+            public void done(List<VideoSource> videoSources, ParseException e) {
+                TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(context, getAllVideosListener);
+                taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
+            }
+        });
 
-            TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(context, getAllVideosListener);
-            taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        return null;
     }
 
     public void onProgress(String message) {

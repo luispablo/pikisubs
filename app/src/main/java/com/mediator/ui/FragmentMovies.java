@@ -15,19 +15,12 @@ import android.widget.AbsListView;
 
 import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
-import com.mediator.actions.IAction;
 import com.mediator.actions.IActionCallback;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.mediator.model.VideoSource;
-import com.mediator.tasks.TaskDoneListener;
-import com.mediator.tasks.TaskGetAllVideos;
-import com.mediator.tasks.TaskGuessitVideos;
 import com.mediator.tasks.TaskRefreshLocalDB;
-import com.mediator.tasks.TaskSearchPoster;
-import com.mediator.tasks.TaskUpdateLocalDB;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -36,9 +29,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-
-import static com.mediator.helpers.TinyLogger.d;
-import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 23/04/15.
@@ -90,25 +80,24 @@ public class FragmentMovies extends Fragment implements IActionCallback {
     private void loadList() {
         if (!progressDialog.isShowing()) progressDialog.show();
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
+        HelperParse helperParse = new HelperParse();
+        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
+            @Override
+            public void done(List<VideoEntry> list, ParseException e) {
+                videoEntries = Oju.filter(list, new Oju.UnaryChecker<VideoEntry>() {
+                    @Override
+                    public boolean check(VideoEntry videoEntry) {
+                        return videoEntry.isMovie() && filter.applies(videoEntry);
+                    }
+                });
 
-            videoEntries = Oju.filter(helperSnappyDB.all(VideoEntry.class), new Oju.UnaryChecker<VideoEntry>() {
-                @Override
-                public boolean check(VideoEntry videoEntry) {
-                    return videoEntry.isMovie() && filter.applies(videoEntry);
-                }
-            });
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
-        }
+                listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
 
-        listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
+                if (listVideosState != null) listVideos.onRestoreInstanceState(listVideosState);
 
-        if (listVideosState != null) listVideos.onRestoreInstanceState(listVideosState);
-
-        progressDialog.dismiss();
+                progressDialog.dismiss();
+            }
+        });
     }
 
     @OnItemClick(R.id.listVideos)
@@ -147,7 +136,7 @@ public class FragmentMovies extends Fragment implements IActionCallback {
                 loadList();
             }
         };
-        taskRefreshLocalDB.run();
+        taskRefreshLocalDB.execute();
     }
 
     @Override

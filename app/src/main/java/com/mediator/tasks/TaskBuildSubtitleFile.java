@@ -1,7 +1,5 @@
 package com.mediator.tasks;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -10,14 +8,9 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
-import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.model.VideoEntry;
-import com.mediator.model.VideoServer;
-import com.mediator.model.VideoSource;
-import com.snappydb.SnappydbException;
 import com.squareup.otto.Bus;
 
 import java.io.BufferedInputStream;
@@ -26,10 +19,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static com.mediator.helpers.TinyLogger.e;
+
 /**
  * Created by luispablo on 29/04/15.
  */
-public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
+public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, Void> {
 
     private Context context;
     private Bus bus;
@@ -40,22 +35,13 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
     }
 
     @Override
-    protected void onPostExecute(File file) {
-        bus.post(file);
-    }
+    protected Void doInBackground(VideoEntry... videoEntries) {
+        final VideoEntry videoEntry = videoEntries[0];
 
-    @Override
-    protected File doInBackground(VideoEntry... videoEntries) {
-        VideoEntry videoEntry = videoEntries[0];
         File subsFile = null;
 
         try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(context);
-            VideoSource videoSource = helperSnappyDB.get(videoEntry.getVideoSourceKey(), VideoSource.class);
-            VideoServer videoServer = helperSnappyDB.get(videoSource.getServerSnappyKey(), VideoServer.class);
-            helperSnappyDB.close();
-
-            HelperSSH helper = new HelperSSH(videoServer);
+            HelperSSH helper = new HelperSSH(videoEntry.getVideoSource().getVideoServer());
             Session session = helper.connectSession();
             ChannelSftp sftp = helper.openSFTP(session);
 
@@ -79,10 +65,12 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
             sftp.disconnect();
             session.disconnect();
 
-        } catch (IOException | SftpException | JSchException | SnappydbException e) {
-            e(e);
+            bus.post(subsFile);
+
+        } catch (IOException | SftpException | JSchException ex) {
+            e(ex);
         }
 
-        return subsFile;
+        return null;
     }
 }

@@ -1,11 +1,13 @@
 package com.mediator.model;
 
+import java.io.Serializable;
+
 /**
  * Created by luispablo on 26/04/15.
  */
-public class VideoServer implements SnappyKey {
+public class VideoServer implements Serializable {
 
-    private String snappyKey;
+    private String objectId;
     private String host;
     private String username;
     private String password;
@@ -54,13 +56,11 @@ public class VideoServer implements SnappyKey {
         this.password = password;
     }
 
-    @Override
-    public void setSnappyKey(String key) {
-        this.snappyKey = key;
+    public String getObjectId() {
+        return objectId;
     }
 
-    @Override
-    public String getSnappyKey() {
-        return this.snappyKey;
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 }

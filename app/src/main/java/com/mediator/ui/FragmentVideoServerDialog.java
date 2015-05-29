@@ -1,23 +1,26 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoServer;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 26/04/15.
@@ -66,7 +69,7 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
             }
         });
 
-        if (videoServer.getSnappyKey() != null) {
+        if (videoServer.getObjectId() != null) {
             builder.setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -94,24 +97,35 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
     }
 
     private void delete() {
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-            helperSnappyDB.delete(videoServer);
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        HelperParse helperParse = new HelperParse();
+        helperParse.delete(videoServer.getObjectId(), VideoServer.class);
     }
 
     private void save() {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle(R.string.title_wait_please);
+        progressDialog.setMessage(getString(R.string.message_contacting_server));
+        progressDialog.show();
+
         fillObject();
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(getActivity());
-            helperSnappyDB.insertOrUpdate(videoServer);
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
+        SaveCallback saveCallback = new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                progressDialog.dismiss();
+
+                if (e != null) {
+                    e(e);
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+        HelperParse helperParse = new HelperParse();
+
+        if (videoServer.getObjectId() == null) {
+            helperParse.toParse(videoServer).saveInBackground(saveCallback);
+        } else {
+            helperParse.update(videoServer, saveCallback);
         }
     }
 

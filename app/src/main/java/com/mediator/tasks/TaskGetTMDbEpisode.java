@@ -1,7 +1,5 @@
 package com.mediator.tasks;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -9,10 +7,12 @@ import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbTVEpisodeResult;
 import com.mediator.retrofit.RetrofitServiceTMDbTV;
-import com.squareup.otto.Bus;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+
+import static com.mediator.helpers.TinyLogger.d;
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 22/05/15.

@@ -7,24 +7,23 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.mediator.helpers.HelperDAO;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.helpers.HelperVideo;
-import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
-import com.orhanobut.logger.Logger;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mediator.helpers.TinyLogger.e;
+
 /**
  * Created by luispablo on 09/04/15.
  */
-public class TaskGetVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>> {
+public class TaskGetVideos extends AsyncTask<VideoSource, Void, Void> {
 
     public enum Filter { ALL, WITH_SUBS, WITHOUT_SUBS }
 
@@ -48,27 +47,20 @@ public class TaskGetVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>
         this.bus = bus;
     }
 
-    @Override
-    protected void onPostExecute(List<VideoEntry> videoEntries) {
-        if (taskFinished != null) {
-            taskFinished.videosDownloaded(videoEntries);
-        }
-        if (bus != null) {
-            bus.post(videoEntries);
-        }
-    }
+    int sourcesProcessed;
 
     @Override
-    protected List<VideoEntry> doInBackground(VideoSource... videoSources) {
-        List<VideoEntry> videoEntries = new ArrayList<>();
+    protected Void doInBackground(final VideoSource... videoSources) {
+        final List<VideoEntry> videoEntries = new ArrayList<>();
 
-        try {
-            HelperVideo videoHelper = new HelperVideo();
-            HelperDAO helperDAO = new HelperDAO(context);
+        final HelperVideo videoHelper = new HelperVideo();
+        HelperParse helperParse = new HelperParse();
 
-            for (VideoSource videoSource : videoSources) {
-                VideoServer videoServer = helperDAO.getServer(videoSource);
-                HelperSSH helperSSH = new HelperSSH(videoServer);
+        sourcesProcessed = 0;
+
+        for (final VideoSource videoSource : videoSources) {
+            try {
+                HelperSSH helperSSH = new HelperSSH(videoSource.getVideoServer());
                 Session session = helperSSH.connectSession();
                 ChannelSftp sftp = helperSSH.openSFTP(session);
 
@@ -88,12 +80,21 @@ public class TaskGetVideos extends AsyncTask<VideoSource, Void, List<VideoEntry>
 
                 sftp.disconnect();
                 session.disconnect();
+
+                if (++sourcesProcessed == videoSources.length) {
+                    if (taskFinished != null) {
+                        taskFinished.videosDownloaded(videoEntries);
+                    }
+                    if (bus != null) {
+                        bus.post(videoEntries);
+                    }
+                }
+            } catch (JSchException | SftpException ex) {
+                e(ex);
             }
-        } catch (JSchException | SftpException e) {
-            Logger.e(e);
         }
 
-        return videoEntries;
+        return null;
     }
 
     class WithoutSubsChecker implements Oju.UnaryChecker<VideoEntry> {

@@ -7,24 +7,20 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
-import com.mediator.helpers.HelperSnappyDB;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.mediator.model.VideoServer;
-import com.mediator.model.VideoSource;
-import com.orhanobut.logger.Logger;
-import com.snappydb.SnappydbException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static com.mediator.helpers.TinyLogger.e;
+
 /**
  * Created by luispablo on 11/04/15.
  */
-public class TaskUploadSubtitles extends AsyncTask<File, Void, File> {
+public class TaskUploadSubtitles extends AsyncTask<File, Void, Void> {
 
     private Context context;
     private VideoEntry videoEntry;
@@ -37,11 +33,8 @@ public class TaskUploadSubtitles extends AsyncTask<File, Void, File> {
     }
 
     @Override
-    protected File doInBackground(File... params) {
-        HelperDAO helperDAO = new HelperDAO(context);
-        VideoSource videoSource = helperDAO.getSource(videoEntry);
-        VideoServer videoServer = helperDAO.getServer(videoSource);
-        HelperSSH sshHelper = new HelperSSH(videoServer);
+    protected Void doInBackground(final File... params) {
+        HelperSSH sshHelper = new HelperSSH(videoEntry.getVideoSource().getVideoServer());
 
         File subtitleFile = params[0];
         String subtitleExtension = Oju.rigthFromLast(subtitleFile.getName(), ".");
@@ -58,16 +51,13 @@ public class TaskUploadSubtitles extends AsyncTask<File, Void, File> {
 
             sftp.exit();
             session.disconnect();
-        } catch (JSchException | SftpException | IOException e) {
-            Logger.e(e);
+
+            next.uploaded(subtitleFile);
+        } catch (JSchException | SftpException | IOException ex) {
+            e(ex);
         }
 
-        return subtitleFile;
-    }
-
-    @Override
-    protected void onPostExecute(File subtitleFile) {
-        next.uploaded(subtitleFile);
+        return null;
     }
 
     public interface OnTaskDone {

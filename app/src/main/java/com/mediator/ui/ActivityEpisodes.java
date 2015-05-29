@@ -1,7 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -15,15 +13,14 @@ import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionGetEpisodesInfo;
 import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
-import com.mediator.actions.IAction;
 import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbTVResult;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -110,29 +107,25 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
 
     private void setTVShowTMDbId() {
         HelperDAO helperDAO = new HelperDAO(this);
-        final List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
-
-        ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
+        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
             @Override
-            protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
-                d("ActivityEpisodes > ActionSetTMDbId.gotTVShowResult()");
-                HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(ActivityEpisodes.this);
+            public void done(final List<VideoEntry> episodes, ParseException e) {
+                ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
+                    @Override
+                    protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
+                        for (VideoEntry episode : episodes) {
+                            episode.setPosterPath(tmdbTVResult.getPosterPath());
+                            episode.setSeriesTitle(tmdbTVResult.getName());
+                            episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
 
-                try {
-                    for (VideoEntry episode : episodes) {
-                        episode.setPosterPath(tmdbTVResult.getPosterPath());
-                        episode.setSeriesTitle(tmdbTVResult.getName());
-                        episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
-                        helperSnappyDB.update(episode);
+                            HelperParse helperParse = new HelperParse();
+                            helperParse.update(episode, null);
+                        }
                     }
-
-                    helperSnappyDB.close();
-                } catch (SnappydbException e) {
-                    e(e);
-                }
+                };
+                actionSetTMDbId.execute(ActivityEpisodes.this, episodes.get(0), ActivityEpisodes.this);
             }
-        };
-        actionSetTMDbId.execute(this, episodes.get(0), this);
+        });
     }
 
     private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
@@ -142,16 +135,22 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
 
     private void load() {
         HelperDAO helperDAO = new HelperDAO(this);
-        listEpisodes = Oju.filter(helperDAO.episodesFrom(tvShow), new Oju.UnaryChecker<VideoEntry>() {
+        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
             @Override
-            public boolean check(VideoEntry episode) {
-                return filter.applies(episode);
+            public void done(List<VideoEntry> episodes, ParseException e) {
+                listEpisodes = Oju.filter(episodes, new Oju.UnaryChecker<VideoEntry>() {
+                    @Override
+                    public boolean check(VideoEntry episode) {
+                        return filter.applies(episode);
+                    }
+                });
+                Collections.sort(listEpisodes, new EpisodeComparator());
+                listViewEpisodes.setAdapter(new AdapterEpisodes(ActivityEpisodes.this, listEpisodes));
+
+                if (listViewEpisodesState != null)
+                    listViewEpisodes.onRestoreInstanceState(listViewEpisodesState);
             }
         });
-        Collections.sort(listEpisodes, new EpisodeComparator());
-        listViewEpisodes.setAdapter(new AdapterEpisodes(this, listEpisodes));
-
-        if (listViewEpisodesState != null) listViewEpisodes.onRestoreInstanceState(listViewEpisodesState);
     }
 
     @OnItemClick(R.id.listViewEpisodes)

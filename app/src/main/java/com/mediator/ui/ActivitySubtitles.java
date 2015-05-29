@@ -1,7 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -15,17 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperSnappyDB;
-import com.mediator.sources.SubtitlesSource;
+import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
 import com.mediator.model.VideoEntry;
+import com.mediator.sources.SubtitlesSource;
 import com.mediator.tasks.TaskCancelledListener;
 import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
 import com.mediator.tasks.TaskProgressedListener;
 import com.mediator.tasks.TaskUploadSubtitles;
-import com.snappydb.SnappydbException;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import java.io.File;
 import java.util.Collections;
@@ -192,19 +191,21 @@ public class ActivitySubtitles extends ActionBarActivity {
 
         @Override
         public void uploaded(File file) {
-            progressDialog.dismiss();
-
             videoEntry.setHasSubs(true);
 
-            try {
-                HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(ActivitySubtitles.this);
-                helperSnappyDB.update(videoEntry);
-                helperSnappyDB.close();
-            } catch (SnappydbException e) {
-                e(e);
-            }
+            HelperParse helperParse = new HelperParse();
+            helperParse.update(videoEntry, new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    progressDialog.dismiss();
+                }
+            });
 
-            Toast.makeText(ActivitySubtitles.this, R.string.message_subs_uploaded, Toast.LENGTH_LONG).show();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(ActivitySubtitles.this, R.string.message_subs_uploaded, Toast.LENGTH_LONG).show();
+                }
+            });
             file.delete();
         }
     }

@@ -1,8 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
-import static com.mediator.ui.FragmentNavigationDrawer.DrawerItem;
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -15,16 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mediator.R;
-import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.helpers.HelperAndroid;
-import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
+import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.snappydb.SnappydbException;
 
 import java.util.List;
+
+import static com.mediator.ui.FragmentNavigationDrawer.DrawerItem;
 
 public class ActivityMain extends ActionBarActivity
         implements FragmentNavigationDrawer.NavigationDrawerCallbacks {
@@ -98,15 +95,14 @@ public class ActivityMain extends ActionBarActivity
         progressDialog.setMessage(getString(R.string.message_cleaning_local_db));
         progressDialog.show();
 
-        try {
-            HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(this);
-            for (VideoEntry videoEntry : helperSnappyDB.all(VideoEntry.class)) {
-                helperSnappyDB.delete(videoEntry);
+        final HelperParse helperParse = new HelperParse();
+        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
+            @Override
+            public void done(List<VideoEntry> videoEntries, ParseException e) {
+                for (VideoEntry videoEntry : videoEntries)
+                    helperParse.delete(videoEntry.getObjectId(), VideoEntry.class);
             }
-            helperSnappyDB.close();
-        } catch (SnappydbException e) {
-            e(e);
-        }
+        });
 
         TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(this) {
             @Override
@@ -119,7 +115,7 @@ public class ActivityMain extends ActionBarActivity
                 progressDialog.dismiss();
             }
         };
-        taskRefreshLocalDB.run();
+        taskRefreshLocalDB.execute();
 
     }
 

@@ -1,17 +1,16 @@
 package com.mediator.actions;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperSnappyDB;
+import com.mediator.helpers.HelperParse;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskDeleteVideoFile;
-import com.snappydb.SnappydbException;
+import com.parse.DeleteCallback;
+import com.parse.ParseException;
 
 /**
  * Created by luispablo on 21/05/15.
@@ -55,15 +54,13 @@ public class ActionDelete implements IAction {
             @Override
             protected void onPostExecute(Boolean deleted) {
                 if (deleted) {
-                    try {
-                        HelperSnappyDB helperSnappyDB = HelperSnappyDB.getSingleton(activity);
-                        helperSnappyDB.delete(videoEntry);
-                        helperSnappyDB.close();
-                        callback.onDone(true);
-                    } catch (SnappydbException e) {
-                        e(e);
-                        callback.onDone(false);
-                    }
+                    HelperParse helperParse = new HelperParse();
+                    helperParse.toParse(videoEntry).deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            callback.onDone(e == null);
+                        }
+                    });
                 } else {
                     callback.onDone(false);
                 }

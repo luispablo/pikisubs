@@ -4,12 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.mediator.sources.Subdivx;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.model.Subtitle;
 import com.mediator.retrofit.RetrofitServiceSubdivxDownload;
-import com.orhanobut.logger.Logger;
+import com.mediator.sources.Subdivx;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +21,8 @@ import de.innosystec.unrar.exception.RarException;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+
+import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 11/04/15.
@@ -83,9 +84,9 @@ public class TaskDownloadSubtitle extends AsyncTask<Subtitle, Void, List<File>> 
             compressedFile.delete();
 
         } catch (IOException e) {
-            Logger.e(e);
+            e(e);
         } catch (RarException e) {
-            Logger.e(e);
+            e(e);
         }
 
         return files;

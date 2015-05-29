@@ -5,12 +5,14 @@ import android.content.Context;
 import com.mediator.helpers.MediatorPrefs;
 import com.mediator.helpers.Oju;
 
+import java.io.Serializable;
+
 import static com.mediator.helpers.TinyLogger.d;
 
 /**
  * Created by luispablo on 11/04/15.
  */
-public class VideoEntry implements SnappyKey {
+public class VideoEntry implements Serializable {
 
     public enum VideoType {
         MOVIE, TV_SHOW;
@@ -27,8 +29,8 @@ public class VideoEntry implements SnappyKey {
     private String pathRelativeToSource;
     private String filename;
 
-    private String snappyKey;
-    private String videoSourceKey;
+    private String objectId;
+    private VideoSource videoSource;
 
     private String title;
     private String seriesTitle;
@@ -48,14 +50,14 @@ public class VideoEntry implements SnappyKey {
         this.needsSubs = true;
     }
 
-    public VideoEntry(String pathRelativeToSource, String absolutePath, String filename, boolean hasSubs, String videoSourceKey) {
+    public VideoEntry(String pathRelativeToSource, String absolutePath, String filename, boolean hasSubs, VideoSource videoSource) {
         this();
 
         this.hasSubs = hasSubs;
         this.pathRelativeToSource = pathRelativeToSource;
         this.absolutePath = absolutePath;
         this.filename = filename;
-        this.videoSourceKey = videoSourceKey;
+        this.videoSource = videoSource;
     }
 
     public TVShow buildTVShow(Context context) {
@@ -178,14 +180,6 @@ public class VideoEntry implements SnappyKey {
         this.posterPath = posterPath;
     }
 
-    public String getVideoSourceKey() {
-        return videoSourceKey;
-    }
-
-    public void setVideoSourceKey(String videoSourceKey) {
-        this.videoSourceKey = videoSourceKey;
-    }
-
     public boolean hasSubs() {
         return hasSubs;
     }
@@ -208,16 +202,6 @@ public class VideoEntry implements SnappyKey {
 
     public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    @Override
-    public void setSnappyKey(String key) {
-        this.snappyKey = key;
-    }
-
-    @Override
-    public String getSnappyKey() {
-        return this.snappyKey;
     }
 
     public boolean needsSubs() {
@@ -250,5 +234,21 @@ public class VideoEntry implements SnappyKey {
 
     public void setTmdbId(long tmdbId) {
         this.tmdbId = tmdbId;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public VideoSource getVideoSource() {
+        return videoSource;
+    }
+
+    public void setVideoSource(VideoSource videoSource) {
+        this.videoSource = videoSource;
     }
 }

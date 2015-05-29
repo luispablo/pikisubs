@@ -99,8 +99,8 @@
     <string name="poster_path">poster path</string>
     <string name="absolute_path">absolute path</string>
     <string name="path_relative_to_source">path relative to source</string>
-    <string name="snappy_key">snappy db key</string>
-    <string name="video_source_key">video source snappy db key</string>
+    <string name="object_id">Object ID</string>
+    <string name="video_source_object_id">video source object id</string>
     <string name="season_number">season number</string>
     <string name="tmdb_id">TMDb ID</string>
     <string name="title_to_show">title to show</string>
@@ -125,4 +125,7 @@
     <string name="button_sign_in">Existing user. Sign in</string>
     <string name="signing_in">Signing in...</string>
     <string name="title_activity_sign_in">Sign in</string>
+    <string name="message_loading_data">Loading data</string>
+    <string name="message_no_data">No data to display</string>
+    <string name="message_contacting_server">Contacting server</string>
 </resources>
