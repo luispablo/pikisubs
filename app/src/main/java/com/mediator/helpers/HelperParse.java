@@ -116,6 +116,7 @@ public class HelperParse {
         videoEntry.setPathRelativeToSource(po.getString(PATH_RELATIVE_TO_SOURCE));
         videoEntry.setSeriesTitle(po.getString(SERIES_TITLE));
         videoEntry.setTitle(po.getString(TITLE));
+        videoEntry.setWatched(po.getBoolean(IS_WATCHED));
 
         return videoEntry;
     }
