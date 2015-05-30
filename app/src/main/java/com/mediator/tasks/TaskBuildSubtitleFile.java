@@ -11,7 +11,6 @@ import com.jcraft.jsch.SftpException;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.model.VideoEntry;
-import com.squareup.otto.Bus;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -24,18 +23,16 @@ import static com.mediator.helpers.TinyLogger.e;
 /**
  * Created by luispablo on 29/04/15.
  */
-public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, Void> {
+public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
 
     private Context context;
-    private Bus bus;
 
-    public TaskBuildSubtitleFile(Context context, Bus bus) {
+    public TaskBuildSubtitleFile(Context context) {
         this.context = context;
-        this.bus = bus;
     }
 
     @Override
-    protected Void doInBackground(VideoEntry... videoEntries) {
+    protected File doInBackground(VideoEntry... videoEntries) {
         final VideoEntry videoEntry = videoEntries[0];
 
         File subsFile = null;
@@ -64,13 +61,10 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, Void> {
 
             sftp.disconnect();
             session.disconnect();
-
-            bus.post(subsFile);
-
         } catch (IOException | SftpException | JSchException ex) {
             e(ex);
         }
 
-        return null;
+        return subsFile;
     }
 }

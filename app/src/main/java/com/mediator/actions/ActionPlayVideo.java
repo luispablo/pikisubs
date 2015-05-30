@@ -10,7 +10,6 @@ import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
 import com.mediator.tasks.TaskBuildSubtitleFile;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.File;
@@ -35,11 +34,13 @@ public class ActionPlayVideo implements IAction {
         this.context = activity;
         this.videoEntry = videoEntry;
 
-        Bus bus = new Bus();
-        bus.register(this);
-
         if (videoEntry.hasSubs()) {
-            TaskBuildSubtitleFile taskBuildSubtitleFile = new TaskBuildSubtitleFile(context, bus);
+            TaskBuildSubtitleFile taskBuildSubtitleFile = new TaskBuildSubtitleFile(context) {
+                @Override
+                protected void onPostExecute(File file) {
+                    onSubsFileDownloaed(file);
+                }
+            };
             taskBuildSubtitleFile.execute(videoEntry);
         } else {
             onSubsFileDownloaed(null);
