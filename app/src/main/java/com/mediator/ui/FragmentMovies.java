@@ -24,6 +24,8 @@ import com.parse.ParseException;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -88,6 +90,13 @@ public class FragmentMovies extends Fragment implements IActionCallback {
                     @Override
                     public boolean check(VideoEntry videoEntry) {
                         return videoEntry.isMovie() && filter.applies(videoEntry);
+                    }
+                });
+
+                Collections.sort(videoEntries, new Comparator<VideoEntry>() {
+                    @Override
+                    public int compare(VideoEntry video1, VideoEntry video2) {
+                        return video1.titleToShow().compareTo(video2.titleToShow());
                     }
                 });
 

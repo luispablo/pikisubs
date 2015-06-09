@@ -18,6 +18,7 @@ import com.mediator.model.VideoEntry;
 import com.parse.ParseException;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -74,7 +75,12 @@ public class FragmentTVShows extends Fragment {
                     }
                 }));
 
-                Collections.sort(tvShows);
+                Collections.sort(tvShows, new Comparator<TVShow>() {
+                    @Override
+                    public int compare(TVShow tvShow1, TVShow tvShow2) {
+                        return tvShow1.getTitle().compareTo(tvShow2.getTitle());
+                    }
+                });
 
                 listVideos.setAdapter(new AdapterTVShows(getActivity(), tvShows));
                 progressDialog.dismiss();
