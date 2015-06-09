@@ -83,13 +83,13 @@ public class FragmentMovies extends Fragment implements IActionCallback {
         if (!progressDialog.isShowing()) progressDialog.show();
 
         HelperParse helperParse = new HelperParse();
-        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
+        helperParse.allMovies(new HelperParse.CustomFindCallback<VideoEntry>() {
             @Override
             public void done(List<VideoEntry> list, ParseException e) {
                 videoEntries = Oju.filter(list, new Oju.UnaryChecker<VideoEntry>() {
                     @Override
                     public boolean check(VideoEntry videoEntry) {
-                        return videoEntry.isMovie() && filter.applies(videoEntry);
+                        return filter.applies(videoEntry);
                     }
                 });
 

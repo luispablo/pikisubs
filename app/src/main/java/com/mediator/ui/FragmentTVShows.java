@@ -58,22 +58,21 @@ public class FragmentTVShows extends Fragment {
         if (!progressDialog.isShowing()) progressDialog.show();
 
         HelperParse helperParse = new HelperParse();
-        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
+        helperParse.allEpisodes(new HelperParse.CustomFindCallback<VideoEntry>() {
             @Override
-            public void done(List<VideoEntry> list, ParseException e) {
-                List<VideoEntry> allVideos = Oju.filter(list, new Oju.UnaryChecker<VideoEntry>() {
-                    @Override
-                    public boolean check(VideoEntry videoEntry) {
-                        return videoEntry.isTVShow();
-                    }
-                });
-
-                tvShows = Oju.distinct(Oju.map(allVideos, new Oju.UnaryOperator<VideoEntry, TVShow>() {
+            public void done(List<VideoEntry> videoEntries, ParseException e) {
+                tvShows = Oju.distinct(Oju.map(videoEntries, new Oju.UnaryOperator<VideoEntry, TVShow>() {
                     @Override
                     public TVShow operate(VideoEntry videoEntry) {
                         return videoEntry.buildTVShow(getActivity());
                     }
                 }));
+
+                for (VideoEntry videoEntry : videoEntries) {
+                    for (TVShow tvShow : tvShows) {
+                        if (tvShow.contains(videoEntry)) tvShow.addEpisode(videoEntry);
+                    }
+                }
 
                 Collections.sort(tvShows, new Comparator<TVShow>() {
                     @Override

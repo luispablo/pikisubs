@@ -1,13 +1,21 @@
 package com.mediator.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by luispablo on 08/05/15.
  */
 public class TVShow implements Comparable<TVShow>, Serializable {
+
     private String title;
     private String posterFullURL;
+    private List<VideoEntry> episodes;
+
+    public TVShow() {
+        this.episodes = new ArrayList<>();
+    }
 
     public String getTitle() {
         return title;
@@ -38,6 +46,18 @@ public class TVShow implements Comparable<TVShow>, Serializable {
     public boolean equals(Object o) {
         TVShow other = (TVShow) o;
         return getTitle().equals(other.getTitle());
+    }
+
+    public void addEpisode(VideoEntry episode) {
+        episodes.add(episode);
+    }
+
+    public List<VideoEntry> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<VideoEntry> episodes) {
+        this.episodes = episodes;
     }
 
     @Override

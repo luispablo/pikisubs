@@ -259,31 +259,24 @@ public class HelperParse {
         query.getInBackground(objectId, getCallback);
     }
 
+    public void allMovies(CustomFindCallback<VideoEntry> callback) {
+        allVideoEntries(VideoEntry.VideoType.MOVIE, callback);
+    }
+
+    public void allEpisodes(CustomFindCallback<VideoEntry> callback) {
+        allVideoEntries(VideoEntry.VideoType.TV_SHOW, callback);
+    }
+
+    public void allVideoEntries(VideoEntry.VideoType videoType, CustomFindCallback<VideoEntry> callback) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(parseClassName(VideoEntry.class));
+        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        query.whereEqualTo(PARSE_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(VIDEO_TYPE, videoType.name());
+        query.findInBackground(new VideoEntryFindCallback(callback));
+    }
+
     public void allVideoEntries(final CustomFindCallback<VideoEntry> callback) {
-        all(VideoEntry.class, new FindCallback<ParseObject>() {
-            @Override
-            public void done(final List<ParseObject> list, ParseException e) {
-                final List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
-
-                if (list != null && !list.isEmpty()) {
-                    for (ParseObject parseObject : list) {
-                        final VideoEntry videoEntry = toVideoEntry(parseObject);
-                        getVideoSource(parseObject.getParseObject(VIDEO_SOURCE).getObjectId(), new CustomGetCallback<VideoSource>() {
-                            @Override
-                            public void done(VideoSource videoSource, ParseException e) {
-                                videoEntry.setVideoSource(videoSource);
-                                videoEntries.add(videoEntry);
-
-                                if (videoEntries.size() == list.size())
-                                    callback.done(videoEntries, e);
-                            }
-                        });
-                    }
-                } else {
-                    callback.done(videoEntries, e);
-                }
-            }
-        });
+        all(VideoEntry.class, new VideoEntryFindCallback(callback));
     }
 
     public void allVideoSources(final CustomFindCallback<VideoSource> callback) {
@@ -349,6 +342,38 @@ public class HelperParse {
 
     private String parseClassName(Class clazz) {
         return clazz.getName().replaceAll("\\.", "_");
+    }
+
+    class VideoEntryFindCallback implements FindCallback<ParseObject> {
+
+        CustomFindCallback<VideoEntry> callback;
+
+        public VideoEntryFindCallback(CustomFindCallback<VideoEntry> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void done(final List<ParseObject> list, ParseException e) {
+            final List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+
+            if (list != null && !list.isEmpty()) {
+                for (ParseObject parseObject : list) {
+                    final VideoEntry videoEntry = toVideoEntry(parseObject);
+                    getVideoSource(parseObject.getParseObject(VIDEO_SOURCE).getObjectId(), new CustomGetCallback<VideoSource>() {
+                        @Override
+                        public void done(VideoSource videoSource, ParseException e) {
+                            videoEntry.setVideoSource(videoSource);
+                            videoEntries.add(videoEntry);
+
+                            if (videoEntries.size() == list.size())
+                                callback.done(videoEntries, e);
+                        }
+                    });
+                }
+            } else {
+                callback.done(videoEntries, e);
+            }
+        }
     }
 
     public interface CustomFindCallback<T> {

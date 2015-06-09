@@ -1,5 +1,6 @@
 package com.mediator.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -43,6 +44,8 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
     @InjectView(R.id.listViewEpisodes)
     ListView listViewEpisodes;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,10 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
         filter = FragmentFilterVideosDialog.VideoFilter.NOT_WATCHED;
 
         ButterKnife.inject(this);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(R.string.title_wait_please);
+        progressDialog.setMessage(getString(R.string.message_loading_data));
     }
 
     @Override
@@ -134,23 +141,21 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
     }
 
     private void load() {
-        HelperDAO helperDAO = new HelperDAO(this);
-        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
-            @Override
-            public void done(List<VideoEntry> episodes, ParseException e) {
-                listEpisodes = Oju.filter(episodes, new Oju.UnaryChecker<VideoEntry>() {
-                    @Override
-                    public boolean check(VideoEntry episode) {
-                        return filter.applies(episode);
-                    }
-                });
-                Collections.sort(listEpisodes, new EpisodeComparator());
-                listViewEpisodes.setAdapter(new AdapterEpisodes(ActivityEpisodes.this, listEpisodes));
+        progressDialog.show();
 
-                if (listViewEpisodesState != null)
-                    listViewEpisodes.onRestoreInstanceState(listViewEpisodesState);
+        listEpisodes = Oju.filter(tvShow.getEpisodes(), new Oju.UnaryChecker<VideoEntry>() {
+            @Override
+            public boolean check(VideoEntry episode) {
+                return filter.applies(episode);
             }
         });
+        Collections.sort(listEpisodes, new EpisodeComparator());
+        listViewEpisodes.setAdapter(new AdapterEpisodes(ActivityEpisodes.this, listEpisodes));
+
+        if (listViewEpisodesState != null)
+            listViewEpisodes.onRestoreInstanceState(listViewEpisodesState);
+
+        progressDialog.dismiss();
     }
 
     @OnItemClick(R.id.listViewEpisodes)
