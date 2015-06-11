@@ -5,6 +5,8 @@ import com.mediator.model.tmdb.TMDbMovieSearchResult;
 import com.mediator.model.tmdb.TMDbTVEpisodeResult;
 import com.mediator.model.tmdb.TMDbTVSearchResult;
 
+import static com.mediator.helpers.TinyLogger.d;
+
 /**
  * Created by luispablo on 20/05/15.
  */
@@ -26,6 +28,7 @@ public class HelperTMDb {
     }
 
     public VideoEntry apply(TMDbTVEpisodeResult tmdbTVEpisodeResult) {
+        d("title found: " + tmdbTVEpisodeResult.getName());
         videoEntry.setEpisodeNumber(tmdbTVEpisodeResult.getEpisodeNumber());
         videoEntry.setSeasonNumber(tmdbTVEpisodeResult.getSeasonNumber());
         videoEntry.setTmdbId(tmdbTVEpisodeResult.getId());

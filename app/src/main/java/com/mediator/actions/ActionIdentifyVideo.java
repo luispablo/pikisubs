@@ -23,6 +23,8 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
+import static com.mediator.helpers.TinyLogger.d;
+
 /**
  * Created by luispablo on 20/05/15.
  */
@@ -129,14 +131,17 @@ public class ActionIdentifyVideo implements IAction {
             public void done(final List<VideoEntry> episodes, ParseException e) {
                 updated = 0;
                 HelperParse helperParse = new HelperParse();
+                d(episodes.size() + " episodes found");
 
                 for (VideoEntry episode : episodes) {
                     HelperTMDb helperTMDb = new HelperTMDb(episode);
                     episode = helperTMDb.applyTVShow(tmDbTVSearchResult);
 
-                    helperParse.toParse(episode).saveInBackground(new SaveCallback() {
+                    helperParse.update(episode, new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
+                            d("episode updated");
+
                             if (++updated == episodes.size() && callback != null)
                                 callback.onDone(true);
                         }
@@ -152,7 +157,7 @@ public class ActionIdentifyVideo implements IAction {
         videoEntry = helperTMDb.apply(tmdbMovieSearchResult);
 
         HelperParse helperParse = new HelperParse();
-        helperParse.toParse(videoEntry).saveInBackground(new SaveCallback() {
+        helperParse.update(videoEntry, new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (callback != null) callback.onDone(e == null);

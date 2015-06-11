@@ -31,6 +31,7 @@ public class ActionGetEpisodesInfo implements IAction {
     public void execute(final Activity activity, VideoEntry videoEntry, final IActionCallback callback) {
         final ProgressDialog progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle(R.string.message_wait_please);
+        progressDialog.setMessage(activity.getString(R.string.message_loading_data));
         progressDialog.show();
 
         HelperDAO helperDAO = new HelperDAO(activity);
@@ -80,7 +81,7 @@ public class ActionGetEpisodesInfo implements IAction {
         updated = 0;
 
         for (VideoEntry episode : episodes) {
-            helperParse.toParse(episode).saveInBackground(new SaveCallback() {
+            helperParse.update(episode, new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     if (++updated == episodes.size()) {

@@ -269,7 +269,6 @@ public class HelperParse {
 
     public void allVideoEntries(VideoEntry.VideoType videoType, CustomFindCallback<VideoEntry> callback) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(parseClassName(VideoEntry.class));
-        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
         query.whereEqualTo(PARSE_USER, ParseUser.getCurrentUser());
         query.whereEqualTo(VIDEO_TYPE, videoType.name());
         query.findInBackground(new VideoEntryFindCallback(callback));
