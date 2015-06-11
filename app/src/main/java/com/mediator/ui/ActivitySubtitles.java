@@ -1,11 +1,10 @@
 package com.mediator.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -16,6 +15,7 @@ import com.mediator.R;
 import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
+import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 import com.mediator.sources.SubtitlesSource;
 import com.mediator.tasks.TaskCancelledListener;
@@ -55,6 +55,7 @@ public class ActivitySubtitles extends ActionBarActivity {
         listSubtitles.setOnItemClickListener(new SubtitleClickListener());
 
         videoEntry = (VideoEntry) getIntent().getSerializableExtra("videoEntry");
+
         txtSearchText.setText(videoEntry.suggestedSearchText());
         txtFilename.setText(videoEntry.getFilename());
 
@@ -63,6 +64,20 @@ public class ActivitySubtitles extends ActionBarActivity {
         progressDialog.setIndeterminate(true);
 
         setTitle(R.string.title_activity_subtitles);
+    }
+
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        Intent intent = new Intent();
+
+        if (videoEntry.isMovie()) {
+            intent.setClass(this, ActivityMain.class);
+        } else {
+            intent.setClass(this, ActivityEpisodes.class);
+            intent.putExtra(TVShow.class.getName(), videoEntry.buildTVShow(this));
+        }
+
+        return intent;
     }
 
     @Override
@@ -109,17 +124,6 @@ public class ActivitySubtitles extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_activity_subtitles, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     class SubtitleClickListener implements AdapterView.OnItemClickListener {

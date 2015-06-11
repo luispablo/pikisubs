@@ -143,6 +143,21 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
     private void load() {
         progressDialog.show();
 
+        if (tvShow.getEpisodes().isEmpty()) {
+            HelperDAO helperDAO = new HelperDAO(this);
+            helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
+                @Override
+                public void done(List<VideoEntry> episodes, ParseException e) {
+                    tvShow.getEpisodes().addAll(episodes);
+                    fillListView();
+                }
+            });
+        } else {
+            fillListView();
+        }
+    }
+
+    private void fillListView() {
         listEpisodes = Oju.filter(tvShow.getEpisodes(), new Oju.UnaryChecker<VideoEntry>() {
             @Override
             public boolean check(VideoEntry episode) {

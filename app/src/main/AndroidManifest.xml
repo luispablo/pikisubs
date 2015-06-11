@@ -22,11 +22,7 @@
         </activity>
         <activity
             android:name=".ui.ActivitySubtitles"
-            android:label="@string/title_activity_subtitles"
-            android:parentActivityName=".ui.ActivityMain">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.ActivityMain" />
+            android:label="@string/title_activity_subtitles">
         </activity>
         <activity
             android:name=".ui.ActivityEpisodes"
