@@ -1,6 +1,5 @@
 package com.mediator.ui;
 
-import static com.mediator.helpers.TinyLogger.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.mediator.R;
+import com.mediator.actions.ActionDelete;
 import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionNeedsSubs;
@@ -46,6 +46,7 @@ public class FragmentMovieActionsDialog extends DialogFragment {
         NEEDS_SUBS(new ActionNeedsSubs()),
         NOT_NEEDS_SUBS(new ActionNotNeedsSubs()),
         IDENTIFY_VIDEO(new ActionIdentifyVideo()),
+        DELETE_VIDEO(new ActionDelete()),
         SHOW_INFO(new ActionShowVideoInfo());
 
         IAction videoAction;
