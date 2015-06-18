@@ -128,4 +128,6 @@
     <string name="message_loading_data">Loading data</string>
     <string name="message_no_data">No data to display</string>
     <string name="message_contacting_server">Contacting server</string>
+    <string name="suggest_episodes">Suggest next episodes</string>
+    <string name="title_dialog_suggest_episodes">Next episodes</string>
 </resources>

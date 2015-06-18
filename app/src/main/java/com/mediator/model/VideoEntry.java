@@ -63,6 +63,7 @@ public class VideoEntry implements Serializable {
     public TVShow buildTVShow(Context context) {
         TVShow tvShow = new TVShow();
         tvShow.setTitle(getSeriesTitle());
+        tvShow.setTmdbId(getTmdbId());
 
         if (getPosterPath() != null) {
             tvShow.setPosterFullURL(buildPosterURL(context));

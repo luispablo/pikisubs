@@ -23,4 +23,9 @@
         android:id="@+id/action_set_tmdb_id"
         android:title="@string/video_action_set_tmdb_id"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_suggest_episodes"
+        android:title="@string/suggest_episodes"
+        app:showAsAction="never" />
 </menu>

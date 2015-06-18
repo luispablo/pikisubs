@@ -18,6 +18,8 @@ import com.parse.SaveCallback;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import retrofit.RetrofitError;
+
 /**
  * Created by luispablo on 17/05/15.
  */
@@ -69,7 +71,7 @@ public class ActionSetTMDbId implements IAction {
         } else {
             TaskGetTMDbTV taskGetTMDbTV = new TaskGetTMDbTV(context) {
                 @Override
-                protected void onPostExecute(TMDbTVResult tmdbTVResult) {
+                protected void onDone(TMDbTVResult tmdbTVResult, RetrofitError retrofitError) {
                     progressDialog.dismiss();
                     gotTVShowResult(tmdbTVResult);
                 }

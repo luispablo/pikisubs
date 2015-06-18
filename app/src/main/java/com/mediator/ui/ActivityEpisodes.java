@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
@@ -21,6 +22,7 @@ import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbTVResult;
+import com.mediator.tasks.TaskGetTMDbTV;
 import com.parse.ParseException;
 
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import retrofit.RetrofitError;
 
 /**
  * Created by luispablo on 11/05/15.
@@ -97,9 +100,37 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
                 filterVideosDialog.show(getFragmentManager(), null);
 
                 return true;
+            case R.id.action_suggest_episodes:
+                suggestEpisodes();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void suggestEpisodes() {
+        progressDialog.show();
+
+        TaskGetTMDbTV taskGetTMDbTV = new TaskGetTMDbTV(this) {
+
+            @Override
+            protected void onDone(TMDbTVResult tmdbTVResult, RetrofitError retrofitError) {
+                if (tmdbTVResult != null) {
+                    Bundle arguments = new Bundle();
+                    arguments.putSerializable(TVShow.class.getName(), tvShow);
+                    arguments.putSerializable(TMDbTVResult.class.getName(), tmdbTVResult);
+
+                    FragmentSuggestEpisodesDialog fragmentSuggestEpisodesDialog = new FragmentSuggestEpisodesDialog();
+                    fragmentSuggestEpisodesDialog.setArguments(arguments);
+                    fragmentSuggestEpisodesDialog.show(getFragmentManager(), null);
+                } else if (retrofitError != null) {
+                    Toast.makeText(getApplicationContext(), retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+                progressDialog.dismiss();
+            }
+        };
+        taskGetTMDbTV.execute(tvShow.getTmdbId());
     }
 
     private void getEpisodesInfo() {

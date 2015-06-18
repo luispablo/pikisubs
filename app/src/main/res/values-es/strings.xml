@@ -128,4 +128,6 @@
     <string name="signing_up">Registrándose...</string>
     <string name="title_activity_sign_in">Ingresar</string>
     <string name="title_wait_please">Espere por favor</string>
+    <string name="suggest_episodes">Sugerir próximos episodios</string>
+    <string name="title_dialog_suggest_episodes">Próximos episodios</string>
 </resources>

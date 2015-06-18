@@ -38,6 +38,7 @@ public class TMDbTVResult implements Serializable {
     private float voteAverage;
     @SerializedName("vote_count")
     private float voteCount;
+    private TMDBSeason[] seasons;
 
     public String getBackdropPath() {
         return backdropPath;
@@ -181,5 +182,23 @@ public class TMDbTVResult implements Serializable {
 
     public void setVoteCount(float voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public TMDBSeason getSeason(int seasonNumber) {
+        TMDBSeason season = null;
+
+        for (int i = 0; i < seasons.length; i++) {
+            if (seasons[i].getSeasonNumber() == seasonNumber) season = seasons[i];
+        }
+
+        return season;
+    }
+
+    public TMDBSeason[] getSeasons() {
+        return seasons;
+    }
+
+    public void setSeasons(TMDBSeason[] seasons) {
+        this.seasons = seasons;
     }
 }

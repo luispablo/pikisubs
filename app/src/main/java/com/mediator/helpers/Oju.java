@@ -2,8 +2,10 @@ package com.mediator.helpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -154,6 +156,19 @@ public class Oju {
         for (T t : set) mapped.add(operator.operate(t));
 
         return mapped;
+    }
+
+    public static <T extends Comparable> T max(Collection<T> collection) {
+        T maxValue = null;
+        T currentValue = null;
+        Iterator<T> iterator = collection.iterator();
+
+        while (iterator.hasNext()) {
+            currentValue = iterator.next();
+            if (maxValue == null || currentValue.compareTo(maxValue) == 1) maxValue = currentValue;
+        }
+
+        return maxValue;
     }
 
     public static <T> Set<T> set(List<T> list) {
