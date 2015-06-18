@@ -36,7 +36,7 @@ public class FragmentSuggestEpisodesDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, labels.get(which));
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, labels.get(which) + "\n--");
                         sendIntent.setType("text/plain");
                         startActivity(sendIntent);
                     }
