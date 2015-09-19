@@ -32,6 +32,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import static com.mediator.helpers.TinyLogger.d;
+
 
 public class ActivitySubtitles extends ActionBarActivity {
 
@@ -132,6 +134,7 @@ public class ActivitySubtitles extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             progressDialog.setTitle(R.string.title_progress_subtitle_download);
             progressDialog.show();
+            d("dialogo mostrado");
 
             Subtitle subtitle = subtitles.get(position);
 
@@ -139,6 +142,7 @@ public class ActivitySubtitles extends ActionBarActivity {
             SubtitleDownloadCancelled cancelledListener = new SubtitleDownloadCancelled();
             TaskDownloadSubtitle task = new TaskDownloadSubtitle(ActivitySubtitles.this, next, cancelledListener);
             task.execute(subtitle);
+            d("tarea disparada");
         }
     }
 

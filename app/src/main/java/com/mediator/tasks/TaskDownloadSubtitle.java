@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.innosystec.unrar.Archive;
-import de.innosystec.unrar.exception.RarException;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
+import static com.mediator.helpers.TinyLogger.d;
 import static com.mediator.helpers.TinyLogger.e;
 
 /**
@@ -42,6 +42,7 @@ public class TaskDownloadSubtitle extends AsyncTask<Subtitle, Void, List<File>> 
 
     @Override
     protected void onPostExecute(List<File> files) {
+        d("post execute de download subtitle");
         next.doSomething(files);
     }
 
@@ -52,21 +53,21 @@ public class TaskDownloadSubtitle extends AsyncTask<Subtitle, Void, List<File>> 
 
     @Override
     protected List<File> doInBackground(Subtitle... params) {
-        List<File> files = new ArrayList<>();
-        Subtitle subtitle = params[0];
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(MediatorPrefs.getString(context, MediatorPrefs.Key.SUBDIVX_DOWNLOAD_URL))
-                .build();
-
-        String link = Subdivx.findRealLink(subtitle);
-        Uri linkUri = Uri.parse(link);
-        RetrofitServiceSubdivxDownload service = restAdapter.create(RetrofitServiceSubdivxDownload.class);
-        Response response = service.download(linkUri.getQueryParameter("id"), linkUri.getQueryParameter("u"));
-        TypedByteArray byteArray = (TypedByteArray) response.getBody();
-        compressedFilename = Uri.parse(response.getUrl()).getLastPathSegment().toLowerCase();
-
         try {
+            List<File> files = new ArrayList<>();
+            Subtitle subtitle = params[0];
+
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(MediatorPrefs.getString(context, MediatorPrefs.Key.SUBDIVX_DOWNLOAD_URL))
+                    .build();
+
+            String link = Subdivx.findRealLink(subtitle);
+            Uri linkUri = Uri.parse(link);
+            RetrofitServiceSubdivxDownload service = restAdapter.create(RetrofitServiceSubdivxDownload.class);
+            Response response = service.download(linkUri.getQueryParameter("id"), linkUri.getQueryParameter("u"));
+            TypedByteArray byteArray = (TypedByteArray) response.getBody();
+            compressedFilename = Uri.parse(response.getUrl()).getLastPathSegment().toLowerCase();
+
             File compressedFile = File.createTempFile(compressedFilename, "", context.getCacheDir());
             FileOutputStream fos = new FileOutputStream(compressedFile);
             fos.write(byteArray.getBytes());
@@ -83,13 +84,14 @@ public class TaskDownloadSubtitle extends AsyncTask<Subtitle, Void, List<File>> 
 
             compressedFile.delete();
 
+            return files;
         } catch (IOException e) {
             e(e);
-        } catch (RarException e) {
+        } catch (Exception e) {
             e(e);
         }
 
-        return files;
+        return null;
     }
 
     public interface OnTaskFinished {

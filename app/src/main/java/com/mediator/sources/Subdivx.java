@@ -1,6 +1,5 @@
 package com.mediator.sources;
 
-import com.mediator.model.GuessitObject;
 import com.mediator.model.Subtitle;
 import com.mediator.model.VideoEntry;
 import com.mediator.retrofit.RetrofitServiceSubdivx;
@@ -8,6 +7,8 @@ import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,13 +39,25 @@ public class Subdivx implements SubtitlesSource {
     }
 
     public static String findRealLink(Subtitle subtitle) {
+        String realLink = null;
+
         try {
             Document doc = Jsoup.connect(subtitle.getLink()).get();
-            return doc.select("a.link1").first().attr("href");
+
+            String countdownPageURL = doc.select("a.detalle_link").get(3).attr("href");
+            Document countdownPage = Jsoup.connect(countdownPageURL).get();
+
+            Elements elements = countdownPage.select("a");
+
+            for (Element node : elements) {
+                if (node.text().contains("link directo")) {
+                    realLink = node.attr("href");
+                }
+            }
         } catch (IOException e) {
             Logger.e(e);
         }
 
-        return null;
+        return realLink;
     }
 }
