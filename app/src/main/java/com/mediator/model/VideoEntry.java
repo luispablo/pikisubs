@@ -7,8 +7,6 @@ import com.mediator.helpers.Oju;
 
 import java.io.Serializable;
 
-import static com.mediator.helpers.TinyLogger.d;
-
 /**
  * Created by luispablo on 11/04/15.
  */
@@ -102,7 +100,6 @@ public class VideoEntry implements Serializable {
             String size = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_IMAGE_API_SIZE);
             String imagePath = getPosterPath();
             String apiKey = MediatorPrefs.getString(context, MediatorPrefs.Key.TMDB_API_KEY);
-            d("image URL: " + baseUrl + size + imagePath + "?api_key=" + apiKey);
 
             return baseUrl + size + imagePath + "?api_key=" + apiKey;
         } else {

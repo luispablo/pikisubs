@@ -68,6 +68,8 @@ public class FragmentTVShows extends Fragment {
                     }
                 }));
 
+                String log = "";
+
                 for (VideoEntry videoEntry : videoEntries) {
                     for (TVShow tvShow : tvShows) {
                         if (tvShow.contains(videoEntry)) tvShow.addEpisode(videoEntry);

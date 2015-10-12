@@ -1,7 +1,5 @@
 package com.mediator.helpers;
 
-import static com.mediator.helpers.TinyLogger.*;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -26,7 +23,6 @@ public class HelperAndroid {
     public static final String STRING = "string";
 
     public static String getStringByName(Context context, String name) {
-        d("Looking for string ["+ name +"]");
         int id = context.getResources().getIdentifier(name, STRING, context.getPackageName());
         return context.getString(id);
     }

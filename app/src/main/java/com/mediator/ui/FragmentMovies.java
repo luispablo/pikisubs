@@ -20,6 +20,7 @@ import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
+import com.mediator.tasks.TaskRemoveDuplicated;
 import com.parse.ParseException;
 import com.squareup.otto.Bus;
 
@@ -134,7 +135,7 @@ public class FragmentMovies extends Fragment implements IActionCallback {
         progressDialog.setMessage(getString(R.string.message_getting_videos));
         progressDialog.show();
 
-        TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(getActivity()) {
+        final TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(getActivity()) {
             @Override
             public void onProgress(String message) {
                 progressDialog.setMessage(message);
@@ -145,7 +146,14 @@ public class FragmentMovies extends Fragment implements IActionCallback {
                 loadList();
             }
         };
-        taskRefreshLocalDB.execute();
+
+        TaskRemoveDuplicated taskRemoveDuplicated = new TaskRemoveDuplicated() {
+            @Override
+            protected void onDone() {
+                taskRefreshLocalDB.execute();
+            }
+        };
+        taskRemoveDuplicated.execute();
     }
 
     @Override

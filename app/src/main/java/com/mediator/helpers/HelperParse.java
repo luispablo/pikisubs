@@ -143,7 +143,7 @@ public class HelperParse {
         query.getInBackground(objectId, new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
-                parseObject.deleteInBackground();
+                if (parseObject != null) parseObject.deleteInBackground();
             }
         });
     }
@@ -318,6 +318,7 @@ public class HelperParse {
 
     public <T> void all(Class<T> clazz, FindCallback<ParseObject> findCallback) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery(parseClassName(clazz));
+        query.setLimit(1000); // FIXME: This limit is crap!!!!
         query.whereEqualTo(PARSE_USER, ParseUser.getCurrentUser());
         query.findInBackground(findCallback);
     }

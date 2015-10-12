@@ -13,6 +13,7 @@ import com.parse.ParseObject;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.mediator.helpers.TinyLogger.d;
 import static com.mediator.helpers.TinyLogger.e;
 
 /**
@@ -44,6 +45,7 @@ public class TaskUpdateLocalDB extends AsyncTask<VideoEntry, Void, Void> {
                 List<ParseObject> newParseObjects = Oju.map(newVideoEntries, new Oju.UnaryOperator<VideoEntry, ParseObject>() {
                     @Override
                     public ParseObject operate(VideoEntry videoEntry) {
+                        d("New video: " + videoEntry.getObjectId() + " - " + videoEntry.getFilename());
                         return helperParse.toParse(videoEntry);
                     }
                 });
@@ -60,6 +62,7 @@ public class TaskUpdateLocalDB extends AsyncTask<VideoEntry, Void, Void> {
 
                 if (!goneVideoEntries.isEmpty()) {
                     for (VideoEntry videoEntry : goneVideoEntries) {
+                        d("Video gone: " + videoEntry.getObjectId() + " - " + videoEntry.getFilename());
                         helperParse.toParse(videoEntry).deleteInBackground(new DeleteCallback() {
                             @Override
                             public void done(ParseException e) {

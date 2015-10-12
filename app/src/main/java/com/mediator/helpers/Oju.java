@@ -192,6 +192,16 @@ public class Oju {
         return list;
     }
 
+    public static <T, M> Map<T, M> keepWithValue(Map<T, M> map, UnaryChecker<M> valueChecker) {
+        Map<T, M> keptEntries = new HashMap<>();
+
+        for (T key : map.keySet()) {
+            if (valueChecker.check(map.get(key))) keptEntries.put(key, map.get(key));
+        }
+
+        return keptEntries;
+    }
+
     public static <T, M> Map<M, List<T>> groupBy(List<T> list, UnaryOperator<T, M> unaryOperator) {
         Map<M, List<T>> groups = new HashMap<>();
 
