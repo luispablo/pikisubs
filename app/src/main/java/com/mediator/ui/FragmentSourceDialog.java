@@ -14,11 +14,10 @@ import android.widget.Spinner;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
-import com.parse.ParseException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -68,22 +67,18 @@ public abstract class FragmentSourceDialog extends DialogFragment {
         });
         spinnerVideoTypes.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, videoTypesNames));
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allVideoServers(new HelperParse.CustomFindCallback<VideoServer>() {
-            @Override
-            public void done(List<VideoServer> list, ParseException e) {
-                videoServers = list;
-                List<String> serverNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
-                    @Override
-                    public String operate(VideoServer videoServer) {
-                        return videoServer.getHost();
-                    }
-                });
-                spinnerServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, serverNames));
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        videoServers = helperDAO.all(VideoServer.class);
 
-                objectToInputs();
+        List<String> serverNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
+            @Override
+            public String operate(VideoServer videoServer) {
+                return videoServer.getHost();
             }
         });
+        spinnerServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, serverNames));
+
+        objectToInputs();
 
         builder.setView(view)
                 .setTitle(getString(R.string.title_dialog_source))
@@ -117,9 +112,9 @@ public abstract class FragmentSourceDialog extends DialogFragment {
     private void objectToInputs() {
         VideoServer videoServer = null;
 
-        if (videoSource.getObjectId() != null) {
+        if (videoSource.getId() != null) {
             for (VideoServer item : videoServers) {
-                if (item.getObjectId().equals(videoSource.getVideoServer().getObjectId())) {
+                if (item.getId().equals(videoSource.getVideoServerId())) {
                     videoServer = item;
                     spinnerServers.setSelection(videoServers.indexOf(videoServer));
                 }
@@ -137,24 +132,24 @@ public abstract class FragmentSourceDialog extends DialogFragment {
     private void inputsToObject() {
         videoSource.setHttpPath(editHTTPPath.getText().toString());
         videoSource.setSshPath(editPath.getText().toString());
-        videoSource.setVideoServer(videoServers.get(spinnerServers.getSelectedItemPosition()));
+        videoSource.setVideoServerId(videoServers.get(spinnerServers.getSelectedItemPosition()).getId());
         videoSource.setVideoType(VideoType.values()[spinnerVideoTypes.getSelectedItemPosition()]);
     }
 
     private void delete() {
-        HelperParse helperParse = new HelperParse();
-        helperParse.delete(videoSource.getObjectId(), VideoSource.class);
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        helperDAO.delete(videoSource);
     }
 
     private void save() {
         inputsToObject();
 
-        HelperParse helperParse = new HelperParse();
+        HelperDAO helperDAO = new HelperDAO(getActivity());
 
-        if (videoSource.getObjectId() == null) {
-            helperParse.toParse(videoSource).saveInBackground();
+        if (videoSource.getId() == null) {
+            helperDAO.insert(videoSource);
         } else {
-            helperParse.update(videoSource, null);
+            helperDAO.update(videoSource);
         }
     }
 

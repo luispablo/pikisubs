@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
@@ -50,13 +50,13 @@ public class ActionPlayVideo implements IAction {
     @Subscribe
     public void onSubsFileDownloaed(final File subsFile) {
 
-        final HelperParse helperParse = new HelperParse();
+        HelperDAO helperDAO = new HelperDAO(context);
 
         videoEntry.setWatched(true);
-        helperParse.toParse(videoEntry).saveInBackground();
+        helperDAO.update(videoEntry);
 
-        VideoSource videoSource = videoEntry.getVideoSource();
-        VideoServer videoServer = videoSource.getVideoServer();
+        VideoSource videoSource = helperDAO.getById(videoEntry.getVideoSourceId());
+        VideoServer videoServer = helperDAO.getById(videoSource.getVideoServerId());
 
         String videoURL = videoServer.getHttpUrl() + videoSource.getHttpPath() +
                 videoEntry.getPathRelativeToSource() + "/" + videoEntry.getFilename();

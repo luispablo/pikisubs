@@ -8,9 +8,12 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,10 +38,14 @@ public class TaskBuildSubtitleFile extends AsyncTask<VideoEntry, Void, File> {
     protected File doInBackground(VideoEntry... videoEntries) {
         final VideoEntry videoEntry = videoEntries[0];
 
+        HelperDAO helperDAO = new HelperDAO(context);
+        VideoSource videoSource = helperDAO.getById(videoEntry.getVideoSourceId());
+        VideoServer videoServer = helperDAO.getById(videoSource.getVideoServerId());
+
         File subsFile = null;
 
         try {
-            HelperSSH helper = new HelperSSH(videoEntry.getVideoSource().getVideoServer());
+            HelperSSH helper = new HelperSSH(videoServer);
             Session session = helper.connectSession();
             ChannelSftp sftp = helper.openSFTP(session);
 

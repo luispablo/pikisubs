@@ -14,10 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoSource;
-import com.parse.ParseException;
 import com.squareup.otto.Bus;
 
 import java.util.List;
@@ -108,26 +107,22 @@ public class FragmentSource extends Fragment {
         progressDialog.setMessage(getString(R.string.message_loading_data));
         progressDialog.show();
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allVideoSources(new HelperParse.CustomFindCallback<VideoSource>() {
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        videoSources = helperDAO.all(VideoSource.class);
+
+        List<String> sourcesPaths = Oju.map(videoSources, new Oju.UnaryOperator<VideoSource, String>() {
             @Override
-            public void done(List<VideoSource> list, ParseException e) {
-                videoSources = list;
-                List<String> sourcesPaths = Oju.map(videoSources, new Oju.UnaryOperator<VideoSource, String>() {
-                    @Override
-                    public String operate(VideoSource videoSource) {
-                        return videoSource.getSshPath();
-                    }
-                });
-                adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, sourcesPaths);
-                listViewSources.setAdapter(adapter);
-
-                progressDialog.dismiss();
-
-                if (list == null || list.isEmpty()) {
-                    Toast.makeText(getActivity(), R.string.message_no_data, Toast.LENGTH_SHORT).show();
-                }
+            public String operate(VideoSource videoSource) {
+                return videoSource.getSshPath();
             }
         });
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, sourcesPaths);
+        listViewSources.setAdapter(adapter);
+
+        progressDialog.dismiss();
+
+        if (videoSources == null || videoSources.isEmpty()) {
+            Toast.makeText(getActivity(), R.string.message_no_data, Toast.LENGTH_SHORT).show();
+        }
     }
 }

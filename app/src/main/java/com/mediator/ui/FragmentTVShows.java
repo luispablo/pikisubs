@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperMediator;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
-import com.parse.ParseException;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,36 +56,33 @@ public class FragmentTVShows extends Fragment {
     private void loadList() {
         if (!progressDialog.isShowing()) progressDialog.show();
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allEpisodes(new HelperParse.CustomFindCallback<VideoEntry>() {
+        HelperMediator helperMediator = new HelperMediator(getActivity());
+        List<VideoEntry> allEpisodes = helperMediator.allEpisodes();
+
+        tvShows = Oju.distinct(Oju.map(allEpisodes, new Oju.UnaryOperator<VideoEntry, TVShow>() {
             @Override
-            public void done(List<VideoEntry> videoEntries, ParseException e) {
-                tvShows = Oju.distinct(Oju.map(videoEntries, new Oju.UnaryOperator<VideoEntry, TVShow>() {
-                    @Override
-                    public TVShow operate(VideoEntry videoEntry) {
-                        return videoEntry.buildTVShow(getActivity());
-                    }
-                }));
+            public TVShow operate(VideoEntry videoEntry) {
+                return videoEntry.buildTVShow(getActivity());
+            }
+        }));
 
-                String log = "";
+        String log = "";
 
-                for (VideoEntry videoEntry : videoEntries) {
-                    for (TVShow tvShow : tvShows) {
-                        if (tvShow.contains(videoEntry)) tvShow.addEpisode(videoEntry);
-                    }
-                }
+        for (VideoEntry videoEntry : allEpisodes) {
+            for (TVShow tvShow : tvShows) {
+                if (tvShow.contains(videoEntry)) tvShow.addEpisode(videoEntry);
+            }
+        }
 
-                Collections.sort(tvShows, new Comparator<TVShow>() {
-                    @Override
-                    public int compare(TVShow tvShow1, TVShow tvShow2) {
-                        return tvShow1.getTitle().compareTo(tvShow2.getTitle());
-                    }
-                });
-
-                listVideos.setAdapter(new AdapterTVShows(getActivity(), tvShows));
-                progressDialog.dismiss();
+        Collections.sort(tvShows, new Comparator<TVShow>() {
+            @Override
+            public int compare(TVShow tvShow1, TVShow tvShow2) {
+                return tvShow1.getTitle().compareTo(tvShow2.getTitle());
             }
         });
+
+        listVideos.setAdapter(new AdapterTVShows(getActivity(), tvShows));
+        progressDialog.dismiss();
     }
 
     @OnItemClick(R.id.listTVShows)

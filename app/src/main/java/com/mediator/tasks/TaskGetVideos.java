@@ -7,11 +7,12 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.helpers.HelperVideo;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
 import com.mediator.model.VideoSource;
 import com.squareup.otto.Bus;
 
@@ -54,13 +55,14 @@ public class TaskGetVideos extends AsyncTask<VideoSource, Void, Void> {
         final List<VideoEntry> videoEntries = new ArrayList<>();
 
         final HelperVideo videoHelper = new HelperVideo();
-        HelperParse helperParse = new HelperParse();
+        HelperDAO helperDAO = new HelperDAO(context);
 
         sourcesProcessed = 0;
 
         for (final VideoSource videoSource : videoSources) {
             try {
-                HelperSSH helperSSH = new HelperSSH(videoSource.getVideoServer());
+                VideoServer videoServer = helperDAO.getById(videoSource.getVideoServerId());
+                HelperSSH helperSSH = new HelperSSH(videoServer);
                 Session session = helperSSH.connectSession();
                 ChannelSftp sftp = helperSSH.openSFTP(session);
 

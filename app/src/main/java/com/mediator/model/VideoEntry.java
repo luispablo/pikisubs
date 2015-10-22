@@ -23,12 +23,11 @@ public class VideoEntry implements Serializable {
         }
     }
 
+    private Long id;
+    private Long videoSourceId;
     private String absolutePath;
     private String pathRelativeToSource;
     private String filename;
-
-    private String objectId;
-    private VideoSource videoSource;
 
     private String title;
     private String seriesTitle;
@@ -48,14 +47,14 @@ public class VideoEntry implements Serializable {
         this.needsSubs = true;
     }
 
-    public VideoEntry(String pathRelativeToSource, String absolutePath, String filename, boolean hasSubs, VideoSource videoSource) {
+    public VideoEntry(String pathRelativeToSource, String absolutePath, String filename, boolean hasSubs, Long videoSourceId) {
         this();
 
         this.hasSubs = hasSubs;
         this.pathRelativeToSource = pathRelativeToSource;
         this.absolutePath = absolutePath;
         this.filename = filename;
-        this.videoSource = videoSource;
+        this.videoSourceId = videoSourceId;
     }
 
     public TVShow buildTVShow(Context context) {
@@ -132,6 +131,14 @@ public class VideoEntry implements Serializable {
 
     public boolean isTVShow() {
         return getVideoType() != null && VideoType.TV_SHOW.equals(getVideoType());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -226,27 +233,19 @@ public class VideoEntry implements Serializable {
         this.pathRelativeToSource = pathRelativeToSource;
     }
 
+    public Long getVideoSourceId() {
+        return videoSourceId;
+    }
+
+    public void setVideoSourceId(Long videoSourceId) {
+        this.videoSourceId = videoSourceId;
+    }
+
     public long getTmdbId() {
         return tmdbId;
     }
 
     public void setTmdbId(long tmdbId) {
         this.tmdbId = tmdbId;
-    }
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
-
-    public VideoSource getVideoSource() {
-        return videoSource;
-    }
-
-    public void setVideoSource(VideoSource videoSource) {
-        this.videoSource = videoSource;
     }
 }

@@ -16,12 +16,11 @@ import android.widget.AbsListView;
 import com.mediator.R;
 import com.mediator.actions.ActionDownloadSubs;
 import com.mediator.actions.IActionCallback;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperMediator;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
 import com.mediator.tasks.TaskRemoveDuplicated;
-import com.parse.ParseException;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -83,31 +82,28 @@ public class FragmentMovies extends Fragment implements IActionCallback {
     private void loadList() {
         if (!progressDialog.isShowing()) progressDialog.show();
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allMovies(new HelperParse.CustomFindCallback<VideoEntry>() {
+        HelperMediator helperMediator = new HelperMediator(getActivity());
+        List<VideoEntry> allMovies = helperMediator.allMovies();
+
+        videoEntries = Oju.filter(allMovies, new Oju.UnaryChecker<VideoEntry>() {
             @Override
-            public void done(List<VideoEntry> list, ParseException e) {
-                videoEntries = Oju.filter(list, new Oju.UnaryChecker<VideoEntry>() {
-                    @Override
-                    public boolean check(VideoEntry videoEntry) {
-                        return filter.applies(videoEntry);
-                    }
-                });
-
-                Collections.sort(videoEntries, new Comparator<VideoEntry>() {
-                    @Override
-                    public int compare(VideoEntry video1, VideoEntry video2) {
-                        return video1.titleToShow().compareTo(video2.titleToShow());
-                    }
-                });
-
-                listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
-
-                if (listVideosState != null) listVideos.onRestoreInstanceState(listVideosState);
-
-                progressDialog.dismiss();
+            public boolean check(VideoEntry videoEntry) {
+                return filter.applies(videoEntry);
             }
         });
+
+        Collections.sort(videoEntries, new Comparator<VideoEntry>() {
+            @Override
+            public int compare(VideoEntry video1, VideoEntry video2) {
+                return video1.titleToShow().compareTo(video2.titleToShow());
+            }
+        });
+
+        listVideos.setAdapter(new AdapterMovies(getActivity(), videoEntries));
+
+        if (listVideosState != null) listVideos.onRestoreInstanceState(listVideosState);
+
+        progressDialog.dismiss();
     }
 
     @OnItemClick(R.id.listVideos)
@@ -132,7 +128,7 @@ public class FragmentMovies extends Fragment implements IActionCallback {
     }
 
     private void refreshLocalDB() {
-        progressDialog.setMessage(getString(R.string.message_getting_videos));
+        progressDialog.setMessage(getString(R.string.message_removing_duplicates));
         progressDialog.show();
 
         final TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(getActivity()) {
@@ -144,12 +140,14 @@ public class FragmentMovies extends Fragment implements IActionCallback {
             @Override
             public void onFinished() {
                 loadList();
+                progressDialog.dismiss();
             }
         };
 
-        TaskRemoveDuplicated taskRemoveDuplicated = new TaskRemoveDuplicated() {
+        TaskRemoveDuplicated taskRemoveDuplicated = new TaskRemoveDuplicated(getActivity()) {
             @Override
-            protected void onDone() {
+            protected void onPostExecute(Void aVoid) {
+                progressDialog.setMessage(getString(R.string.message_rescanning_db));
                 taskRefreshLocalDB.execute();
             }
         };

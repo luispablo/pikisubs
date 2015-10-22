@@ -202,6 +202,10 @@ public class Oju {
         return keptEntries;
     }
 
+    public static <T> void forEach(List<T> list, UnaryVoidOperator<T> unaryVoidOperator) {
+        for (T t : list) unaryVoidOperator.operate(t);
+    }
+
     public static <T, M> Map<M, List<T>> groupBy(List<T> list, UnaryOperator<T, M> unaryOperator) {
         Map<M, List<T>> groups = new HashMap<>();
 
@@ -219,6 +223,10 @@ public class Oju {
         }
 
         return groups;
+    }
+
+    public interface UnaryVoidOperator<T> {
+        void operate(T t);
     }
 
     public interface UnaryOperator<T, M> {

@@ -31,7 +31,7 @@ public class HelperVideo {
             if (attrs.isDir() && !".".equals(entry.getFilename()) && !"..".equals(entry.getFilename())) {
                 videoEntries.addAll(videoEntriesFrom(pathRelativeToSource +"/"+ entry.getFilename(), absolutePath + File.separator + entry.getFilename(), sftp, videoSource));
             } else if (Oju.anyEndsWith(entry.getFilename(), VIDEO_EXTENSIONS)) {
-                videoEntries.add(new VideoEntry(pathRelativeToSource, absolutePath, entry.getFilename(), hasSubs(entry.getFilename(), absolutePath, sftp), videoSource));
+                videoEntries.add(new VideoEntry(pathRelativeToSource, absolutePath, entry.getFilename(), hasSubs(entry.getFilename(), absolutePath, sftp), videoSource.getId()));
             }
         }
 
@@ -105,8 +105,8 @@ public class HelperVideo {
         items[i++] = buildTechnicalItem(context, R.string.absolute_path, videoEntry.getAbsolutePath());
         items[i++] = buildTechnicalItem(context, R.string.path_relative_to_source, videoEntry.getPathRelativeToSource());
 
-        items[i++] = buildTechnicalItem(context, R.string.object_id, videoEntry.getObjectId());
-        items[i++] = buildTechnicalItem(context, R.string.video_source_object_id, videoEntry.getVideoSource().getObjectId());
+        items[i++] = buildTechnicalItem(context, R.string.object_id, String.valueOf(videoEntry.getId()));
+        items[i++] = buildTechnicalItem(context, R.string.video_source_object_id, String.valueOf(videoEntry.getVideoSourceId()));
 
         items[i++] = buildTechnicalItem(context, R.string.suggested_search_text, videoEntry.suggestedSearchText());
         items[i++] = buildTechnicalItem(context, R.string.has_subs, String.valueOf(videoEntry.hasSubs()));

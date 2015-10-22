@@ -7,8 +7,11 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.HelperSSH;
 import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
 
 import static com.mediator.helpers.TinyLogger.e;
 
@@ -27,7 +30,11 @@ public class TaskDeleteVideoFile extends AsyncTask<VideoEntry, Void, Boolean> {
     protected Boolean doInBackground(VideoEntry... params) {
         final VideoEntry videoEntry = params[0];
 
-        HelperSSH helper = new HelperSSH(videoEntry.getVideoSource().getVideoServer());
+        HelperDAO helperDAO = new HelperDAO(context);
+        VideoSource videoSource = helperDAO.getById(videoEntry.getVideoSourceId());
+        VideoServer videoServer = helperDAO.getById(videoSource.getVideoServerId());
+
+        HelperSSH helper = new HelperSSH(videoServer);
         boolean success = true;
 
         try {

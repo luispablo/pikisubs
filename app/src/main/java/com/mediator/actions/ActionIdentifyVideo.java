@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.HelperTMDb;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
@@ -18,8 +17,6 @@ import com.mediator.tasks.TaskTMDbSearchMovie;
 import com.mediator.tasks.TaskTMDbSearchTV;
 import com.mediator.ui.FragmentSelectStringDialog;
 import com.mediator.ui.FragmentVideoSearchDialog;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -126,29 +123,20 @@ public class ActionIdentifyVideo implements IAction {
 
     protected void onTVShowSelected(Context context, TVShow tvShow, final TMDbTVSearchResult tmDbTVSearchResult) {
         HelperDAO helperDAO = new HelperDAO(context);
-        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
-            @Override
-            public void done(final List<VideoEntry> episodes, ParseException e) {
-                updated = 0;
-                HelperParse helperParse = new HelperParse();
-                d(episodes.size() + " episodes found");
+        List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
 
-                for (VideoEntry episode : episodes) {
-                    HelperTMDb helperTMDb = new HelperTMDb(episode);
-                    episode = helperTMDb.applyTVShow(tmDbTVSearchResult);
+        updated = 0;
+        d(episodes.size() + " episodes found");
 
-                    helperParse.update(episode, new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            d("episode updated");
+        for (VideoEntry episode : episodes) {
+            HelperTMDb helperTMDb = new HelperTMDb(episode);
+            episode = helperTMDb.applyTVShow(tmDbTVSearchResult);
+            helperDAO.update(episode);
+            d("episode updated");
 
-                            if (++updated == episodes.size() && callback != null)
-                                callback.onDone(true);
-                        }
-                    });
-                }
-            }
-        });
+            if (++updated == episodes.size() && callback != null)
+                callback.onDone(true);
+        }
     }
 
     protected void onMovieSelected(Context context, VideoEntry videoEntry,
@@ -156,12 +144,9 @@ public class ActionIdentifyVideo implements IAction {
         HelperTMDb helperTMDb = new HelperTMDb(videoEntry);
         videoEntry = helperTMDb.apply(tmdbMovieSearchResult);
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.update(videoEntry, new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (callback != null) callback.onDone(e == null);
-            }
-        });
+        HelperDAO helperDAO = new HelperDAO(context);
+        int updated = helperDAO.update(videoEntry);
+
+        if (callback != null) callback.onDone(updated > 0);
     }
 }

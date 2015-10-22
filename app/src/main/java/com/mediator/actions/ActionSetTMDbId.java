@@ -6,15 +6,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbMovieResult;
 import com.mediator.model.tmdb.TMDbTVResult;
 import com.mediator.tasks.TaskGetTMDbMovie;
 import com.mediator.tasks.TaskGetTMDbTV;
 import com.mediator.ui.FragmentSetTMDbIdDialog;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -92,12 +90,9 @@ public class ActionSetTMDbId implements IAction {
         videoEntry.setTitle(tmdBMovieResult.getTitle());
         videoEntry.setVideoType(VideoEntry.VideoType.MOVIE);
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.toParse(videoEntry).saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (callback != null) callback.onDone(e == null);
-            }
-        });
+        HelperDAO helperDAO = new HelperDAO(context);
+        int updated = helperDAO.update(videoEntry);
+
+        if (callback != null) callback.onDone(updated > 0);
     }
 }

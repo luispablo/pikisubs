@@ -1,24 +1,10 @@
 package com.mediator.helpers;
 
-import com.mediator.model.VideoEntry;
-import com.mediator.model.VideoServer;
-import com.mediator.model.VideoSource;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by luispablo on 18/05/15.
  */
 public class HelperParse {
-
+/*
     public static final String HOST = "host";
     public static final String HTTP_URL = "httpUrl";
     public static final String USERNAME = "username";
@@ -383,4 +369,5 @@ public class HelperParse {
     public interface CustomGetCallback<T> {
         void done(T object, ParseException e);
     }
+    */
 }

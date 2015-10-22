@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.Oju;
 import com.mediator.model.Subtitle;
 import com.mediator.model.TVShow;
@@ -23,8 +23,6 @@ import com.mediator.tasks.TaskDownloadSubtitle;
 import com.mediator.tasks.TaskGetSubtitles;
 import com.mediator.tasks.TaskProgressedListener;
 import com.mediator.tasks.TaskUploadSubtitles;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import java.io.File;
 import java.util.Collections;
@@ -201,13 +199,10 @@ public class ActivitySubtitles extends ActionBarActivity {
         public void uploaded(File file) {
             videoEntry.setHasSubs(true);
 
-            HelperParse helperParse = new HelperParse();
-            helperParse.update(videoEntry, new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    progressDialog.dismiss();
-                }
-            });
+            HelperDAO helperDAO = new HelperDAO(getBaseContext());
+            helperDAO.update(videoEntry);
+
+            progressDialog.dismiss();
 
             runOnUiThread(new Runnable() {
                 public void run() {

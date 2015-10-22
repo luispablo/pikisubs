@@ -3,18 +3,14 @@ package com.mediator.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.parse.DeleteCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static com.mediator.helpers.TinyLogger.d;
-import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 23/04/15.
@@ -37,45 +33,30 @@ public class TaskUpdateLocalDB extends AsyncTask<VideoEntry, Void, Void> {
 
         entitiesProcessed = 0;
 
-        final HelperParse helperParse = new HelperParse();
-        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
+        final HelperDAO helperDAO = new HelperDAO(context);
+        List<VideoEntry> existingVideosEntries = helperDAO.all(VideoEntry.class);
+
+        List<VideoEntry> newVideoEntries = Oju.allNotIn(Arrays.asList(videoEntries), existingVideosEntries.toArray(new VideoEntry[]{}), checker);
+
+        Oju.forEach(newVideoEntries, new Oju.UnaryVoidOperator<VideoEntry>() {
             @Override
-            public void done(List<VideoEntry> existingVideosEntries, ParseException e) {
-                List<VideoEntry> newVideoEntries = Oju.allNotIn(Arrays.asList(videoEntries), existingVideosEntries.toArray(new VideoEntry[]{}), checker);
-                List<ParseObject> newParseObjects = Oju.map(newVideoEntries, new Oju.UnaryOperator<VideoEntry, ParseObject>() {
-                    @Override
-                    public ParseObject operate(VideoEntry videoEntry) {
-                        d("New video: " + videoEntry.getObjectId() + " - " + videoEntry.getFilename());
-                        return helperParse.toParse(videoEntry);
-                    }
-                });
-
-                try {
-                    ParseObject.saveAll(newParseObjects);
-                } catch (ParseException e1) {
-                    e(e1);
-                }
-
-                final List<VideoEntry> goneVideoEntries = Oju.allNotIn(existingVideosEntries, videoEntries, checker);
-
-                entitiesProcessed = 0;
-
-                if (!goneVideoEntries.isEmpty()) {
-                    for (VideoEntry videoEntry : goneVideoEntries) {
-                        d("Video gone: " + videoEntry.getObjectId() + " - " + videoEntry.getFilename());
-                        helperParse.toParse(videoEntry).deleteInBackground(new DeleteCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (++entitiesProcessed == goneVideoEntries.size())
-                                    taskDoneListener.onDone(videoEntries);
-                            }
-                        });
-                    }
-                } else {
-                    taskDoneListener.onDone(Arrays.asList(videoEntries));
-                }
+            public void operate(VideoEntry videoEntry) {
+                helperDAO.insert(videoEntry);
             }
         });
+
+        final List<VideoEntry> goneVideoEntries = Oju.allNotIn(existingVideosEntries, videoEntries, checker);
+
+        entitiesProcessed = 0;
+
+        if (!goneVideoEntries.isEmpty()) {
+            for (VideoEntry videoEntry : goneVideoEntries) {
+                d("Video gone: " + videoEntry.getId() + " - " + videoEntry.getFilename());
+                helperDAO.delete(videoEntry);
+            }
+        } else {
+            taskDoneListener.onDone(Arrays.asList(videoEntries));
+        }
 
         return null;
     }

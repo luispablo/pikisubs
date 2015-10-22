@@ -3,24 +3,18 @@ package com.mediator.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoServer;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
-import static com.mediator.helpers.TinyLogger.e;
 
 /**
  * Created by luispablo on 26/04/15.
@@ -69,7 +63,7 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
             }
         });
 
-        if (videoServer.getObjectId() != null) {
+        if (videoServer.getId() != null) {
             builder.setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -97,36 +91,15 @@ public abstract class FragmentVideoServerDialog extends DialogFragment {
     }
 
     private void delete() {
-        HelperParse helperParse = new HelperParse();
-        helperParse.delete(videoServer.getObjectId(), VideoServer.class);
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        helperDAO.delete(videoServer);
     }
 
     private void save() {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle(R.string.title_wait_please);
-        progressDialog.setMessage(getString(R.string.message_contacting_server));
-        progressDialog.show();
-
         fillObject();
 
-        SaveCallback saveCallback = new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                progressDialog.dismiss();
-
-                if (e != null) {
-                    e(e);
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-        HelperParse helperParse = new HelperParse();
-
-        if (videoServer.getObjectId() == null) {
-            helperParse.toParse(videoServer).saveInBackground(saveCallback);
-        } else {
-            helperParse.update(videoServer, saveCallback);
-        }
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        helperDAO.insertOrUpdate(videoServer);
     }
 
     public abstract void onDone();

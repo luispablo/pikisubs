@@ -1,13 +1,12 @@
 package com.mediator.tasks;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.VideoSource;
-import com.parse.ParseException;
 
 import java.util.List;
 
@@ -16,10 +15,10 @@ import java.util.List;
  */
 public class TaskRefreshLocalDB extends AsyncTask<Void, Void, Void> {
 
-    Context context;
+    Activity activity;
 
-    public TaskRefreshLocalDB(Context context) {
-        this.context = context;
+    public TaskRefreshLocalDB(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
@@ -33,42 +32,44 @@ public class TaskRefreshLocalDB extends AsyncTask<Void, Void, Void> {
             }
         };
 
-        final TaskUpdateLocalDB taskUpdateLocalDB = new TaskUpdateLocalDB(context, updateLocalDBListener);
+        final TaskUpdateLocalDB taskUpdateLocalDB = new TaskUpdateLocalDB(activity, updateLocalDBListener);
 
         TaskDoneListener<List<VideoEntry>> searchTMDbListener = new TaskDoneListener<List<VideoEntry>>() {
             @Override
             public void onDone(List<VideoEntry> videoEntries) {
-                onProgress(context.getString(R.string.message_updating_local_db));
+                onProgress(activity.getString(R.string.message_updating_local_db));
                 taskUpdateLocalDB.execute(videoEntries.toArray(new VideoEntry[]{}));
             }
         };
 
-        final TaskSearchPoster taskSearchPoster = new TaskSearchPoster(context, searchTMDbListener);
+        final TaskSearchPoster taskSearchPoster = new TaskSearchPoster(activity, searchTMDbListener);
 
         TaskDoneListener<List<VideoEntry>> guessitListener = new TaskDoneListener<List<VideoEntry>>() {
             @Override
             public void onDone(List<VideoEntry> videoEntries) {
-                onProgress(context.getString(R.string.message_getting_posters));
+                onProgress(activity.getString(R.string.message_getting_posters));
                 taskSearchPoster.execute(videoEntries);
             }
         };
 
-        final TaskGuessitVideos taskGuessitVideos = new TaskGuessitVideos(context, null, guessitListener);
+        final TaskGuessitVideos taskGuessitVideos = new TaskGuessitVideos(activity, null, guessitListener);
 
         final TaskDoneListener<List<VideoEntry>> getAllVideosListener = new TaskDoneListener<List<VideoEntry>>() {
             @Override
             public void onDone(List<VideoEntry> videoEntries) {
-                onProgress(context.getString(R.string.message_guessing_videos));
+                onProgress(activity.getString(R.string.message_guessing_videos));
                 taskGuessitVideos.execute(videoEntries.toArray(new VideoEntry[]{}));
             }
         };
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allVideoSources(new HelperParse.CustomFindCallback<VideoSource>() {
+        HelperDAO helperDAO = new HelperDAO(activity);
+        final List<VideoSource> allVideoSources = helperDAO.all(VideoSource.class);
+        final TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(activity, getAllVideosListener);
+
+        activity.runOnUiThread(new Runnable() {
             @Override
-            public void done(List<VideoSource> videoSources, ParseException e) {
-                TaskGetAllVideos taskGetAllVideos = new TaskGetAllVideos(context, getAllVideosListener);
-                taskGetAllVideos.execute(videoSources.toArray(new VideoSource[]{}));
+            public void run() {
+                taskGetAllVideos.execute(allVideoSources.toArray(new VideoSource[]{}));
             }
         });
 

@@ -130,4 +130,5 @@
     <string name="title_wait_please">Espere por favor</string>
     <string name="suggest_episodes">Sugerir próximos episodios</string>
     <string name="title_dialog_suggest_episodes">Próximos episodios</string>
+    <string name="message_removing_duplicates">Quitando duplicados</string>
 </resources>

@@ -6,11 +6,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskDeleteVideoFile;
-import com.parse.DeleteCallback;
-import com.parse.ParseException;
 
 /**
  * Created by luispablo on 21/05/15.
@@ -54,13 +52,10 @@ public class ActionDelete implements IAction {
             @Override
             protected void onPostExecute(Boolean deleted) {
                 if (deleted) {
-                    HelperParse helperParse = new HelperParse();
-                    helperParse.toParse(videoEntry).deleteInBackground(new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            callback.onDone(e == null);
-                        }
-                    });
+                    HelperDAO helperDAO = new HelperDAO(activity);
+                    helperDAO.delete(videoEntry);
+
+                    if (callback != null) callback.onDone(true);
                 } else {
                     callback.onDone(false);
                 }

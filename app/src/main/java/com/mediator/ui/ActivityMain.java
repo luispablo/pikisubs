@@ -13,10 +13,9 @@ import android.view.MenuItem;
 
 import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -95,14 +94,12 @@ public class ActivityMain extends ActionBarActivity
         progressDialog.setMessage(getString(R.string.message_cleaning_local_db));
         progressDialog.show();
 
-        final HelperParse helperParse = new HelperParse();
-        helperParse.allVideoEntries(new HelperParse.CustomFindCallback<VideoEntry>() {
-            @Override
-            public void done(List<VideoEntry> videoEntries, ParseException e) {
-                for (VideoEntry videoEntry : videoEntries)
-                    helperParse.delete(videoEntry.getObjectId(), VideoEntry.class);
-            }
-        });
+        HelperDAO helperDAO = new HelperDAO(this);
+        List<VideoEntry> allVideoEntries = helperDAO.all(VideoEntry.class);
+
+        for (VideoEntry videoEntry : allVideoEntries) {
+            helperDAO.delete(videoEntry);
+        }
 
         TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(this) {
             @Override

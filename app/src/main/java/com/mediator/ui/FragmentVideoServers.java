@@ -15,10 +15,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mediator.R;
-import com.mediator.helpers.HelperParse;
+import com.mediator.helpers.HelperDAO;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoServer;
-import com.parse.ParseException;
 
 import java.util.List;
 
@@ -87,26 +86,21 @@ public class FragmentVideoServers extends Fragment {
         progressDialog.setMessage(getString(R.string.message_loading_data));
         progressDialog.show();
 
-        HelperParse helperParse = new HelperParse();
-        helperParse.allVideoServers(new HelperParse.CustomFindCallback<VideoServer>() {
+        HelperDAO helperDAO = new HelperDAO(getActivity());
+        videoServers = helperDAO.all(VideoServer.class);
+
+        List<String> videoServersNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
             @Override
-            public void done(List<VideoServer> list, ParseException e) {
-                videoServers = list;
-
-                List<String> videoServersNames = Oju.map(videoServers, new Oju.UnaryOperator<VideoServer, String>() {
-                    @Override
-                    public String operate(VideoServer videoServer) {
-                        return videoServer.getHost();
-                    }
-                });
-                listViewVideoServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, videoServersNames));
-                progressDialog.dismiss();
-
-                if (list == null || list.isEmpty()) {
-                    Toast.makeText(getActivity(), R.string.message_no_data, Toast.LENGTH_SHORT).show();
-                }
+            public String operate(VideoServer videoServer) {
+                return videoServer.getHost();
             }
         });
+        listViewVideoServers.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, videoServersNames));
+        progressDialog.dismiss();
+
+        if (videoServers == null || videoServers.isEmpty()) {
+            Toast.makeText(getActivity(), R.string.message_no_data, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnItemClick(R.id.listViewVideoServers)

@@ -17,13 +17,11 @@ import com.mediator.actions.ActionIdentifyVideo;
 import com.mediator.actions.ActionSetTMDbId;
 import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperDAO;
-import com.mediator.helpers.HelperParse;
 import com.mediator.helpers.Oju;
 import com.mediator.model.TVShow;
 import com.mediator.model.VideoEntry;
 import com.mediator.model.tmdb.TMDbTVResult;
 import com.mediator.tasks.TaskGetTMDbTV;
-import com.parse.ParseException;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -144,26 +142,22 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
     }
 
     private void setTVShowTMDbId() {
-        HelperDAO helperDAO = new HelperDAO(this);
-        helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
-            @Override
-            public void done(final List<VideoEntry> episodes, ParseException e) {
-                ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
-                    @Override
-                    protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
-                        for (VideoEntry episode : episodes) {
-                            episode.setPosterPath(tmdbTVResult.getPosterPath());
-                            episode.setSeriesTitle(tmdbTVResult.getName());
-                            episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
+        final HelperDAO helperDAO = new HelperDAO(this);
+        final List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
 
-                            HelperParse helperParse = new HelperParse();
-                            helperParse.update(episode, null);
-                        }
-                    }
-                };
-                actionSetTMDbId.execute(ActivityEpisodes.this, episodes.get(0), ActivityEpisodes.this);
+        ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
+            @Override
+            protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
+                for (VideoEntry episode : episodes) {
+                    episode.setPosterPath(tmdbTVResult.getPosterPath());
+                    episode.setSeriesTitle(tmdbTVResult.getName());
+                    episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
+
+                    helperDAO.update(episode);
             }
-        });
+            }
+        };
+        actionSetTMDbId.execute(ActivityEpisodes.this, episodes.get(0), ActivityEpisodes.this);
     }
 
     private void filterList(FragmentFilterVideosDialog.VideoFilter filter) {
@@ -176,13 +170,9 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
 
         if (tvShow.getEpisodes().isEmpty()) {
             HelperDAO helperDAO = new HelperDAO(this);
-            helperDAO.episodesFrom(tvShow, new HelperParse.CustomFindCallback<VideoEntry>() {
-                @Override
-                public void done(List<VideoEntry> episodes, ParseException e) {
-                    tvShow.getEpisodes().addAll(episodes);
-                    fillListView();
-                }
-            });
+            List<VideoEntry> episodes = helperDAO.episodesFrom(tvShow);
+            tvShow.getEpisodes().addAll(episodes);
+            fillListView();
         } else {
             fillListView();
         }
