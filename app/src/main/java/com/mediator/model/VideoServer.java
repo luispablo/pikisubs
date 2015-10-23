@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 public class VideoServer implements Serializable {
 
+    private static final long serialVersionUID = 4215453322436014736L;
+
     private Long id;
     private String objectId;
     private String host;

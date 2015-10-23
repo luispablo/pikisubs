@@ -9,6 +9,8 @@ import static com.mediator.model.VideoEntry.VideoType;
  */
 public class VideoSource implements Serializable {
 
+    private static final long serialVersionUID = 4217832881436014736L;
+
     private Long id;
     private String objectId;
     private Long videoServerId;

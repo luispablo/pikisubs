@@ -12,6 +12,8 @@ import java.io.Serializable;
  */
 public class VideoEntry implements Serializable {
 
+    private static final long serialVersionUID = 4215454881436014736L;
+
     public enum VideoType {
         MOVIE, TV_SHOW;
 
