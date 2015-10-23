@@ -10,6 +10,7 @@ import static com.mediator.model.VideoEntry.VideoType;
 public class VideoSource implements Serializable {
 
     private Long id;
+    private String objectId;
     private Long videoServerId;
     private String sshPath;
     private VideoType videoType;
@@ -53,5 +54,13 @@ public class VideoSource implements Serializable {
 
     public void setVideoServerId(Long videoServerId) {
         this.videoServerId = videoServerId;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 }

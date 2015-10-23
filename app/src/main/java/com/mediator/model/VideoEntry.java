@@ -24,6 +24,7 @@ public class VideoEntry implements Serializable {
     }
 
     private Long id;
+    private String objectId;
     private Long videoSourceId;
     private String absolutePath;
     private String pathRelativeToSource;
@@ -247,5 +248,13 @@ public class VideoEntry implements Serializable {
 
     public void setTmdbId(long tmdbId) {
         this.tmdbId = tmdbId;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 }

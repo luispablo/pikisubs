@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class VideoServer implements Serializable {
 
     private Long id;
+    private String objectId;
     private String host;
     private String username;
     private String password;
@@ -62,5 +63,13 @@ public class VideoServer implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 }

@@ -1,10 +1,25 @@
 package com.mediator.helpers;
 
+import com.mediator.model.VideoEntry;
+import com.mediator.model.VideoServer;
+import com.mediator.model.VideoSource;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by luispablo on 18/05/15.
  */
 public class HelperParse {
-/*
+
+    public static final String ID = "id";
     public static final String HOST = "host";
     public static final String HTTP_URL = "httpUrl";
     public static final String USERNAME = "username";
@@ -21,6 +36,8 @@ public class HelperParse {
     public static final String PATH_RELATIVE_TO_SOURCE = "pathRelativeToSource";
     public static final String POSTER_PATH = "posterPath";
     public static final String VIDEO_SOURCE = "videoSource";
+    public static final String VIDEO_SOURCE_ID = "videoSourceId";
+    public static final String VIDEO_SERVER_ID = "videoServerId";
     public static final String TITLE = "title";
     public static final String SERIES_TITLE = "seriesTitle";
     public static final String HAS_SUBS = "hasSubs";
@@ -38,6 +55,7 @@ public class HelperParse {
     public void toParse(VideoEntry videoEntry, ParseObject po) {
         if (videoEntry.getObjectId() != null) po.setObjectId(videoEntry.getObjectId());
 
+        po.put(ID, videoEntry.getId());
         po.put(VIDEO_TYPE, videoEntry.getVideoType().name());
         po.put(TMDB_ID, videoEntry.getTmdbId());
         po.put(SEASON_NUMBER, videoEntry.getSeasonNumber());
@@ -48,9 +66,7 @@ public class HelperParse {
 
         put(po, POSTER_PATH, videoEntry.getPosterPath());
 
-        po.put(VIDEO_SOURCE, ParseObject.createWithoutData(parseClassName(VideoSource.class),
-                videoEntry.getVideoSource().getObjectId()));
-
+        po.put(VIDEO_SOURCE_ID, videoEntry.getVideoSourceId());
         po.put(HAS_SUBS, videoEntry.hasSubs());
         po.put(IS_WATCHED, videoEntry.isWatched());
         po.put(NEEDS_SUBS, videoEntry.needsSubs());
@@ -68,6 +84,7 @@ public class HelperParse {
 
     public VideoServer toVideoServer(ParseObject po) {
         VideoServer videoServer = new VideoServer();
+        videoServer.setId(po.getLong(ID));
         videoServer.setHost(po.getString(HOST));
         videoServer.setHttpUrl(po.getString(HTTP_URL));
         videoServer.setObjectId(po.getObjectId());
@@ -79,9 +96,11 @@ public class HelperParse {
 
     public VideoSource toVideoSource(ParseObject po) {
         VideoSource videoSource = new VideoSource();
+        videoSource.setId(po.getLong(ID));
         videoSource.setObjectId(po.getObjectId());
         videoSource.setHttpPath(po.getString(HTTP_PATH));
         videoSource.setSshPath(po.getString(SSH_PATH));
+        videoSource.setVideoServerId(po.getLong(VIDEO_SERVER_ID));
         videoSource.setVideoType(VideoEntry.VideoType.valueOf(po.getString(VIDEO_TYPE)));
 
         return videoSource;
@@ -89,6 +108,7 @@ public class HelperParse {
 
     public VideoEntry toVideoEntry(ParseObject po) {
         VideoEntry videoEntry = new VideoEntry();
+        videoEntry.setId(po.getLong(ID));
         videoEntry.setObjectId(po.getObjectId());
         videoEntry.setPosterPath(po.getString(POSTER_PATH));
         videoEntry.setVideoType(VideoEntry.VideoType.valueOf(po.getString(VIDEO_TYPE)));
@@ -103,6 +123,7 @@ public class HelperParse {
         videoEntry.setSeriesTitle(po.getString(SERIES_TITLE));
         videoEntry.setTitle(po.getString(TITLE));
         videoEntry.setWatched(po.getBoolean(IS_WATCHED));
+        videoEntry.setVideoSourceId(po.getLong(VIDEO_SOURCE_ID));
 
         return videoEntry;
     }
@@ -117,9 +138,10 @@ public class HelperParse {
     public void toParse(VideoSource videoSource, ParseObject po) {
         if (videoSource.getObjectId() != null) po.setObjectId(videoSource.getObjectId());
 
+        po.put(ID, videoSource.getId());
         po.put(VIDEO_TYPE, videoSource.getVideoType().name());
         po.put(HTTP_PATH, videoSource.getHttpPath());
-        po.put(VIDEO_SERVER, ParseObject.createWithoutData(parseClassName(VideoServer.class), videoSource.getVideoServer().getObjectId()));
+        po.put(VIDEO_SERVER_ID, videoSource.getVideoServerId());
         po.put(SSH_PATH, videoSource.getSshPath());
         po.put(PARSE_USER, ParseUser.getCurrentUser());
     }
@@ -196,13 +218,7 @@ public class HelperParse {
             public void done(ParseObject parseObject, ParseException e) {
                 if (parseObject != null) {
                     final VideoEntry videoEntry = toVideoEntry(parseObject);
-                    getVideoSource(parseObject.getParseObject(VIDEO_SOURCE).getObjectId(), new CustomGetCallback<VideoSource>() {
-                        @Override
-                        public void done(VideoSource videoSource, ParseException e) {
-                            videoEntry.setVideoSource(videoSource);
-                            callback.done(videoEntry, e);
-                        }
-                    });
+                    callback.done(videoEntry, e);
                 } else {
                     callback.done(null, e);
                 }
@@ -216,13 +232,7 @@ public class HelperParse {
             public void done(ParseObject parseObject, ParseException e) {
                 if (parseObject != null) {
                     final VideoSource videoSource = toVideoSource(parseObject);
-                    getVideoServer(parseObject.getParseObject(VIDEO_SERVER).getObjectId(), new CustomGetCallback<VideoServer>() {
-                        @Override
-                        public void done(VideoServer videoServer, ParseException e) {
-                            videoSource.setVideoServer(videoServer);
-                            callback.done(videoSource, e);
-                        }
-                    });
+                    callback.done(videoSource, e);
                 } else {
                     callback.done(null, e);
                 }
@@ -273,16 +283,10 @@ public class HelperParse {
                 if (list != null && !list.isEmpty()) {
                     for (ParseObject po : list) {
                         final VideoSource videoSource = toVideoSource(po);
-                        getVideoServer(po.getParseObject(VIDEO_SERVER).getObjectId(), new CustomGetCallback<VideoServer>() {
-                            @Override
-                            public void done(VideoServer videoServer, ParseException e) {
-                                videoSource.setVideoServer(videoServer);
-                                videoSources.add(videoSource);
+                        videoSources.add(videoSource);
 
-                                if (videoSources.size() == list.size())
-                                    callback.done(videoSources, e);
-                            }
-                        });
+                        if (videoSources.size() == list.size())
+                            callback.done(videoSources, e);
                     }
                 } else {
                     callback.done(videoSources, e);
@@ -345,16 +349,10 @@ public class HelperParse {
             if (list != null && !list.isEmpty()) {
                 for (ParseObject parseObject : list) {
                     final VideoEntry videoEntry = toVideoEntry(parseObject);
-                    getVideoSource(parseObject.getParseObject(VIDEO_SOURCE).getObjectId(), new CustomGetCallback<VideoSource>() {
-                        @Override
-                        public void done(VideoSource videoSource, ParseException e) {
-                            videoEntry.setVideoSource(videoSource);
-                            videoEntries.add(videoEntry);
+                    videoEntries.add(videoEntry);
 
-                            if (videoEntries.size() == list.size())
-                                callback.done(videoEntries, e);
-                        }
-                    });
+                    if (videoEntries.size() == list.size())
+                        callback.done(videoEntries, e);
                 }
             } else {
                 callback.done(videoEntries, e);
@@ -369,5 +367,4 @@ public class HelperParse {
     public interface CustomGetCallback<T> {
         void done(T object, ParseException e);
     }
-    */
 }
