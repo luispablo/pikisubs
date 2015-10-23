@@ -131,4 +131,5 @@
     <string name="suggest_episodes">Suggest next episodes</string>
     <string name="title_dialog_suggest_episodes">Next episodes</string>
     <string name="message_removing_duplicates">Removing duplicates</string>
+    <string name="menu_fetch_new">Fetch new videos</string>
 </resources>

@@ -19,8 +19,6 @@ import com.mediator.actions.IActionCallback;
 import com.mediator.helpers.HelperMediator;
 import com.mediator.helpers.Oju;
 import com.mediator.model.VideoEntry;
-import com.mediator.tasks.TaskRefreshLocalDB;
-import com.mediator.tasks.TaskRemoveDuplicated;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
@@ -127,39 +125,9 @@ public class FragmentMovies extends Fragment implements IActionCallback {
         loadList();
     }
 
-    private void refreshLocalDB() {
-        progressDialog.setMessage(getString(R.string.message_removing_duplicates));
-        progressDialog.show();
-
-        final TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(getActivity()) {
-            @Override
-            public void onProgress(String message) {
-                progressDialog.setMessage(message);
-            }
-
-            @Override
-            public void onFinished() {
-                loadList();
-                progressDialog.dismiss();
-            }
-        };
-
-        TaskRemoveDuplicated taskRemoveDuplicated = new TaskRemoveDuplicated(getActivity()) {
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                progressDialog.setMessage(getString(R.string.message_rescanning_db));
-                taskRefreshLocalDB.execute();
-            }
-        };
-        taskRemoveDuplicated.execute();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_local_videos_refresh:
-                refreshLocalDB();
-                return true;
             case R.id.action_local_videos_filter:
                 FragmentFilterVideosDialog filterVideosDialog = new FragmentFilterVideosDialog() {
                     @Override

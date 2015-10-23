@@ -16,6 +16,7 @@ import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
 import com.mediator.tasks.TaskRefreshLocalDB;
+import com.mediator.tasks.TaskRemoveDuplicated;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -77,6 +78,9 @@ public class ActivityMain extends ActionBarActivity
             case RESCAN:
                 rescanCollection();
                 break;
+            case FETCH_NEW:
+                fetchNewVideos();
+                break;
         }
 
         if (fragment != null) {
@@ -86,6 +90,33 @@ public class ActivityMain extends ActionBarActivity
                     .replace(R.id.container, fragment)
                     .commit();
         }
+    }
+
+    private void fetchNewVideos() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.message_removing_duplicates));
+        progressDialog.show();
+
+        final TaskRefreshLocalDB taskRefreshLocalDB = new TaskRefreshLocalDB(this) {
+            @Override
+            public void onProgress(String message) {
+                progressDialog.setMessage(message);
+            }
+
+            @Override
+            public void onFinished() {
+                progressDialog.dismiss();
+            }
+        };
+
+        TaskRemoveDuplicated taskRemoveDuplicated = new TaskRemoveDuplicated(this) {
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                progressDialog.setMessage(getString(R.string.message_rescanning_db));
+                taskRefreshLocalDB.execute();
+            }
+        };
+        taskRemoveDuplicated.execute();
     }
 
     private void rescanCollection() {
