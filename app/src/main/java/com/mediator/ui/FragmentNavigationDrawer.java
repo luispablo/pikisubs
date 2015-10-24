@@ -58,7 +58,9 @@ public class FragmentNavigationDrawer extends Fragment {
         SERVERS("menu_servers"),
         SETTINGS("menu_settings"),
         RESCAN("menu_rescan"),
-        FETCH_NEW("menu_fetch_new");
+        FETCH_NEW("menu_fetch_new"),
+        UPLOAD_COLLECTION("menu_upload_collection"),
+        DOWNLOAD_COLLECTION("menu_download_collection");
 
         String labelKey;
 

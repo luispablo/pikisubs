@@ -132,4 +132,15 @@
     <string name="title_dialog_suggest_episodes">Próximos episodios</string>
     <string name="message_removing_duplicates">Quitando duplicados</string>
     <string name="menu_fetch_new">Tomar nuevos videos</string>
+    <string name="menu_upload_collection">Subir colección a Parse</string>
+    <string name="menu_download_collection">Descargar colección de Parse</string>
+    <string name="title_cleaning_parse">Borrando los objetos de Parse.com</string>
+    <string name="title_uploading_servers">Subiendo servidores a Parse.com</string>
+    <string name="title_uploading_sources">Subiendo fuentes a Parse.com</string>
+    <string name="title_uploading_videos">Subiendo videos a Parse.com</string>
+    <string name="message_getting_all_objects">Tomando todos los objetos de Parse.com</string>
+    <string name="message_deleting_all_objects">Borrando todos los objetos de Parse.com</string>
+    <string name="message_downloading_servers">Descargando servidores</string>
+    <string name="message_downloading_sources">Descargando fuentes</string>
+    <string name="message_downloading_videos">Descargando videos</string>
 </resources>

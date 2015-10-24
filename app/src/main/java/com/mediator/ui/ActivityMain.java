@@ -15,8 +15,10 @@ import com.mediator.R;
 import com.mediator.helpers.HelperAndroid;
 import com.mediator.helpers.HelperDAO;
 import com.mediator.model.VideoEntry;
+import com.mediator.tasks.TaskDownloadCollectionFromParse;
 import com.mediator.tasks.TaskRefreshLocalDB;
 import com.mediator.tasks.TaskRemoveDuplicated;
+import com.mediator.tasks.TaskUploadCollectionToParse;
 import com.parse.ParseUser;
 
 import java.util.List;
@@ -81,6 +83,12 @@ public class ActivityMain extends ActionBarActivity
             case FETCH_NEW:
                 fetchNewVideos();
                 break;
+            case UPLOAD_COLLECTION:
+                uploadCollection();
+                break;
+            case DOWNLOAD_COLLECTION:
+                downloadCollection();
+                break;
         }
 
         if (fragment != null) {
@@ -90,6 +98,43 @@ public class ActivityMain extends ActionBarActivity
                     .replace(R.id.container, fragment)
                     .commit();
         }
+    }
+
+    private void uploadCollection() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.show();
+
+        TaskUploadCollectionToParse task = new TaskUploadCollectionToParse(this) {
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                progressDialog.setTitle(getString(values[0]));
+                progressDialog.setMessage(getString(values[1]));
+            }
+
+            @Override
+            protected void onDone() {
+                progressDialog.dismiss();
+            }
+        };
+        task.execute();
+    }
+
+    private void downloadCollection() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.show();
+
+        TaskDownloadCollectionFromParse task = new TaskDownloadCollectionFromParse() {
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                progressDialog.setMessage(getString(values[0]));
+            }
+
+            @Override
+            protected void onDone() {
+                progressDialog.dismiss();
+            }
+        };
+        task.execute(this);
     }
 
     private void fetchNewVideos() {

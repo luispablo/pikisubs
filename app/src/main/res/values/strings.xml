@@ -132,4 +132,15 @@
     <string name="title_dialog_suggest_episodes">Next episodes</string>
     <string name="message_removing_duplicates">Removing duplicates</string>
     <string name="menu_fetch_new">Fetch new videos</string>
+    <string name="menu_upload_collection">Upload collection to Parse</string>
+    <string name="menu_download_collection">Download collection from Parse</string>
+    <string name="title_cleaning_parse">Cleaning Parse objects</string>
+    <string name="title_uploading_servers">Uploading servers to Parse.com</string>
+    <string name="title_uploading_sources">Uploading sources to Parse.com</string>
+    <string name="title_uploading_videos">Uploading videos to Parse.com</string>
+    <string name="message_getting_all_objects">Getting all objects from Parse.com</string>
+    <string name="message_deleting_all_objects">Deleting all objects from Parse.com</string>
+    <string name="message_downloading_servers">Downloading servers</string>
+    <string name="message_downloading_sources">Downloading sources</string>
+    <string name="message_downloading_videos">Downloading videos</string>
 </resources>

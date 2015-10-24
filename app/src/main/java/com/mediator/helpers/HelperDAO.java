@@ -126,9 +126,16 @@ public class HelperDAO {
     }
 
     public void deleteById(Long id) {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getWritableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getWritableDatabase();
         String[] args = {String.valueOf(id)};
         db.delete(TABLE_OBJECTS, COLUMN_ID + " = ?", args);
+        db.close();
+    }
+
+    public void deleteAll() {
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getWritableDatabase();
+        db.delete(TABLE_OBJECTS, null, new String[0]);
+        db.close();
     }
 
     public <T> void delete(T object) {
@@ -136,13 +143,16 @@ public class HelperDAO {
     }
 
     public <T extends Serializable> int update(T object) {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getWritableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getWritableDatabase();
         String[] args = {String.valueOf(getIdFromObject(object))};
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_BYTE_STREAM, objectToBytes(object));
 
-        return db.update(TABLE_OBJECTS, values, COLUMN_ID + " = ?", args);
+        int quantity = db.update(TABLE_OBJECTS, values, COLUMN_ID + " = ?", args);
+        db.close();
+
+        return quantity;
     }
 
     public <T extends Serializable> Long insertOrUpdate(T object) {
@@ -155,21 +165,38 @@ public class HelperDAO {
         }
     }
 
+    public boolean exists(Long id) {
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getReadableDatabase();
+
+        String[] projection = {COLUMN_CLASS_NAME};
+        String[] args = {String.valueOf(id)};
+
+        Cursor cursor = db.query(TABLE_OBJECTS, projection, COLUMN_ID + " = ?", args, null, null, null);
+        int count = cursor.getCount();
+        db.close();
+
+        return count > 0;
+    }
+
     public <T extends Serializable> Long insert(T object) {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getWritableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_CLASS_NAME, object.getClass().getName());
         values.put(COLUMN_BYTE_STREAM, objectToBytes(object));
 
-        Long id = db.insert(TABLE_OBJECTS, null, values);
+        Long id = getIdFromObject(object);
+        if (id != null) values.put(COLUMN_ID, id);
+
+        id = db.insertOrThrow(TABLE_OBJECTS, null, values);
         setIdOnObject(object, id);
+        db.close();
 
         return id;
     }
 
     public <T> T getById(Long id) {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getReadableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getReadableDatabase();
 
         String[] projection = {COLUMN_BYTE_STREAM};
         String[] args = {String.valueOf(id)};
@@ -180,15 +207,17 @@ public class HelperDAO {
             byte[] bytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_BYTE_STREAM));
             T object = bytesToObject(bytes);
             setIdOnObject(object, id);
+            db.close();
 
             return object;
         } else {
+            db.close();
             return null;
         }
     }
 
     public <T> List<T> all(Class<T> clazz) {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getReadableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getReadableDatabase();
         List<T> objects = new ArrayList<>();
 
         String[] projection = {COLUMN_ID, COLUMN_BYTE_STREAM};
@@ -196,32 +225,34 @@ public class HelperDAO {
 
         Cursor cursor = db.query(TABLE_OBJECTS, projection, COLUMN_CLASS_NAME + " = ?", args, null, null, null);
 
-        for (cursor.moveToFirst(); cursor.moveToNext(); ) {
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             Long id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
             byte[] bytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_BYTE_STREAM));
             T object = bytesToObject(bytes);
             setIdOnObject(object, id);
             objects.add(object);
         }
+        db.close();
 
         return objects;
     }
 
     public List<Serializable> all() {
-        SQLiteDatabase db = new ObjectDBOpenHelper(context).getReadableDatabase();
+        SQLiteDatabase db = ObjectDBOpenHelper.getInstance(context).getReadableDatabase();
         List<Serializable> objects = new ArrayList<>();
 
         String[] projection = {COLUMN_ID, COLUMN_BYTE_STREAM};
 
         Cursor cursor = db.query(TABLE_OBJECTS, projection, null, new String[0], null, null, null);
 
-        for (cursor.moveToFirst(); cursor.moveToNext(); ) {
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             Long id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
             byte[] bytes = cursor.getBlob(cursor.getColumnIndex(COLUMN_BYTE_STREAM));
             Serializable object = bytesToObject(bytes);
             setIdOnObject(object, id);
             objects.add(object);
         }
+        db.close();
 
         return objects;
     }

@@ -323,6 +323,7 @@ public class HelperParse {
     public void toParse(VideoServer videoServer, ParseObject po) {
         if (videoServer.getObjectId() != null) po.setObjectId(videoServer.getObjectId());
 
+        po.put(ID, videoServer.getId());
         po.put(HOST, videoServer.getHost());
         po.put(HTTP_URL, videoServer.getHttpUrl());
         po.put(PASSWORD, videoServer.getPassword());
