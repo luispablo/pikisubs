@@ -84,11 +84,14 @@ public class TaskUploadCollectionToParse extends AsyncTask<Void, Integer, Void> 
         publishProgress(R.string.title_uploading_servers, R.string.message_wait_please);
 
         final HelperParse helperParse = new HelperParse();
-        HelperDAO helperDAO = new HelperDAO(context);
+        final HelperDAO helperDAO = new HelperDAO(context);
         List<ParseObject> servers = Oju.map(helperDAO.all(VideoServer.class), new Oju.UnaryOperator<VideoServer, ParseObject>() {
             @Override
             public ParseObject operate(VideoServer videoServer) {
-                return helperParse.toParse(videoServer);
+                ParseObject po = helperParse.toParse(videoServer);
+                po.setObjectId(null);
+
+                return po;
             }
         });
         ParseObject.saveAllInBackground(servers, new SaveCallback() {
@@ -107,7 +110,10 @@ public class TaskUploadCollectionToParse extends AsyncTask<Void, Integer, Void> 
         List<ParseObject> sources = Oju.map(helperDAO.all(VideoSource.class), new Oju.UnaryOperator<VideoSource, ParseObject>() {
             @Override
             public ParseObject operate(VideoSource videoSource) {
-                return helperParse.toParse(videoSource);
+                ParseObject po = helperParse.toParse(videoSource);
+                po.setObjectId(null);
+
+                return po;
             }
         });
         ParseObject.saveAllInBackground(sources, new SaveCallback() {
@@ -127,7 +133,10 @@ public class TaskUploadCollectionToParse extends AsyncTask<Void, Integer, Void> 
         List<ParseObject> videos = Oju.map(helperDAO.all(VideoEntry.class), new Oju.UnaryOperator<VideoEntry, ParseObject>() {
             @Override
             public ParseObject operate(VideoEntry videoEntry) {
-                return helperParse.toParse(videoEntry);
+                ParseObject po = helperParse.toParse(videoEntry);
+                po.setObjectId(null);
+
+                return po;
             }
         });
         ParseObject.saveAllInBackground(videos, new SaveCallback() {

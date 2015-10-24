@@ -16,24 +16,27 @@ repositories {
 
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.mediator"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     packagingOptions {
         exclude 'LICENSE.txt'
+    }
+    productFlavors {
     }
 }
 
@@ -57,7 +60,7 @@ dependencies {
     }
     compile project(':java-unrar')
     compile 'com.parse.bolts:bolts-android:1.+'
-    compile fileTree(dir: 'libs', include: 'Parse-1.9.2.jar')
+    compile fileTree(include: 'Parse-1.9.2.jar', dir: 'libs')
     compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
         transitive = true;
     }
