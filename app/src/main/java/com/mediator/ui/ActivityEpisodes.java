@@ -147,14 +147,15 @@ public class ActivityEpisodes extends ActionBarActivity implements IActionCallba
 
         ActionSetTMDbId actionSetTMDbId = new ActionSetTMDbId() {
             @Override
-            protected void gotTVShowResult(TMDbTVResult tmdbTVResult) {
+            protected void gotTVShowResult(TMDbTVResult tmdbTVResult, long tmdbId) {
                 for (VideoEntry episode : episodes) {
                     episode.setPosterPath(tmdbTVResult.getPosterPath());
                     episode.setSeriesTitle(tmdbTVResult.getName());
+                    episode.setTmdbId(tmdbId);
                     episode.setVideoType(VideoEntry.VideoType.TV_SHOW);
 
                     helperDAO.update(episode);
-            }
+                }
             }
         };
         actionSetTMDbId.execute(ActivityEpisodes.this, episodes.get(0), ActivityEpisodes.this);

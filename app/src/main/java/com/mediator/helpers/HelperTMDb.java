@@ -31,7 +31,7 @@ public class HelperTMDb {
         d("title found: " + tmdbTVEpisodeResult.getName());
         videoEntry.setEpisodeNumber(tmdbTVEpisodeResult.getEpisodeNumber());
         videoEntry.setSeasonNumber(tmdbTVEpisodeResult.getSeasonNumber());
-        videoEntry.setTmdbId(tmdbTVEpisodeResult.getId());
+        //videoEntry.setTmdbId(tmdbTVEpisodeResult.getId());
         videoEntry.setTitle(tmdbTVEpisodeResult.getName());
 
         return videoEntry;

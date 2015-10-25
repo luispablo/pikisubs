@@ -54,7 +54,7 @@ public class ActionSetTMDbId implements IAction {
         fragmentSetTMDbIdDialog.show(activity.getFragmentManager(), null);
     }
 
-    private void updateVideoEntry(Context context, long tmdbId) {
+    private void updateVideoEntry(Context context, final long tmdbId) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(R.string.title_dialog_get_tmdb_movie);
         progressDialog.setMessage(context.getString(R.string.message_wait_please));
@@ -71,14 +71,14 @@ public class ActionSetTMDbId implements IAction {
                 @Override
                 protected void onDone(TMDbTVResult tmdbTVResult, RetrofitError retrofitError) {
                     progressDialog.dismiss();
-                    gotTVShowResult(tmdbTVResult);
+                    gotTVShowResult(tmdbTVResult, tmdbId);
                 }
             };
             taskGetTMDbTV.execute(tmdbId);
         }
     }
 
-    protected void gotTVShowResult(TMDbTVResult tmDbTVResult) {
+    protected void gotTVShowResult(TMDbTVResult tmDbTVResult, long tmdbId) {
         // To be overriden
     }
 
