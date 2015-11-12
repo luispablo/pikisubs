@@ -7,8 +7,6 @@ import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +42,8 @@ public class Subdivx implements SubtitlesSource {
         try {
             Document doc = Jsoup.connect(subtitle.getLink()).get();
 
-            String countdownPageURL = doc.select("a.detalle_link").get(3).attr("href");
+            realLink = doc.select("a.link1").get(0).attr("href");
+            /*
             Document countdownPage = Jsoup.connect(countdownPageURL).get();
 
             Elements elements = countdownPage.select("a");
@@ -54,6 +53,7 @@ public class Subdivx implements SubtitlesSource {
                     realLink = node.attr("href");
                 }
             }
+            */
         } catch (IOException e) {
             Logger.e(e);
         }
